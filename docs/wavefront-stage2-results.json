@@ -1,0 +1,327 @@
+{
+  "scope": "clean-R B0/B1 on four main SDR photographic workloads; no candidate performance results",
+  "source_base": "96623ba0831a52dbddcda35727a206d4123a8b5f",
+  "complete": true,
+  "valid_rounds": 36,
+  "recovered_pre_interruption_rounds": 15,
+  "preserved_interrupted_attempts": 1,
+  "B_ref_frozen": false,
+  "performance_acceptance": false,
+  "reference_worker_sha256": "9f374cc49385b67d34023c8ed43482d6154646b9f24fc07fdab70e0bcc655851",
+  "raw_report": "candidate/build/wavefront-benchmark/formal/ddea1b871480/report.json",
+  "raw_report_sha256": "adaa1f5b31522aa783726e534ef92fbb3b706692cbe563736445cbcf47362a0a",
+  "corpus": {
+    "images": 8,
+    "primary": "coffee",
+    "tuning": "grass",
+    "holdouts": 6,
+    "scope": "SDR sample images, upscaled primary 1080p/4K; no native 4K, RAW or HDR claim"
+  },
+  "tests": {
+    "baseline_controller": 11,
+    "metrics": 16,
+    "image_input": 4,
+    "streaming_comparator": 9,
+    "variant_manifest": 14,
+    "aot_release": 14
+  },
+  "limitations": [
+    "Selected-mode throughput range varies 32.3% to 112.2%; this cannot support a reliable 5% regression gate.",
+    "Portra 400 4K independent-process footprint-peak epsilon is 50,593,792 bytes versus the unchanged 4,194,304-byte cap.",
+    "Final E correctness, reuse traces, lifecycle, compatibility and performance gates remain pending."
+  ],
+  "cases": [
+    {
+      "case": "portra400-coffee-1920x1080",
+      "arms": {
+        "B0": {
+          "rounds": 3,
+          "all_rounds_valid": true,
+          "median_round_throughput_fps": 62.233333333333334,
+          "median_round_median_seconds": 0.0158927915035747,
+          "worst_round_p95_seconds": 0.022205375018529594,
+          "device_total_peak_bytes": 484704256,
+          "actual_variants": [
+            "see raw call records"
+          ]
+        },
+        "B1": {
+          "rounds": 6,
+          "all_rounds_valid": true,
+          "median_round_throughput_fps": 87.56666666666666,
+          "median_round_median_seconds": 0.01107099003274925,
+          "worst_round_p95_seconds": 0.017099917051382363,
+          "device_total_peak_bytes": 350519296,
+          "actual_variants": [
+            "see raw call records"
+          ]
+        }
+      },
+      "provisional_fastest_mode": "B1",
+      "memory_epsilon": {
+        "device_total_peak_bytes": {
+          "epsilon_bytes": 0,
+          "cap_bytes": 4194304,
+          "stable": true,
+          "pairs": [
+            0,
+            0,
+            0
+          ]
+        },
+        "process_lifetime_peak_bytes": {
+          "epsilon_bytes": 131144,
+          "cap_bytes": 4194304,
+          "stable": true,
+          "pairs": [
+            65584,
+            131144,
+            32768
+          ]
+        },
+        "retained_device_bytes": {
+          "epsilon_bytes": 0,
+          "cap_bytes": 4194304,
+          "stable": true,
+          "pairs": [
+            0,
+            0,
+            0
+          ]
+        },
+        "retained_process_footprint_bytes": {
+          "epsilon_bytes": 131144,
+          "cap_bytes": 4194304,
+          "stable": true,
+          "pairs": [
+            65584,
+            131144,
+            16384
+          ]
+        }
+      },
+      "memory_stable": true,
+      "selected_mode_throughput_range_ratio": 0.41629327902240343,
+      "timing_review_required": true
+    },
+    {
+      "case": "portra400-coffee-3840x2160",
+      "arms": {
+        "B0": {
+          "rounds": 3,
+          "all_rounds_valid": true,
+          "median_round_throughput_fps": 9.766666666666667,
+          "median_round_median_seconds": 0.09658839547773823,
+          "worst_round_p95_seconds": 0.2831622080411762,
+          "device_total_peak_bytes": 1818492928,
+          "actual_variants": [
+            "see raw call records"
+          ]
+        },
+        "B1": {
+          "rounds": 6,
+          "all_rounds_valid": true,
+          "median_round_throughput_fps": 18.35,
+          "median_round_median_seconds": 0.0493267914862372,
+          "worst_round_p95_seconds": 0.16442829207517207,
+          "device_total_peak_bytes": 1241219072,
+          "actual_variants": [
+            "see raw call records"
+          ]
+        }
+      },
+      "provisional_fastest_mode": "B1",
+      "memory_epsilon": {
+        "device_total_peak_bytes": {
+          "epsilon_bytes": 0,
+          "cap_bytes": 4194304,
+          "stable": true,
+          "pairs": [
+            0,
+            0,
+            0
+          ]
+        },
+        "process_lifetime_peak_bytes": {
+          "epsilon_bytes": 50593792,
+          "cap_bytes": 4194304,
+          "stable": false,
+          "pairs": [
+            50151376,
+            50593792,
+            147480
+          ]
+        },
+        "retained_device_bytes": {
+          "epsilon_bytes": 0,
+          "cap_bytes": 4194304,
+          "stable": true,
+          "pairs": [
+            0,
+            0,
+            0
+          ]
+        },
+        "retained_process_footprint_bytes": {
+          "epsilon_bytes": 278504,
+          "cap_bytes": 4194304,
+          "stable": true,
+          "pairs": [
+            229424,
+            278504,
+            180248
+          ]
+        }
+      },
+      "memory_stable": false,
+      "selected_mode_throughput_range_ratio": 0.4174107142857144,
+      "timing_review_required": true
+    },
+    {
+      "case": "hp5plus400-coffee-1920x1080",
+      "arms": {
+        "B0": {
+          "rounds": 3,
+          "all_rounds_valid": true,
+          "median_round_throughput_fps": 54.63333333333333,
+          "median_round_median_seconds": 0.01582804205827415,
+          "worst_round_p95_seconds": 0.06231304199900478,
+          "device_total_peak_bytes": 506232832,
+          "actual_variants": [
+            "see raw call records"
+          ]
+        },
+        "B1": {
+          "rounds": 6,
+          "all_rounds_valid": true,
+          "median_round_throughput_fps": 59.43333333333334,
+          "median_round_median_seconds": 0.011493833299027756,
+          "worst_round_p95_seconds": 0.07099566701799631,
+          "device_total_peak_bytes": 288161792,
+          "actual_variants": [
+            "see raw call records"
+          ]
+        }
+      },
+      "provisional_fastest_mode": "B1",
+      "memory_epsilon": {
+        "device_total_peak_bytes": {
+          "epsilon_bytes": 0,
+          "cap_bytes": 4194304,
+          "stable": true,
+          "pairs": [
+            0,
+            0,
+            0
+          ]
+        },
+        "process_lifetime_peak_bytes": {
+          "epsilon_bytes": 163864,
+          "cap_bytes": 4194304,
+          "stable": true,
+          "pairs": [
+            114664,
+            163864,
+            114688
+          ]
+        },
+        "retained_device_bytes": {
+          "epsilon_bytes": 0,
+          "cap_bytes": 4194304,
+          "stable": true,
+          "pairs": [
+            0,
+            0,
+            0
+          ]
+        },
+        "retained_process_footprint_bytes": {
+          "epsilon_bytes": 180248,
+          "cap_bytes": 4194304,
+          "stable": true,
+          "pairs": [
+            114664,
+            180248,
+            32768
+          ]
+        }
+      },
+      "memory_stable": true,
+      "selected_mode_throughput_range_ratio": 1.121609798775153,
+      "timing_review_required": true
+    },
+    {
+      "case": "hp5plus400-coffee-3840x2160",
+      "arms": {
+        "B0": {
+          "rounds": 3,
+          "all_rounds_valid": true,
+          "median_round_throughput_fps": 16.633333333333333,
+          "median_round_median_seconds": 0.05941089597763494,
+          "worst_round_p95_seconds": 0.06890841701533645,
+          "device_total_peak_bytes": 1650851840,
+          "actual_variants": [
+            "see raw call records"
+          ]
+        },
+        "B1": {
+          "rounds": 6,
+          "all_rounds_valid": true,
+          "median_round_throughput_fps": 38.266666666666666,
+          "median_round_median_seconds": 0.024179854022804648,
+          "worst_round_p95_seconds": 0.04569245805032551,
+          "device_total_peak_bytes": 700153856,
+          "actual_variants": [
+            "see raw call records"
+          ]
+        }
+      },
+      "provisional_fastest_mode": "B1",
+      "memory_epsilon": {
+        "device_total_peak_bytes": {
+          "epsilon_bytes": 0,
+          "cap_bytes": 4194304,
+          "stable": true,
+          "pairs": [
+            0,
+            0,
+            0
+          ]
+        },
+        "process_lifetime_peak_bytes": {
+          "epsilon_bytes": 114736,
+          "cap_bytes": 4194304,
+          "stable": true,
+          "pairs": [
+            114736,
+            98328,
+            49176
+          ]
+        },
+        "retained_device_bytes": {
+          "epsilon_bytes": 0,
+          "cap_bytes": 4194304,
+          "stable": true,
+          "pairs": [
+            0,
+            0,
+            0
+          ]
+        },
+        "retained_process_footprint_bytes": {
+          "epsilon_bytes": 98352,
+          "cap_bytes": 4194304,
+          "stable": true,
+          "pairs": [
+            98352,
+            49176,
+            32792
+          ]
+        }
+      },
+      "memory_stable": true,
+      "selected_mode_throughput_range_ratio": 0.32277227722772284,
+      "timing_review_required": true
+    }
+  ]
+}
