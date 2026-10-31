@@ -20,7 +20,7 @@ def main():
     p.add_argument('--reference-kernels',required=True,type=Path)
     p.add_argument('--kernels',required=True,type=Path)
     p.add_argument('--catalog',required=True,type=Path)
-    p.add_argument('--band',type=int,choices=(64,128,256,512),default=256)
+    p.add_argument('--band',type=int,choices=(64,128,256,512,1080),default=256)
     p.add_argument('--bundle',action='store_true',help='two-stage multi-output producer research host')
     p.add_argument('--three-stage',action='store_true',help='explicit three-stage research host; requires band 512')
     p.add_argument('--fail-log',action='store_true',help='inject failure after the first successful halation/log call')
@@ -28,7 +28,7 @@ def main():
     p.add_argument('--diagnostic-control',type=Path)
     p.add_argument('--diagnostic-kernels',type=Path)
     args=p.parse_args();candidate=Path(__file__).resolve().parents[1];reference=args.reference.resolve()
-    if (args.bundle and (args.three_stage or args.band!=512)) or (args.three_stage and args.band!=512) or (args.fail_log and not args.three_stage):
+    if (args.bundle and (args.three_stage or args.band not in (512,1080))) or (args.three_stage and args.band!=512) or (args.fail_log and not args.three_stage):
         raise ValueError('three-stage requires 512 rows; log failure requires three-stage')
     if candidate==reference or subprocess.check_output(['git','-C',str(reference),'status','--porcelain'],text=True):
         raise ValueError('R must remain a separate clean checkout')

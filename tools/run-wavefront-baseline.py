@@ -120,13 +120,13 @@ def three_stage_accounting(stderr, expected_stages, height, source_calls, output
 
 def run_round(worker, pack, image, mode, root, *, expected_band=None, expected_ring_rows=1024, expected_stage_count=2, expected_cut="post_mtf", expected_field_rows=None):
     # The CLI remains clean-R only. The comparison controller explicitly admits E here.
-    experimental = mode == "E" and expected_band in (64,128,256,512)
+    experimental = mode == "E" and expected_band in (64,128,256,512,1080)
     if not experimental and (mode not in ("B0", "B1") or expected_band is not None):
         raise ValueError("R B0/B1 or explicit E with a supported band is required")
     if expected_stage_count not in (2,3) or (expected_stage_count==3 and not experimental):
         raise ValueError("stage count must be 2, or 3 for explicit E")
-    if expected_cut not in ('post_mtf','bundle') or (expected_cut=='bundle' and (not experimental or expected_stage_count!=2 or expected_band!=512 or expected_field_rows is None)):
-        raise ValueError('explicit bundle requires two stages, 512 rows and verified field dimensions')
+    if expected_cut not in ('post_mtf','bundle') or (expected_cut=='bundle' and (not experimental or expected_stage_count!=2 or expected_band not in (512,1080) or expected_field_rows is None)):
+        raise ValueError('explicit bundle requires two stages, 512/1080 rows and verified field dimensions')
     root.mkdir(parents=True)
     records=[]; pending={}; events=[]; issues=[]; window=None; offset=None; deadline_missed=False
     start=time.monotonic()

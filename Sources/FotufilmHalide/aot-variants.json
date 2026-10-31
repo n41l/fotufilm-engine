@@ -343,7 +343,8 @@
       64,
       128,
       256,
-      512
+      512,
+      1080
     ],
     "variants": [
       {
@@ -378,7 +379,11 @@
         "halation_1",
         "halation_2"
       ],
-      "field_layout": "planar-float32"
+      "field_layout": "planar-float32",
+      "bands": [
+        512,
+        1080
+      ]
     }
   }
 }

@@ -138,11 +138,14 @@ int main(int argc, char **argv) {
     if(bundle) {
 #define FOTUFILM_BUNDLE_ENTRY(variant_name, stages_name, variant_mask) \
         { Variant producer{prefix+#variant_name "_wavefront_bundle_source_" #stages_name,variant_mask,false,false,true,512}; \
-          producer.exports_bundle=true;variants.push_back(producer); \
-          Variant consumer{prefix+#variant_name "_wavefront_bundle_" #stages_name "_512",variant_mask,false,true,true,512}; \
-          consumer.consumes_bundle=true;variants.push_back(consumer); }
+          producer.exports_bundle=true;variants.push_back(producer); }
         FOTUFILM_AOT_WAVEFRONT_LIGHT_VARIANTS(FOTUFILM_BUNDLE_ENTRY)
 #undef FOTUFILM_BUNDLE_ENTRY
+#define FOTUFILM_BUNDLE_CONSUMER(variant_name, stages_name, variant_mask, rows) \
+        { Variant consumer{prefix+#variant_name "_wavefront_bundle_" #stages_name "_" #rows,variant_mask,false,true,true,rows}; \
+          consumer.consumes_bundle=true;variants.push_back(consumer); }
+        FOTUFILM_AOT_BUNDLE_VARIANTS(FOTUFILM_BUNDLE_CONSUMER)
+#undef FOTUFILM_BUNDLE_CONSUMER
     }
     // Linux's two sets share one runtime, compiled with --extras.
     variants[0].runtime = !linux;

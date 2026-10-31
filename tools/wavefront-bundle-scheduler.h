@@ -7,7 +7,7 @@ int run_wavefront_bundle(const WavefrontVariant &variant,BundleFunction producer
     const int *strides,const int *radii,int log_reach,const FotufilmWavefrontOptions &options,
     FotufilmWavefrontResult *result,Invoke invoke) {
     using namespace fotufilm::gpu;
-    if(!producer||variant.rows!=512)return -94;
+    if(!producer||!variant.consumer||variant.rows<=0||variant.rows+2*kWavefrontLightMargin>kWavefrontLightRows)return -94;
     FrameScope frame_scope;
     int w[3],h[3],base[3],fhead[3]={},updates[3]={};
     int64_t total=kWavefrontLightBase+int64_t(width)*kWavefrontLightRows*3;
@@ -53,14 +53,14 @@ int run_wavefront_bundle(const WavefrontVariant &variant,BundleFunction producer
         if(options.trace)options.trace(options.trace_context,event,band,y,rows,slot);
     };
     std::vector<int> labels(kWavefrontLightRows,-1);int head=0,completed=-1,calls=0,consumers=0;
-    const int bands=(height+511)/512;if(result)result->ring_rows=kWavefrontLightRows;
+    const int bands=(height+variant.rows-1)/variant.rows;if(result)result->ring_rows=kWavefrontLightRows;
     for(int band=0;band<bands&&!error;++band) {
-        int start=band*512,rows=std::min(512,height-start),end=std::min(height,start+rows+kWavefrontLightMargin);
+        int start=band*variant.rows,rows=std::min(variant.rows,height-start),end=std::min(height,start+rows+kWavefrontLightMargin);
         while(head<end&&!error) {
             int n=std::min(end-head,kWavefrontLightRows-head%kWavefrontLightRows);
             for(int y=head;y<head+n;++y) {
                 int old=labels[y%kWavefrontLightRows];
-                if(old>=0&&std::min(bands-1,(old+kWavefrontLightMargin)/512)>completed){error=-91;break;}
+                if(old>=0&&std::min(bands-1,(old+kWavefrontLightMargin)/variant.rows)>completed){error=-91;break;}
             }
             if(error)break;
             int next[3];std::array<WavefrontCrop,4> target;

@@ -71,11 +71,22 @@ class Table:
             if len(matching) != 1 or matching[0][3] != twin["stages"]:
                 raise ValueError("Wavefront research variant must match an exact windowed twin")
             for rows in experiment.get("bands", []):
-                if rows not in (64, 128, 256, 512):
+                if rows not in (64, 128, 256, 512, 1080):
                     raise ValueError("Unsupported wavefront band")
                 self.wavefront.append((*matching[0], rows))
         if len(set((v, n, rows) for v, n, _, _, rows in self.wavefront)) != len(self.wavefront):
             raise ValueError("Duplicate wavefront variants")
+
+        bundle = experiment.get("bundle_research", {})
+        self.bundle = []
+        bands = bundle.get("bands", [bundle.get("band", 512)]) if bundle else []
+        if len(set(bands)) != len(bands) or any(b not in experiment.get("bands", []) for b in bands):
+            raise ValueError("Bundle bands must be unique declared wavefront bands")
+        for v, n, m, _, rows in self.wavefront:
+            if rows in bands:
+                if rows + 2 * bundle.get("producer_margin", 360) > bundle.get("light_ring_rows", 2048):
+                    raise ValueError("Bundle band exceeds two-margin light-ring capacity")
+                self.bundle.append((v,n,m,rows))
 
     def resolve(self, token):
         if token in self.spans:
@@ -179,6 +190,11 @@ def render_header(table):
         out.append("#define FOTUFILM_AOT_WAVEFRONT_LIGHT_VARIANTS(X) " + chr(92))
         lights = list(dict.fromkeys((v,n,m) for v,n,m,_,_ in table.wavefront))
         entries = [f"    X({v}, {n}, {m})" for v,n,m in lights]
+        out += macro_lines(entries[:-1]) + [entries[-1]]
+        out.append("")
+    if table.bundle:
+        out.append("#define FOTUFILM_AOT_BUNDLE_VARIANTS(X) " + chr(92))
+        entries = [f"    X({v}, {n}, {m}, {rows})" for v,n,m,rows in table.bundle]
         out += macro_lines(entries[:-1]) + [entries[-1]]
         out.append("")
     out += doc_comment(schema["axes"].get("doc", ""))

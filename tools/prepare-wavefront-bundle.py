@@ -17,10 +17,11 @@ def main():
  for n,h in control['source'].items():
   if n.startswith(('Sources/FotufilmHalide/Graph/','Sources/FotufilmHalide/Stages/')) and sha(c/n)!=h:raise ValueError('shared film math changed')
  manifest=json.loads((c/'Sources/FotufilmHalide/aot-variants.json').read_text())
- if manifest['wavefront_experiment']['bundle_research']!={'band':512,'light_ring_rows':2048,'producer_margin':360,'outputs':['light','halation_0','halation_1','halation_2'],'field_layout':'planar-float32'}:raise ValueError('unsupported bundle declaration')
+ declaration=dict(manifest['wavefront_experiment']['bundle_research']);declaration.pop('bands',None)
+ if declaration!={'band':512,'light_ring_rows':2048,'producer_margin':360,'outputs':['light','halation_0','halation_1','halation_2'],'field_layout':'planar-float32'}:raise ValueError('unsupported bundle declaration')
  spec=importlib.util.spec_from_file_location('variants',c/'tools/generate-aot-variants.py');v=importlib.util.module_from_spec(spec);spec.loader.exec_module(v);table=v.Table(manifest)
  offset=len(table.variants)+len(table.windowed)+len(table.exact_windowed);lights=list(dict.fromkeys((v,n,m) for v,n,m,_,_ in table.wavefront));count=len(table.wavefront)+len(lights)
- normal=list(range(offset,offset+count));bundle=list(range(offset+count,offset+count+2*len(lights)))
+ normal=list(range(offset,offset+count));bundle=list(range(offset+count,offset+count+len(lights)+len(table.bundle)))
  key=subprocess.check_output(['python3',str(c/'tools/aot-release.py'),'key','macos'],text=True).strip();root.mkdir(parents=True)
  sdk=subprocess.check_output(['xcrun','--sdk','macosx','--show-sdk-path'],text=True).strip();halide=a.halide_root.resolve();generator=root/'generator'
  command=['xcrun','clang++','-std=c++17','-O2','-isysroot',sdk,'-I'+str(halide/'include'),'-I'+str(c/'Sources/FotufilmHalide/include'),str(c/'tools/generate_halide_ios.cpp'),'-L'+str(halide/'lib'),'-lHalide','-Wl,-rpath,'+str(halide/'lib'),'-o',str(generator)]

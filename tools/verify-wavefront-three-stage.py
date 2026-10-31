@@ -5,8 +5,11 @@ from pathlib import Path
 c=Path(__file__).resolve().parents[1]
 p=argparse.ArgumentParser(description=__doc__)
 p.add_argument('--bundle',action='store_true')
+p.add_argument('--band',type=int,choices=(512,1080),default=512)
+p.add_argument('--skip-ordinary',action='store_true')
 for name in ('build','output','fixtures','reference-worker'):p.add_argument('--'+name,required=True,type=Path)
 a=p.parse_args();a.build=a.build.resolve()
+if a.band!=512 and not a.bundle:p.error('1080 band is supported by this verifier only with --bundle')
 s=importlib.util.spec_from_file_location('d',c/'tools/wavefront_aot_driver.py');m=importlib.util.module_from_spec(s);s.loader.exec_module(m)
 out=a.output.resolve();out.mkdir()
 sha=lambda p:hashlib.sha256(Path(p).read_bytes()).hexdigest()
@@ -23,7 +26,7 @@ for stage,trace in (((2,False),(2,True)) if a.bundle else ((2,False),(3,False),(
   diagnostic_control=a.build/('control-bundle' if a.bundle else f'control-{stage}'),
   diagnostic_kernels=a.build/('bundle-normal' if a.bundle else 'three-normal' if stage==3 else 'two-normal'),
   trace_overrides=sorted((a.build/('bundle-trace' if a.bundle else 'three-trace')).glob('*.a')) if trace else ())
-if a.bundle:
+if a.bundle and not a.skip_ordinary:
  workers['2']=m.build(c,a.build/'control-2/kernels',out/'2',c/'tools/wavefront-benchmark.mm',
   definitions=('-DFOTUFILM_AOT_WAVEFRONT_HOST=1',),
   driver_definitions=('-Dfotufilm_halide_metal_process_linear_float=fotufilm_wavefront_bench_process_linear_float',),
@@ -31,7 +34,7 @@ if a.bundle:
   diagnostic_control=a.build/'control-2',diagnostic_kernels=a.build/'control-normal')
 compare=out/'compare';subprocess.run(['xcrun','clang++','-O2','-std=c++17',str(c/'tools/wavefront-compare.cpp'),'-o',str(compare)],check=True)
 report={'complete':False,'scope':'full-film private wavefront prototype; mixed legacy diagnostic only',
- 'stage_count':2 if a.bundle else 3,'cut':'bundle' if a.bundle else 'post_mtf','performance_acceptance':False,'workers':{k:{'path':str(p),'sha256':sha(p)} for k,p in workers.items()},'results':[]}
+ 'band_rows':a.band,'stage_count':2 if a.bundle else 3,'cut':'bundle' if a.bundle else 'post_mtf','performance_acceptance':False,'workers':{k:{'path':str(p),'sha256':sha(p)} for k,p in workers.items()},'results':[]}
 def save():(out/'report.json').write_text(json.dumps(report,indent=2)+'\n')
 save()
 try:
@@ -46,7 +49,7 @@ try:
    right=folder/(key+'.rgba32f')
    with (folder/(key+'.jsonl')).open('w') as stdout,(folder/(key+'.stderr')).open('w') as stderr:
     subprocess.run([str(worker),case['pack'],case['input'],'--dump',str(right)],check=True,stdout=stdout,stderr=stderr,
-     env={**os.environ,'FOTUFILM_AOT_WINDOWED':'0','FOTUFILM_WAVEFRONT_BENCH_ROWS':'512','FOTUFILM_METAL_POOL':'1024'},timeout=120)
+     env={**os.environ,'FOTUFILM_AOT_WINDOWED':'0','FOTUFILM_WAVEFRONT_BENCH_ROWS':str(a.band),'FOTUFILM_METAL_POOL':'1024'},timeout=120)
    result=subprocess.run([str(compare),str(left),str(right),'linear'],capture_output=True,text=True);pixels=json.loads(result.stdout)
    events=list(map(json.loads,(folder/(key+'.jsonl')).read_text().splitlines()));call=next(x for x in events if x['type']=='call_complete')
    passed=result.returncode==0 and pixels['passed'] and call['status']=='success' and '_wavefront_' in call['actual_variant']

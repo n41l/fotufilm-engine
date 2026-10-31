@@ -499,8 +499,13 @@ int run_aot(ExecutionState &state, halide_buffer_t *in, halide_buffer_t *out,
         const int64_t post_mtf_reach = fotufilm::wavefront_post_mtf_reach(frame,feature_mask);
         reason = std::max(source_reach,post_mtf_reach) > fotufilm::gpu::kWavefrontLightMargin ? "source demand exceeds private row-cache bound"
             : "unsupported geometry, transport or spatial reach";
-#if FOTUFILM_THREE_STAGE_RESEARCH || FOTUFILM_BUNDLE_RESEARCH
+#if FOTUFILM_THREE_STAGE_RESEARCH
         const bool stage_band_supported=wavefront->rows==512;
+#elif FOTUFILM_BUNDLE_RESEARCH
+#define FOTUFILM_BUNDLE_BAND_SUPPORTED(variant_name, stages_name, variant_mask, band_rows) \
+            || wavefront->rows==band_rows
+        const bool stage_band_supported=false FOTUFILM_AOT_BUNDLE_VARIANTS(FOTUFILM_BUNDLE_BAND_SUPPORTED);
+#undef FOTUFILM_BUNDLE_BAND_SUPPORTED
 #else
         const bool stage_band_supported=true;
 #endif
@@ -529,10 +534,16 @@ int run_aot(ExecutionState &state, halide_buffer_t *in, halide_buffer_t *out,
                 BundleFunction bundle_producer=nullptr;
 #define FOTUFILM_PICK_BUNDLE(variant_name, stages_name, variant_mask) \
                 if(experimental.source==fotufilm_halide_ios_##variant_name##_wavefront_light_##stages_name) { \
-                    bundle_producer=fotufilm_halide_ios_##variant_name##_wavefront_bundle_source_##stages_name; \
-                    experimental.consumer=fotufilm_halide_ios_##variant_name##_wavefront_bundle_##stages_name##_512; }
+                    bundle_producer=fotufilm_halide_ios_##variant_name##_wavefront_bundle_source_##stages_name; }
                 FOTUFILM_AOT_WAVEFRONT_LIGHT_VARIANTS(FOTUFILM_PICK_BUNDLE)
 #undef FOTUFILM_PICK_BUNDLE
+                experimental.consumer=nullptr;
+#define FOTUFILM_PICK_BUNDLE_CONSUMER(variant_name, stages_name, variant_mask, band_rows) \
+                if(experimental.source==fotufilm_halide_ios_##variant_name##_wavefront_light_##stages_name && wavefront->rows==band_rows) \
+                    experimental.consumer=fotufilm_halide_ios_##variant_name##_wavefront_bundle_##stages_name##_##band_rows;
+                FOTUFILM_AOT_BUNDLE_VARIANTS(FOTUFILM_PICK_BUNDLE_CONSUMER)
+#undef FOTUFILM_PICK_BUNDLE_CONSUMER
+                if(!experimental.consumer)return -94;
                 int strides[]={frame.halation_stride_0,frame.halation_stride_1,frame.halation_stride_2};
                 int radii[]={frame.halation_strided_radius_0,frame.halation_strided_radius_1,frame.halation_strided_radius_2};
                 return run_wavefront_bundle(experimental,bundle_producer,out,width,height,configuration,

@@ -56,7 +56,7 @@ old row's last output band to have completed. Existing scratch-pool GPU fences
 remain in force; submitted labels do not themselves prove GPU completion.
 Failure drains submitted work before releasing views; partial output is invalid.
 
-Only the original three exact eligible stage/class combinations at band512 are
+Only the original three exact eligible stage/class combinations at bands512/1080 are
 enabled by `FOTUFILM_BUNDLE_RESEARCH=1`. The generator's `--bundle` requires the
 macOS wavefront opt-in and excludes `--three-stage`. New variant/layout intent
 is declared in `aot-variants.json`; classes derive from its generated macros.
@@ -95,10 +95,10 @@ python3 tools/run-wavefront-bundle-diagnostic.py \
   --output build/bundle-timing
 ```
 
-The ordinary arm has 15 private archives; bundle has those 15 plus six new
+The ordinary arm has 18 private archives; bundle has those 18 plus nine new
 producer/consumer archives. Both link the explicitly frozen legacy63 diagnostic
 control. This is not a complete current-source release set. Trace replaces the
-six bundle functions; unused ordinary kernels remain normal in that directory.
+nine bundle functions; unused ordinary kernels remain normal in that directory.
 
 The small `tools/probe-wavefront-bundle.cpp` uses the actual GPU decimation/blur
 helpers with synthetic light. It checks unequal/empty F updates, A wrap and a
@@ -107,3 +107,20 @@ Independent clean-R full-film comparisons and lifecycle tests are separate.
 
 [Stage-twelve results](wavefront-stage12-results.md) records the current checks,
 pilot, provenance, all unfavorable outcomes and pending release/PR gates.
+
+
+## 1080-row band control
+
+The declared private band set now also includes1080. The same bundle producer
+and runtime worker serve both512 and1080; each band has its own compiled consumer.
+The A ring remains2048, margin360, F layout/precision, cut and per-band sync remain
+unchanged. `1080 + 2*360 <= 2048` is asserted; runtime row-label/old-A collision
+and F-readiness guards still apply. At UHD the A wrap can split a producer update;
+do not infer AOT calls just by doubling output bands.
+
+`tools/verify-wavefront-bands.py` verifies both bands normal/trace directly against
+the frozen original default-windowed worker and the prior512 output hashes.
+`tools/run-wavefront-bands-diagnostic.py` requires that proof, uses one normal
+worker for both band sizes and retains fresh original B1 rounds. This remains
+a mixed legacy/private diagnostic set, not a complete current-source release.
+The historical stage12/13 records and worker hashes remain unchanged.

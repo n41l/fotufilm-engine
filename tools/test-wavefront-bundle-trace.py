@@ -17,6 +17,14 @@ def fixture():
  return lines+['BUNDLE_COUNTS light_rows=1080 producer_calls=2 consumer_calls=3 field_rows0=540 field_rows1=270 field_rows2=270 field_updates0=2 field_updates1=2 field_updates2=2']
 class Tests(unittest.TestCase):
  def check(self,lines,calls=5,dispatches=5):return m.analyze(lines,32,1080,calls,dispatches)['passed']
+ def test_1080_trace_requires_matching_band_geometry(self):
+  lines=['ROW_PLAN 0 0 1080 0 2048','PRODUCE frame_wavefront_bundle_light_v61 0 32 0 1080 0 3','PRODUCE frame_mtf_v61 0 32 0 1080 0 3']
+  for i,(w,h) in enumerate(((16,540),(8,270),(8,270))):
+   lines += [f'FIELD_PLAN {i} 0 0 {h} {h}',f'PRODUCE frame_halation__v61{i}_spread 0 {w} 0 {h} 0 3']
+  lines += ['CONSUMER_PLAN 0 0 1080','BAND_COMPLETE 0','GPU_COMPLETION 1 1 1 q 1 2 4','GPU_KERNEL 1 1 producer','GPU_COMPLETION 2 1 2 q 2 3 4','GPU_KERNEL 1 2 consumer','BUNDLE_COUNTS light_rows=1080 producer_calls=1 consumer_calls=1 field_rows0=540 field_rows1=270 field_rows2=270 field_updates0=1 field_updates1=1 field_updates2=1']
+  self.assertTrue(m.analyze(lines,32,1080,2,2,1080)['passed'])
+  self.assertFalse(m.analyze(lines,32,1080,2,2,512)['passed'])
+
  def test_valid_two_calls_three_outputs(self):self.assertTrue(self.check(fixture()))
  def test_mtf_recomputation_rejected(self):self.assertFalse(self.check([x.replace('frame_mtf_v61 0 32 872 208','frame_mtf_v61 0 32 871 209') for x in fixture()]))
  def test_field_overlap_rejected(self):self.assertFalse(self.check([x.replace('frame_halation__v610_spread 0 16 427 113','frame_halation__v610_spread 0 16 426 114') for x in fixture()]))

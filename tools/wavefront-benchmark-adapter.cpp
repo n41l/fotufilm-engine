@@ -126,7 +126,7 @@ extern "C" int32_t fotufilm_wavefront_bench_process_linear_float(
         if (!value) return int(FOTUFILM_WAVEFRONT_BAND);
         char *end = nullptr;
         const long rows = std::strtol(value,&end,10);
-        return end && !*end && (rows==64 || rows==128 || rows==256 || rows==512) ? int(rows) : 0;
+        return end && !*end && (rows==64 || rows==128 || rows==256 || rows==512 || rows==1080) ? int(rows) : 0;
     }();
     if (!selected_rows) return -94;
     options.rows = selected_rows;

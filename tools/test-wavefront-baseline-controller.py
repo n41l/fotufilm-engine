@@ -61,7 +61,7 @@ class ControllerTests(unittest.TestCase):
                 for event in events:
                     if event['type']=='call_complete':event.update(aot_calls=11,gpu_dispatches=11)
             if cut=='bundle' and bundle_marker and stderr is not None and 'BUNDLE_COUNTS' not in stderr:
-                stderr+='BUNDLE_COUNTS light_rows=1080 producer_calls=4 consumer_calls=3 field_rows0=540 field_rows1=270 field_rows2=270 field_updates0=2 field_updates1=2 field_updates2=2\n'
+                stderr+=f'BUNDLE_COUNTS light_rows=1080 producer_calls=4 consumer_calls={(1080+band-1)//band} field_rows0=540 field_rows1=270 field_rows2=270 field_updates0=2 field_updates1=2 field_updates2=2\n'
             if change:change(events)
             worker=root/'worker.py';worker.write_text('#!/usr/bin/env python3\nimport json\n'
                 +'events=json.loads('+repr(json.dumps(events))+')\nfor e in events:print(json.dumps(e),flush=True)\n')
@@ -69,6 +69,10 @@ class ControllerTests(unittest.TestCase):
                 worker.write_text(worker.read_text()+'import sys\nsys.stderr.write('+repr(stderr)+')\n')
             worker.chmod(0o755)
             return controller.run_round(worker,pack,image,'E' if experimental else 'B0',root/'round',expected_band=band if experimental else None,expected_ring_rows=ring,expected_stage_count=stages,expected_cut=cut,expected_field_rows=(540,270,270) if cut=="bundle" else None)
+
+    def test_bundle1080_round_accepted_and_wrong_actual_band_rejected(self):
+        self.assertTrue(self.check(experimental=True,band=1080,ring=2048,cut='bundle')['scores']['valid'])
+        self.assertFalse(self.check(lambda e:e[5].update(actual_variant='color_wavefront_bundle_negative_512'),experimental=True,band=1080,ring=2048,cut='bundle')['scores']['valid'])
 
     def test_three_stage_round_counts_all_calls(self):
         self.assertTrue(self.check(experimental=True,band=512,ring=2048,stages=3)['scores']['valid'])

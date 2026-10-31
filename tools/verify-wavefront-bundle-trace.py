@@ -8,7 +8,7 @@ does not assert that internal U/horizontal scratch is never recomputed.
 import argparse,json,re,hashlib
 from pathlib import Path
 
-def analyze(lines,width,height,aot_calls,dispatches):
+def analyze(lines,width,height,aot_calls,dispatches,band_rows=512):
     a=[];ap=[];fp=[[],[],[]];fa=[[],[],[]];mtf={};buffers=[];kernels=[];cons=[];done=[];counts=None
     for line in lines:
         p=line.split()
@@ -29,7 +29,7 @@ def analyze(lines,width,height,aot_calls,dispatches):
         elif p[0]=='GPU_KERNEL':kernels.append((int(p[1])-1,int(p[2]),p[3]))
         elif p[0]=='BUNDLE_COUNTS':counts={k:int(v) for k,v in re.findall(r'(\w+)=(\d+)',line)}
     if not counts:return {'passed':False,'failure':'missing bundle accounting'}
-    bands=(height+511)//512;regions=len(a)==len(ap)>0;head=0
+    bands=(height+band_rows-1)//band_rows;regions=len(a)==len(ap)>0;head=0
     for (band,y,n,slot,cap),actual in zip(ap,a):
         regions=regions and y==head and n>0 and cap==2048 and slot==y%cap and slot+n<=cap and actual==(0,width,y,n,0,3)
         head=y+n
@@ -48,7 +48,7 @@ def analyze(lines,width,height,aot_calls,dispatches):
     for name,rs in mtf.items():
         mtf_valid=mtf_valid and len(rs)==len(ap) and all((r[0],r[1],r[2],r[3])==(0,width,p[1],p[2]) for p,r in zip(ap,rs))
     accounting=(counts['light_rows']==height and counts['producer_calls']==len(ap) and counts['consumer_calls']==bands
-        and aot_calls==len(ap)+bands and cons==[(b,b*512,min(512,height-b*512)) for b in range(bands)] and done==list(range(bands)))
+        and aot_calls==len(ap)+bands and cons==[(b,b*band_rows,min(band_rows,height-b*band_rows)) for b in range(bands)] and done==list(range(bands)))
     timing=bool(buffers) and len({b['id'] for b in buffers})==len(buffers) and len({b['queue'] for b in buffers})==1
     timing=timing and all(b['status']==4 and b['end']>=b['start']>0 and b['phase'] in (1,2) for b in buffers)
     checks=[]
@@ -65,12 +65,12 @@ def analyze(lines,width,height,aot_calls,dispatches):
         'gpu_scopes_valid':bool(timing),'previous_band_completion_checks':checks,'scope':__doc__}
 
 def main():
-    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--verification',required=True,type=Path);a=p.parse_args();root=a.verification
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--verification',required=True,type=Path);p.add_argument('--band',type=int,choices=(512,1080),default=512);a=p.parse_args();root=a.verification
     proof=json.loads((root/'report.json').read_text());results=[]
     for row in proof['results']:
         if row['worker']!='bundletrace':continue
         w,h=map(int,row['case'].split('-')[-1].split('x'));path=root/row['case']/'bundletrace.stderr'
-        results.append({'case':row['case'],'trace_sha256':hashlib.sha256(path.read_bytes()).hexdigest(),**analyze(path.read_text().splitlines(),w,h,row['aot_calls'],row['dispatches'])})
+        results.append({'case':row['case'],'trace_sha256':hashlib.sha256(path.read_bytes()).hexdigest(),**analyze(path.read_text().splitlines(),w,h,row['aot_calls'],row['dispatches'],a.band)})
     report={'complete':len(results)==4,'passed':len(results)==4 and all(x['passed'] for x in results),'results':results}
     (root/'bundle-trace.json').write_text(json.dumps(report,indent=2)+'\n')
     print(json.dumps([{k:x[k] for k in ('case','passed','light_regions_passed','final_mtf_regions_match_new_light_only','accounting_passed','bindings_match_dispatches','gpu_scopes_valid')} for x in results]))

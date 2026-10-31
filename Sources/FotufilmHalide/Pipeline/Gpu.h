@@ -462,7 +462,7 @@ public:
                 : (exact == (classes | FOTUFILM_FRAME_MONOCHROME) && stages == FOTUFILM_AOT_PRINTED_SLIDE);
             if (windowed != (wavefront.light == WavefrontSchedule::Light::Consume || wavefront.light == WavefrontSchedule::Light::ConsumeLog || wavefront.light == WavefrontSchedule::Light::ConsumeBundle)
                 || !exact_stages || !supported || gpu_device_api() != DeviceAPI::Metal
-                || (wavefront.rows != 64 && wavefront.rows != 128 && wavefront.rows != 256 && wavefront.rows != 512))
+                || (wavefront.rows != 64 && wavefront.rows != 128 && wavefront.rows != 256 && wavefront.rows != 512 && wavefront.rows != 1080))
                 throw std::invalid_argument("unsupported experimental wavefront graph");
         }
         const bool use_mtf = feature_mask & FOTUFILM_FRAME_MTF;

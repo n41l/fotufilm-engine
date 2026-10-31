@@ -12,7 +12,7 @@ struct FotufilmWavefrontOptions {
     FotufilmWavefrontTrace trace = nullptr;
     void *trace_context = nullptr;
     int32_t test_fail_after_source_call = 0; // Honored only in fault-injection test builds.
-    int32_t rows = 256; // 64, 128, 256 or 512. Unsupported requests retain original selection.
+    int32_t rows = 256; // 64, 128, 256, 512 or 1080. Unsupported requests retain original selection.
 };
 struct FotufilmWavefrontResult {
     int32_t requested_mode = 0;
