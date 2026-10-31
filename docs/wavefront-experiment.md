@@ -283,13 +283,18 @@ control. The compact record is `wavefront-stage3-results.json`.
 | All frozen stock/size probes | 94 successful calls; E selected for 16/47 at 1080p and 17/47 at 4K; 61 explicit original-path fallbacks |
 | Current stage tests | 11 CPU and 11 Metal passed |
 | Release test build | Passed; skipped execution is not counted as a passing runtime test |
-| Swift Metal runtime / AOT-JIT parity | 3/4 Swift tests passed; 32 zero-tolerance texture-none assertions failed by about `4e-9`, clean-R reproduction running; AOT/JIT parity running |
+| Swift Metal runtime | 3/4 passed; the untouched texture-none test fails identically at 32 components in clean R and C (maximum `5.587935447692871e-9`); no introduced failure observed, suite remains red |
+| AOT/JIT compatibility | 36 classes passed, worst noncategorical error `1.57356262e-5`, using the upstream `1e-4`/four-code budget |
+| C general/windowed boundary regression | 35 cases / 70 comparisons passed, including odd/tail/portrait, gates and reach fallbacks |
 
 Fallback reasons comprise 54 unsupported exact-stage/class/warp combinations, two original
 geometry/transport/spatial exclusions and five private serial-demand bound exclusions. Catalog
 probes check actual symbols, counts, finite pixels and alpha; only the named primary/lifecycle
 matrices establish full-pixel R/C agreement. These results do not establish memory or throughput
-acceptance. No final B_ref or upstream PR is implied.
+acceptance. The reference reproduction uses a separate release build and fresh JIT cache; source
+remains clean. No test or tolerance was changed to hide its zero-tolerance failure. A fresh v2 R
+baseline is now collecting after all compilation jobs completed; no final B_ref or upstream PR
+is implied.
 
 ## Candidate verification commands
 
@@ -346,7 +351,7 @@ floats, encoded output, conservative reach fallback, and a test-only source-subm
 followed by successful recovery. Injection is compiled only into its test shim. Catalog probes
 report actual E or fallback for every frozen stock/size, not a numerical or performance score.
 
-Release Swift build/tests and `tools/verify-aot-parity.sh` remain required. The parity harness
+Release Swift build and `tools/verify-aot-parity.sh` completed. The selected Swift Metal suite retains the identical clean-R texture-none precision failure described above. The parity harness
 can use `FOTUFILM_PARITY_STREAM_WINDOWS=1` to compare and release each window output instead of
 retaining all frame dumps. Final artifacts and reports stay generated-only. Do not mix traced
 kernels into timed workers or treat the rejected auto-fold control as the current candidate.

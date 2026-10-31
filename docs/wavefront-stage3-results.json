@@ -3,7 +3,7 @@
   "source_base": "96623ba0831a52dbddcda35727a206d4123a8b5f",
   "halide_revision": "58868f0c7106f8e1214c8ae14f55e3157659b8e0",
   "core_correctness_complete": true,
-  "complete": false,
+  "complete": true,
   "B_ref_frozen": false,
   "performance_acceptance": false,
   "aot": {
@@ -218,11 +218,26 @@
       "assertion_failures": 32,
       "unexpected_failures": 0,
       "failed_test": "testTextureInvariantsOnMetal",
-      "failure_scope": "zero-tolerance texture-none copy assertion; roughly 4e-9 absolute error; clean-R reproduction pending",
+      "failure_scope": "same zero-tolerance texture-none failure reproduced in independent clean R; values/component indices identical",
       "log": "candidate/build/wavefront-final-swift-metal-tests.log",
-      "log_sha256": "d1056913485f8d0dc6d52a903e912f8508267062d55cdaade6d9b9f7a10ca99a"
+      "log_sha256": "d1056913485f8d0dc6d52a903e912f8508267062d55cdaade6d9b9f7a10ca99a",
+      "reference_reproduction": "candidate/build/wavefront-texture-baseline-reproduction.json",
+      "reference_reproduction_sha256": "e5456950132b1f2887dbfe7a3cbb504f56792cf24cc4a800baf22f67cffa2e9b",
+      "absolute_error": 5.587935447692871e-09,
+      "introduced_failure_observed": false
     },
-    "aot_jit_parity": "running",
+    "aot_jit_parity": {
+      "passed": true,
+      "classes": 36,
+      "failing": 0,
+      "constant_outputs": 0,
+      "worst_agreeing_error": 1.57356262e-05,
+      "upstream_tolerance": 0.0001,
+      "upstream_categorical_budget": 4,
+      "log": "candidate/build/wavefront-final-aot-jit-parity.log",
+      "log_sha256": "1c117aed8aabcd8718be07c91f0e42d9799f0428787b3d819f2b179822356d50",
+      "scope": "required upstream AOT/JIT compatibility check; primary E vs clean R uses the separate stricter 1e-5 contract"
+    },
     "comparison_controller": 26
   },
   "verification_reproduction": {
@@ -239,6 +254,7 @@
     "Earlier full Swift Metal attempt was interrupted under memory pressure; not counted as pass."
   ],
   "limitations": [
+    "The untouched zero-tolerance texture-none Swift test fails identically in clean R and C in this environment; no assertion was weakened, and the Swift suite is not all green.",
     "Only the pre-MTF light frontier is reused; other stages retain per-window intermediates and recompute their aprons.",
     "Per-band GPU synchronization is deliberately conservative and must remain in timed E calls.",
     "The original 36-round warm baseline is unstable; a new common v2 measurement baseline is required before E performance acceptance.",
@@ -267,5 +283,18 @@
       "Primary nonregression is separate from final PR acceptance.",
       "Local intermediate attribution, holdouts and resource rotation remain required."
     ]
-  }
+  },
+  "all_checks_green": false,
+  "window_regression": {
+    "passed": true,
+    "source_cases": 35,
+    "comparisons": 70,
+    "max_linear_error": 2.811587857143305e-06,
+    "max_encoded_error": 0.0015865170862525702,
+    "independent_reference": false,
+    "scope": "C local B0/B1 regression",
+    "report": "candidate/build/wavefront-baseline/verification.json",
+    "sha256": "32b90f1a79cd9971555dd871329e446d7c9b0a7fa2fdbde640c10e3e4e6ffc79"
+  },
+  "performance_stage": "fresh v2 clean-R baseline collecting after all compilation jobs completed; no E performance acceptance"
 }
