@@ -283,7 +283,7 @@ control. The compact record is `wavefront-stage3-results.json`.
 | All frozen stock/size probes | 94 successful calls; E selected for 16/47 at 1080p and 17/47 at 4K; 61 explicit original-path fallbacks |
 | Current stage tests | 11 CPU and 11 Metal passed |
 | Release test build | Passed; skipped execution is not counted as a passing runtime test |
-| Swift Metal runtime / AOT-JIT parity | In progress / pending |
+| Swift Metal runtime / AOT-JIT parity | 3/4 Swift tests passed; 32 zero-tolerance texture-none assertions failed by about `4e-9`, clean-R reproduction running; AOT/JIT parity running |
 
 Fallback reasons comprise 54 unsupported exact-stage/class/warp combinations, two original
 geometry/transport/spatial exclusions and five private serial-demand bound exclusions. Catalog
@@ -350,3 +350,45 @@ Release Swift build/tests and `tools/verify-aot-parity.sh` remain required. The 
 can use `FOTUFILM_PARITY_STREAM_WINDOWS=1` to compare and release each window output instead of
 retaining all frame dumps. Final artifacts and reports stay generated-only. Do not mix traced
 kernels into timed workers or treat the rejected auto-fold control as the current candidate.
+
+## Formal B/E collector
+
+`run-wavefront-comparison.py` requires a complete frozen clean-R baseline, current Mac/OS/boot/
+toolchain identity, unchanged common measurement/statistical sources, the exact non-traced
+worker from the successful pixel verification, and matching fixture hashes. It rejects the
+old unstable v1 report before creating any E run. The shared round collector keeps R at exactly
+one AOT call and validates E's first-call private admission, full source-row coverage, consumer
+band count and the same observed AOT count on every warmup/measurement call. A non-success call
+in either phase invalidates the round. These policy tests are synthetic; they claim no GPU or
+performance coverage.
+
+First collect a new v2 baseline after integration tests finish and resource pressure settles:
+
+```sh
+python3 tools/run-wavefront-baseline.py --reference ../reference \
+  --worker "$WAVEFRONT_R_WORKER" --prepared build/wavefront-corpus/prepared.json \
+  --catalog ../reference/build/wavefront-fixtures/catalog/catalog.json \
+  --output build/wavefront-benchmark-v2/formal
+```
+
+Only if its report has `B_ref_frozen: true`, use the band already frozen by the separate tuning
+workload. The following command uses variables for that report, the successful normal-pixel
+report, and its `band-N/runner`; do not choose N from the primary Coffee scores:
+
+```sh
+python3 tools/run-wavefront-comparison.py --reference ../reference \
+  --reference-worker "$WAVEFRONT_R_WORKER" --worker "$WAVEFRONT_E_WORKER" \
+  --baseline-report "$WAVEFRONT_BASELINE_REPORT" \
+  --normal-verification "$WAVEFRONT_NORMAL_REPORT" \
+  --verification-fixtures "$WAVEFRONT_CASES" --band "$WAVEFRONT_BAND" \
+  --output build/wavefront-comparison
+```
+
+Each case collects three independent B/E pairs in B/E, E/B, B/E order, preserving all records
+and failures. Resume requires the same frozen identities; invalid completed rounds cannot be
+replaced. The collector checkpoints before another worker when fewer than 2 GiB are free, and
+records per-arm system load, swap, memory-pressure and disk observations. It reports median
+latency (+5%), worst-round p95 (+10%), median throughput (at least 95%) and pairwise total-memory
+changes against the **unchanged** B/B epsilon. Matched-R drift/noise or thermal state at serious
+requires review. A primary pass is not final performance acceptance: tuning/holdouts, local
+intermediate attribution, same-process resource rotation and PR review remain separate gates.

@@ -210,10 +210,20 @@
     "image_input": 4,
     "variant_manifest": 14,
     "trace_validator": 13,
-    "baseline_controller": 13,
+    "baseline_controller": 24,
     "release_build": "passed; current release tests built, then incrementally refreshed after AOT-only host log fix",
-    "swift_metal_tests": "running",
-    "aot_jit_parity": "pending"
+    "swift_metal_tests": {
+      "executed": 4,
+      "passed": 3,
+      "assertion_failures": 32,
+      "unexpected_failures": 0,
+      "failed_test": "testTextureInvariantsOnMetal",
+      "failure_scope": "zero-tolerance texture-none copy assertion; roughly 4e-9 absolute error; clean-R reproduction pending",
+      "log": "candidate/build/wavefront-final-swift-metal-tests.log",
+      "log_sha256": "d1056913485f8d0dc6d52a903e912f8508267062d55cdaade6d9b9f7a10ca99a"
+    },
+    "aot_jit_parity": "running",
+    "comparison_controller": 26
   },
   "verification_reproduction": {
     "tool": "tools/prepare-wavefront-verification.py",
@@ -243,5 +253,19 @@
     "max_linear_error": 2.562999725341797e-06,
     "outputs_byte_identical_to_traced": false,
     "scope": "normal, non-traced final E kernels; actual private admission and per-call producer/consumer counts checked"
+  },
+  "comparison_tooling": {
+    "collector": "tools/run-wavefront-comparison.py",
+    "synthetic_tests": 26,
+    "round_controller_tests": 24,
+    "old_unstable_baseline_refused_before_E": true,
+    "environment_frozen": "ARM64 Mac model/CPU/GPU/RAM, OS/build, SDK/Xcode and boot session; no serial number or host name",
+    "actual_E_performance_rounds": 0,
+    "final_acceptance_automatic": false,
+    "limitations": [
+      "Preselect the band using the separate tuning workload.",
+      "Primary nonregression is separate from final PR acceptance.",
+      "Local intermediate attribution, holdouts and resource rotation remain required."
+    ]
   }
 }

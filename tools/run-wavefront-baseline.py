@@ -8,6 +8,8 @@ import argparse
 import hashlib
 import json
 import os
+import platform
+import re
 from pathlib import Path
 import selectors
 import shutil
@@ -23,6 +25,33 @@ def atomic_json(path, value):
     with temporary.open('w') as stream:
         json.dump(value,stream,indent=2);stream.write('\n');stream.flush();os.fsync(stream.fileno())
     temporary.replace(path)
+
+
+def environment_snapshot():
+    """Stable Mac/OS/boot identity; excludes serial numbers, host names and load."""
+    if platform.system()!='Darwin' or platform.machine()!='arm64':
+        raise ValueError('this research protocol requires an ARM64 Mac')
+    def read(*command):return subprocess.check_output(command,text=True,stderr=subprocess.DEVNULL,timeout=30).strip()
+    cards=json.loads(read('system_profiler','SPDisplaysDataType','-json'))['SPDisplaysDataType']
+    return {'architecture':platform.machine(),'model':read('sysctl','-n','hw.model'),
+            'cpu':read('sysctl','-n','machdep.cpu.brand_string'),'cpu_count':int(read('sysctl','-n','hw.ncpu')),
+            'memory_bytes':int(read('sysctl','-n','hw.memsize')),'boot_session':read('sysctl','-n','kern.bootsessionuuid'),
+            'os_version':read('sw_vers','-productVersion'),'os_build':read('sw_vers','-buildVersion'),
+            'xcode':read('xcodebuild','-version'),'sdk':read('xcrun','--sdk','macosx','--show-sdk-version'),
+            'gpus':[{k:card[k] for k in ('sppci_model','spdisplays_device-id','spdisplays_vendor','spdisplays_metalfamily','sppci_cores') if k in card} for card in cards]}
+
+
+def environment_observation(path):
+    result={'free_disk_bytes':shutil.disk_usage(path).free,'load_average':list(os.getloadavg())}
+    for name,command in (('swap_usage',['sysctl','vm.swapusage']),('memory_pressure',['memory_pressure'])):
+        try:
+            value=subprocess.check_output(command,text=True,stderr=subprocess.DEVNULL,timeout=15).strip()
+            if name=='memory_pressure':
+                match=re.search(r'System-wide memory free percentage: (\d+)%',value)
+                result['system_memory_free_percent']=int(match[1]) if match else None
+            else:result[name]=value
+        except (OSError,subprocess.SubprocessError):result[name]=None
+    return result
 
 
 def validate_resume(frozen, current):
@@ -55,8 +84,11 @@ def sha(path):
     return digest.hexdigest()
 
 
-def run_round(worker, pack, image, mode, root):
-    if mode not in ("B0", "B1"):raise ValueError("baseline controller accepts only R B0/B1")
+def run_round(worker, pack, image, mode, root, *, expected_band=None):
+    # The CLI remains clean-R only. The comparison controller explicitly admits E here.
+    experimental = mode == "E" and expected_band in (64,128,256)
+    if not experimental and (mode not in ("B0", "B1") or expected_band is not None):
+        raise ValueError("R B0/B1 or explicit E with a supported band is required")
     root.mkdir(parents=True)
     records=[]; pending={}; events=[]; issues=[]; window=None; offset=None; deadline_missed=False
     start=time.monotonic()
@@ -86,8 +118,15 @@ def run_round(worker, pack, image, mode, root):
                         elif kind=='call_complete':
                             pending.pop(identity,None);record={**event,'id':identity};records.append(record)
                             actual=record.get('actual_variant','')
-                            if '_wavefront_' in actual or ('windowed' in actual)!=(mode=='B1'):issues.append('requested AOT mode not actually executed')
-                            if record['aot_calls']!=1 or record['gpu_dispatches']<1:issues.append('missing actual GPU work')
+                            if record.get('status')!='success':issues.append('non-success call during warmup or measurement')
+                            if experimental:
+                                if '_wavefront_' not in actual or not actual.endswith('_'+str(expected_band)):
+                                    issues.append('requested E variant not actually executed')
+                                if record['aot_calls']<2 or record['gpu_dispatches']<record['aot_calls']:
+                                    issues.append('missing actual E GPU work')
+                            else:
+                                if '_wavefront_' in actual or ('windowed' in actual)!=(mode=='B1'):issues.append('requested AOT mode not actually executed')
+                                if record['aot_calls']!=1 or record['gpu_dispatches']<1:issues.append('missing actual GPU work')
                 current=time.monotonic()
                 if window and offset is not None and current>window['deadline']+offset and pending and not deadline_missed:
                     deadline_missed=True;issues.append('request not observed complete at tail deadline')
@@ -109,6 +148,19 @@ def run_round(worker, pack, image, mode, root):
         scores={'valid':False,'reasons':['measurement window missing']}
     else:
         scores=summarize({**window,'requests':records})
+    if experimental:
+        stderr=(root/'stderr.log').read_text(errors='replace')
+        policies=re.findall(r'WAVEFRONT_POLICY requested=(\d+) actual=(-?\d+) rows=(\d+) reason=([^\n]+)',stderr)
+        counts=re.findall(r'WAVEFRONT_COUNTS rows=(\d+) source_calls=(\d+) consumer_calls=(\d+) ring_rows=(\d+)',stderr)
+        height=(identity or {}).get('height',0)
+        if policies!=[('1','1',str(expected_band),'admitted')]:issues.append('actual private E admission missing')
+        if len(counts)!=1 or height<=0:
+            issues.append('private E row accounting missing')
+        else:
+            rows,source,consumers,capacity=map(int,counts[0])
+            if rows!=height or source<1 or consumers!=(height+expected_band-1)//expected_band or capacity!=1024:
+                issues.append('invalid E row accounting')
+            if any(r.get('aot_calls')!=source+consumers for r in records):issues.append('per-call E source/consumer count changed')
     retained=next((e for e in events if e['type']=='retained'),None)
     if retained is None:issues.append('retained-memory observation missing')
     hashes=[e['output_sha256'] for e in events if e['type'] in ('warmup_complete','measurement_complete')]
@@ -134,6 +186,7 @@ def run_round(worker, pack, image, mode, root):
     result={'requested_mode':mode,'identity':identity,'scores':scores,'memory':memory_metrics,
             'requests':records,'events_path':str(root/'events.jsonl'),
             'phase_events':[e for e in events if e['type'] not in ('call_start','call_complete')]}
+    if experimental:result['experimental_band']=expected_band
     atomic_json(root/'round.json',result)
     return result
 
@@ -165,7 +218,7 @@ def main():
             cases.append({'id':f'{stock}-coffee-{size}','stock':stock,'size':size,'pack':str(path),
                 'pack_sha256':pack['sha256'],'input':str(image),'input_sha256':workload['sha256']})
     if args.pilot:cases=cases[:1]
-    freeze={'source_base':base,'worker_sha256':sha(worker),'prepared_sha256':sha(args.prepared),
+    freeze={'environment':environment_snapshot(),'source_base':base,'worker_sha256':sha(worker),'prepared_sha256':sha(args.prepared),
             'corpus_primary':'coffee; SDR photograph, upscaled workload','seed':42,'idle_pool_mib':1024,
             'inflight_frames':1,'warmup_seconds':5,'window_seconds':30,'tail_seconds':2,'retained_idle_seconds':5,
             'process_isolation':'fresh process per arm; no system shader cache purge',
@@ -195,6 +248,8 @@ def main():
         if root.exists():
             report.setdefault('interrupted_attempts',[]).append(str(root))
             root=root.with_name(root.name+'-retry-'+uuid.uuid4().hex[:8])
+        root.parent.mkdir(parents=True,exist_ok=True)
+        atomic_json(root.with_name(root.name+'-environment.json'),environment_observation(run))
         result=run_round(worker,case['pack'],case['input'],mode,root)
         return compact(result,root/'round.json')
     try:

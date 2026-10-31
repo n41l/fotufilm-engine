@@ -32,7 +32,7 @@ class ControllerTests(unittest.TestCase):
         self.assertEqual(controller.compact(result,Path('/round.json')),
                          {'scores':{'valid':True},'round_path':'/round.json'})
 
-    def check(self,change=None):
+    def check(self,change=None,*,experimental=False,stderr=None):
         with tempfile.TemporaryDirectory() as temporary:
             root=Path(temporary);image=root/'input';image.write_bytes(bytes(16));pack=root/'pack';pack.write_bytes(b'fixture')
             memory={'device_current_bytes':100,'device_peak_bytes':120,'process_footprint_bytes':200,
@@ -47,13 +47,31 @@ class ControllerTests(unittest.TestCase):
                         'aot_calls':1,'gpu_dispatches':1} for i in range(40)]
             events += [{'type':'measurement_complete','output_sha256':'constant','memory':memory},
                        {'type':'retained','memory':memory}]
+            if experimental:
+                events[0]['height']=1080
+                for event in events:
+                    if event['type']=='call_complete':event.update(actual_variant='color_wavefront_negative_256',aot_calls=9,gpu_dispatches=9)
+                if stderr is None:stderr='WAVEFRONT_POLICY requested=1 actual=1 rows=256 reason=admitted\nWAVEFRONT_COUNTS rows=1080 source_calls=4 consumer_calls=5 ring_rows=1024\n'
             if change:change(events)
             worker=root/'worker.py';worker.write_text('#!/usr/bin/env python3\nimport json\n'
                 +'events=json.loads('+repr(json.dumps(events))+')\nfor e in events:print(json.dumps(e),flush=True)\n')
+            if stderr:
+                worker.write_text(worker.read_text()+'import sys\nsys.stderr.write('+repr(stderr)+')\n')
             worker.chmod(0o755)
-            return controller.run_round(worker,pack,image,'B0',root/'round')
+            return controller.run_round(worker,pack,image,'E' if experimental else 'B0',root/'round',expected_band=256 if experimental else None)
 
     def test_consistent_synthetic_round(self):self.assertTrue(self.check()['scores']['valid'])
+    def test_warmup_cancellation_rejected(self):self.assertFalse(self.check(lambda e:e[1].update(status='cancelled'))['scores']['valid'])
+    def test_warmup_failure_rejected(self):self.assertFalse(self.check(lambda e:e[1].update(status='failure'))['scores']['valid'])
+    def test_explicit_E_round(self):self.assertTrue(self.check(experimental=True)['scores']['valid'])
+    def test_E_fallback_rejected(self):self.assertFalse(self.check(lambda e:e[5].update(actual_variant='general'),experimental=True)['scores']['valid'])
+    def test_E_wrong_band_rejected(self):self.assertFalse(self.check(lambda e:e[5].update(actual_variant='color_wavefront_negative_64'),experimental=True)['scores']['valid'])
+    def test_E_changed_call_count_rejected(self):self.assertFalse(self.check(lambda e:e[5].update(aot_calls=8),experimental=True)['scores']['valid'])
+    def test_E_missing_dispatch_rejected(self):self.assertFalse(self.check(lambda e:e[5].update(gpu_dispatches=1),experimental=True)['scores']['valid'])
+    def test_E_missing_admission_rejected(self):self.assertFalse(self.check(experimental=True,stderr='none')['scores']['valid'])
+    def test_E_wrong_admission_rejected(self):self.assertFalse(self.check(experimental=True,stderr='WAVEFRONT_POLICY requested=1 actual=0 rows=256 reason=fallback\nWAVEFRONT_COUNTS rows=1080 source_calls=4 consumer_calls=5 ring_rows=1024\n')['scores']['valid'])
+    def test_E_wrong_row_count_rejected(self):self.assertFalse(self.check(experimental=True,stderr='WAVEFRONT_POLICY requested=1 actual=1 rows=256 reason=admitted\nWAVEFRONT_COUNTS rows=1079 source_calls=4 consumer_calls=5 ring_rows=1024\n')['scores']['valid'])
+    def test_E_warmup_cancellation_rejected(self):self.assertFalse(self.check(lambda e:e[1].update(status='cancelled'),experimental=True)['scores']['valid'])
     def test_changed_output_rejected(self):
         self.assertFalse(self.check(lambda e:e[-2].update(output_sha256='different'))['scores']['valid'])
     def test_missing_retained_rejected(self):self.assertFalse(self.check(lambda e:e.pop())['scores']['valid'])
