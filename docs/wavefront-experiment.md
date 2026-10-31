@@ -292,9 +292,9 @@ geometry/transport/spatial exclusions and five private serial-demand bound exclu
 probes check actual symbols, counts, finite pixels and alpha; only the named primary/lifecycle
 matrices establish full-pixel R/C agreement. These results do not establish memory or throughput
 acceptance. The reference reproduction uses a separate release build and fresh JIT cache; source
-remains clean. No test or tolerance was changed to hide its zero-tolerance failure. A fresh v2 R
-baseline is now collecting after all compilation jobs completed; no final B_ref or upstream PR
-is implied.
+remains clean. No test or tolerance was changed to hide its zero-tolerance failure. A fresh awake-controlled v2 clean-R baseline completed 36 valid rounds after all compilation
+jobs completed, but failed the unchanged stability gates described below. No final B_ref or
+upstream PR is implied.
 
 ## Candidate verification commands
 
@@ -408,5 +408,26 @@ evidence remain preserved under `build/wavefront-benchmark-v2/formal/0a70c553900
 Both collection CLIs now hold a controller-scoped `caffeinate -i -w PID` assertion and verify
 that it remains active before each worker. It prevents idle system sleep without changing
 display policy or overriding explicit user sleep, and releases automatically on controller exit.
-The assertion's creation/release was tested directly. A fresh run uses
-`build/wavefront-benchmark-v2/awake/`; no E score is collected before its B_ref is frozen.
+The assertion's creation/release was tested directly.
+
+## Awake clean-R baseline result
+
+The fresh run at `build/wavefront-benchmark-v2/awake/0c2977588b8c/` completed all 36 rounds
+without an invalid round. Each primary has three rounds of each original arm plus three more
+of the provisionally selected arm, producing three B/B pairs. This is original-engine
+calibration, not E speedup evidence.
+
+| Case | Provisional original arm | Throughput range drift | B/B memory noise |
+| --- | --- | --- | --- |
+| Portra 1080p | B1 | 6.35% | pass |
+| Portra 4K | B1 | 10.29% | pass |
+| HP5 1080p | B1 | 12.23% | pass |
+| HP5 4K | B1 | 10.41% | pass |
+
+The unchanged timing range review threshold is 5%; B/B memory epsilon and its original caps
+remain unchanged. `B_ref_frozen` is false. No samples were discarded and no E performance
+round was started. See [stage-four summary](wavefront-stage4-results.json) for raw report/worker
+hashes, every original arm's rates, epsilon, thermal and environment observations. These results
+do not identify the cause of the remaining timing variation. A reliable clean-R baseline,
+separate band tuning, paired E/holdout measurements, local intermediate attribution and
+same-process resource rotation remain required before the PR benefit gate.

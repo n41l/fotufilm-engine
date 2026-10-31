@@ -257,7 +257,7 @@
     "The untouched zero-tolerance texture-none Swift test fails identically in clean R and C in this environment; no assertion was weakened, and the Swift suite is not all green.",
     "Only the pre-MTF light frontier is reused; other stages retain per-window intermediates and recompute their aprons.",
     "Per-band GPU synchronization is deliberately conservative and must remain in timed E calls.",
-    "The original 36-round warm baseline is unstable; a new common v2 measurement baseline is required before E performance acceptance.",
+    "The original v1 and fresh awake-controlled v2 clean-R baselines do not qualify for B_ref; no E performance acceptance.",
     "Tuning/holdout performance gates remain pending. The SDR primary is upscaled, not native 4K, RAW or HDR evidence.",
     "No Taggii, iOS, simulator or Intel Mac integration or performance claim. No upstream PR or push."
   ],
@@ -297,7 +297,7 @@
     "report": "candidate/build/wavefront-baseline/verification.json",
     "sha256": "32b90f1a79cd9971555dd871329e446d7c9b0a7fa2fdbde640c10e3e4e6ffc79"
   },
-  "performance_stage": "fresh awake-controlled v2 R baseline collecting; earlier v1 and sleep-interrupted v2 remain unqualified",
+  "performance_stage": "awake-controlled v2 clean-R baseline completed 36 valid rounds; B_ref not frozen under unchanged stability gates; no E performance rounds",
   "v2_sleep_interruption": {
     "report": "candidate/build/wavefront-benchmark-v2/formal/0a70c5539006/report.json",
     "completed_rounds": 4,
@@ -311,5 +311,18 @@
     "B_ref_frozen": false,
     "performance_acceptance": false,
     "scope": "system Dark Wake thermal-emergency sleep crossed the request/deadline; all evidence preserved, not resumed as a valid round"
+  },
+  "awake_v2_baseline": {
+    "summary": "candidate/docs/wavefront-stage4-results.json",
+    "summary_sha256": "6fb4374b933f25e07666c2d9e4e0149a97a58b982ad04a83e2356ad3d8d2d98d",
+    "report": "candidate/build/wavefront-benchmark-v2/awake/0c2977588b8c/report.json",
+    "report_sha256": "d1e3b11d940c39ec721b3c5a367e7bc94b849c7df20c77a795b08778e8af0d4d",
+    "valid_rounds": 36,
+    "invalid_rounds": 0,
+    "B_ref_frozen": false,
+    "performance_acceptance": false,
+    "actual_E_performance_rounds": 0,
+    "timing_review_required": true,
+    "thermal_review_required": false
   }
 }

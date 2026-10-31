@@ -1,0 +1,402 @@
+{
+  "scope": "clean upstream R B0/B1 baseline only; no candidate E performance score",
+  "source_base": "96623ba0831a52dbddcda35727a206d4123a8b5f",
+  "collector_commit": "065b018",
+  "R_worker_sha256": "eff89993d9b138ea0197c5bb2c08c7d157d8facfea596a413805b9f4ddc3339b",
+  "report": "candidate/build/wavefront-benchmark-v2/awake/0c2977588b8c/report.json",
+  "report_sha256": "d1e3b11d940c39ec721b3c5a367e7bc94b849c7df20c77a795b08778e8af0d4d",
+  "frozen_cases": "candidate/build/wavefront-benchmark-v2/awake/0c2977588b8c/frozen-cases.json",
+  "frozen_cases_sha256": "9e792b0b565ec2e74972325f30be2d5f1220879bbd0733dd7ee110b7185f2cec",
+  "complete": true,
+  "valid_rounds": 36,
+  "invalid_rounds": 0,
+  "B_ref_frozen": false,
+  "timing_review_required": true,
+  "thermal_review_required": false,
+  "performance_acceptance": false,
+  "actual_E_performance_rounds": 0,
+  "protocol": {
+    "idle_sleep_prevention": "controller-scoped caffeinate -i",
+    "environment": {
+      "architecture": "arm64",
+      "model": "Mac16,8",
+      "cpu": "Apple M4 Pro",
+      "cpu_count": 12,
+      "memory_bytes": 25769803776,
+      "boot_session": "5267CB93-1C5B-4A21-A255-FB5B165630BD",
+      "os_version": "27.0.1",
+      "os_build": "26A434",
+      "xcode": "Xcode 27.1\nBuild version 27A9269",
+      "sdk": "27.0",
+      "gpus": [
+        {
+          "sppci_model": "Apple M4 Pro",
+          "spdisplays_vendor": "sppci_vendor_Apple",
+          "sppci_cores": "16"
+        }
+      ]
+    },
+    "seed": 42,
+    "idle_pool_mib": 1024,
+    "inflight_frames": 1,
+    "warmup_seconds": 5,
+    "window_seconds": 30,
+    "tail_seconds": 2,
+    "retained_idle_seconds": 5,
+    "process_isolation": "fresh process per arm; no system shader cache purge",
+    "score_aggregation": "median of round medians; maximum round p95; median round throughput",
+    "tool_sources": {
+      "run-wavefront-baseline.py": "3ad0d651d5a5ed56f1dfdd861722eb38d7a45bbb6b36fa4094a5713641255930",
+      "wavefront-benchmark.mm": "680c889bdf9217728f4458d04dbe8c2283e78b9a3ae607cfba1a130d2a599cc1",
+      "wavefront_metrics.py": "5cc21b16c88df2043400c05105ab6c18f7fc70a3a3dcaea3f265fa6afa3edc75"
+    }
+  },
+  "cases": [
+    {
+      "case": "portra400-coffee-1920x1080",
+      "provisional_selected_arm": "B1",
+      "arms": {
+        "B0": {
+          "rounds": 3,
+          "throughput_fps": [
+            84.06666666666666,
+            83.23333333333333,
+            80.3
+          ],
+          "median_round_throughput_fps": 83.23333333333333,
+          "median_of_round_medians_ms": 11.72850001603365,
+          "worst_round_p95_ms": 14.461166923865676,
+          "max_thermal_state": 1
+        },
+        "B1": {
+          "rounds": 6,
+          "throughput_fps": [
+            135.5,
+            135.6,
+            132.53333333333333,
+            135.0,
+            132.06666666666666,
+            127.5
+          ],
+          "median_round_throughput_fps": 133.76666666666665,
+          "median_of_round_medians_ms": 7.224021013826132,
+          "worst_round_p95_ms": 9.958291077055037,
+          "max_thermal_state": 1
+        }
+      },
+      "selected_throughput_range_ratio": 0.06352941176470583,
+      "timing_review_required": true,
+      "memory_stable": true,
+      "memory_epsilon": {
+        "device_total_peak_bytes": {
+          "epsilon_bytes": 0,
+          "cap_bytes": 4194304,
+          "stable": true,
+          "pairs": [
+            0,
+            0,
+            0
+          ]
+        },
+        "process_lifetime_peak_bytes": {
+          "epsilon_bytes": 180272,
+          "cap_bytes": 4194304,
+          "stable": true,
+          "pairs": [
+            180272,
+            65512,
+            49104
+          ]
+        },
+        "retained_device_bytes": {
+          "epsilon_bytes": 0,
+          "cap_bytes": 4194304,
+          "stable": true,
+          "pairs": [
+            0,
+            0,
+            0
+          ]
+        },
+        "retained_process_footprint_bytes": {
+          "epsilon_bytes": 114736,
+          "cap_bytes": 4194304,
+          "stable": true,
+          "pairs": [
+            114736,
+            81896,
+            16432
+          ]
+        }
+      }
+    },
+    {
+      "case": "portra400-coffee-3840x2160",
+      "provisional_selected_arm": "B1",
+      "arms": {
+        "B0": {
+          "rounds": 3,
+          "throughput_fps": [
+            13.366666666666667,
+            13.133333333333333,
+            13.6
+          ],
+          "median_round_throughput_fps": 13.366666666666667,
+          "median_of_round_medians_ms": 73.27166700270027,
+          "worst_round_p95_ms": 88.96920806728303,
+          "max_thermal_state": 1
+        },
+        "B1": {
+          "rounds": 6,
+          "throughput_fps": [
+            26.9,
+            27.8,
+            29.666666666666668,
+            29.266666666666666,
+            29.133333333333333,
+            29.466666666666665
+          ],
+          "median_round_throughput_fps": 29.2,
+          "median_of_round_medians_ms": 33.697708568070084,
+          "worst_round_p95_ms": 40.585167007520795,
+          "max_thermal_state": 1
+        }
+      },
+      "selected_throughput_range_ratio": 0.10285006195786872,
+      "timing_review_required": true,
+      "memory_stable": true,
+      "memory_epsilon": {
+        "device_total_peak_bytes": {
+          "epsilon_bytes": 0,
+          "cap_bytes": 4194304,
+          "stable": true,
+          "pairs": [
+            0,
+            0,
+            0
+          ]
+        },
+        "process_lifetime_peak_bytes": {
+          "epsilon_bytes": 131144,
+          "cap_bytes": 4194304,
+          "stable": true,
+          "pairs": [
+            131144,
+            81920,
+            98328
+          ]
+        },
+        "retained_device_bytes": {
+          "epsilon_bytes": 0,
+          "cap_bytes": 4194304,
+          "stable": true,
+          "pairs": [
+            0,
+            0,
+            0
+          ]
+        },
+        "retained_process_footprint_bytes": {
+          "epsilon_bytes": 147504,
+          "cap_bytes": 4194304,
+          "stable": true,
+          "pairs": [
+            147504,
+            49152,
+            98304
+          ]
+        }
+      }
+    },
+    {
+      "case": "hp5plus400-coffee-1920x1080",
+      "provisional_selected_arm": "B1",
+      "arms": {
+        "B0": {
+          "rounds": 3,
+          "throughput_fps": [
+            100.2,
+            99.56666666666666,
+            99.8
+          ],
+          "median_round_throughput_fps": 99.8,
+          "median_of_round_medians_ms": 9.896959061734378,
+          "worst_round_p95_ms": 10.72995807044208,
+          "max_thermal_state": 1
+        },
+        "B1": {
+          "rounds": 6,
+          "throughput_fps": [
+            171.7,
+            172.86666666666667,
+            169.33333333333334,
+            163.93333333333334,
+            158.4,
+            154.03333333333333
+          ],
+          "median_round_throughput_fps": 166.63333333333333,
+          "median_of_round_medians_ms": 5.8916977141052485,
+          "worst_round_p95_ms": 7.1995839243754745,
+          "max_thermal_state": 1
+        }
+      },
+      "selected_throughput_range_ratio": 0.12226790737935511,
+      "timing_review_required": true,
+      "memory_stable": true,
+      "memory_epsilon": {
+        "device_total_peak_bytes": {
+          "epsilon_bytes": 0,
+          "cap_bytes": 4194304,
+          "stable": true,
+          "pairs": [
+            0,
+            0,
+            0
+          ]
+        },
+        "process_lifetime_peak_bytes": {
+          "epsilon_bytes": 65512,
+          "cap_bytes": 4194304,
+          "stable": true,
+          "pairs": [
+            32768,
+            0,
+            65512
+          ]
+        },
+        "retained_device_bytes": {
+          "epsilon_bytes": 0,
+          "cap_bytes": 4194304,
+          "stable": true,
+          "pairs": [
+            0,
+            0,
+            0
+          ]
+        },
+        "retained_process_footprint_bytes": {
+          "epsilon_bytes": 49152,
+          "cap_bytes": 4194304,
+          "stable": true,
+          "pairs": [
+            49152,
+            16384,
+            49128
+          ]
+        }
+      }
+    },
+    {
+      "case": "hp5plus400-coffee-3840x2160",
+      "provisional_selected_arm": "B1",
+      "arms": {
+        "B0": {
+          "rounds": 3,
+          "throughput_fps": [
+            16.166666666666668,
+            16.066666666666666,
+            16.0
+          ],
+          "median_round_throughput_fps": 16.066666666666666,
+          "median_of_round_medians_ms": 61.19924993254244,
+          "worst_round_p95_ms": 71.87829201575369,
+          "max_thermal_state": 1
+        },
+        "B1": {
+          "rounds": 6,
+          "throughput_fps": [
+            49.333333333333336,
+            51.833333333333336,
+            53.03333333333333,
+            53.93333333333333,
+            54.46666666666667,
+            54.2
+          ],
+          "median_round_throughput_fps": 53.483333333333334,
+          "median_of_round_medians_ms": 18.461812287569046,
+          "worst_round_p95_ms": 22.890624939464033,
+          "max_thermal_state": 1
+        }
+      },
+      "selected_throughput_range_ratio": 0.10405405405405399,
+      "timing_review_required": true,
+      "memory_stable": true,
+      "memory_epsilon": {
+        "device_total_peak_bytes": {
+          "epsilon_bytes": 0,
+          "cap_bytes": 4194304,
+          "stable": true,
+          "pairs": [
+            0,
+            0,
+            0
+          ]
+        },
+        "process_lifetime_peak_bytes": {
+          "epsilon_bytes": 212992,
+          "cap_bytes": 4194304,
+          "stable": true,
+          "pairs": [
+            212992,
+            65584,
+            48
+          ]
+        },
+        "retained_device_bytes": {
+          "epsilon_bytes": 0,
+          "cap_bytes": 4194304,
+          "stable": true,
+          "pairs": [
+            0,
+            0,
+            0
+          ]
+        },
+        "retained_process_footprint_bytes": {
+          "epsilon_bytes": 212992,
+          "cap_bytes": 4194304,
+          "stable": true,
+          "pairs": [
+            212992,
+            98352,
+            81968
+          ]
+        }
+      }
+    }
+  ],
+  "environment_observations": {
+    "samples": 36,
+    "free_disk_bytes_min": 4082679808,
+    "free_disk_bytes_max": 6672523264,
+    "system_memory_free_percent_min": 37,
+    "system_memory_free_percent_max": 48,
+    "one_minute_load_min": 4.42431640625,
+    "one_minute_load_max": 35.5380859375,
+    "scope": "observed system context; not causal attribution for timing variation"
+  },
+  "preserved_separate_attempt": {
+    "report": "candidate/build/wavefront-benchmark-v2/formal/0a70c5539006/report.json",
+    "sha256": "2644c3171e921de227de62e0137fec3b31651a242a45dd1b2c322c6e75dcacc7",
+    "valid_rounds": 3,
+    "invalid_rounds": 1,
+    "reason": "Dark Wake thermal-emergency sleep crossed the request deadline; not included in the awake campaign"
+  },
+  "pending": [
+    "Reliable frozen clean-R baseline under the unchanged stability gates",
+    "Separate tuning workload and frozen band",
+    "Normal E paired primary and holdout performance",
+    "Local intermediate memory attribution and same-process resource rotation",
+    "Final PR acceptance review"
+  ],
+  "upstream_PR_created": false,
+  "pushed": false,
+  "E_preflight_refusal": {
+    "passed": true,
+    "log": "candidate/build/wavefront-awake-comparison-rejection.log",
+    "sha256": "af84ec5c75c16710904cc086b6227654419aded6c14b2b9027d0997e0c799e77",
+    "E_processes_started": 0,
+    "output_directory_created": false,
+    "scope": "negative preflight only; band 128 is a syntax argument, not a tuning selection"
+  }
+}
