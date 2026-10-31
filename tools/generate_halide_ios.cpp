@@ -31,6 +31,7 @@ int main(int argc, char **argv) {
     int wanted = 0;
     bool count_only = false;
     bool three_stage = false, bundle = false;
+    int general_optimizations=0;bool general_research=false;
     // Build policy only; runtime requests use explicit per-call options.
     const char *wavefront_setting = std::getenv("FOTUFILM_AOT_WAVEFRONT");
     const bool wavefront = wavefront_setting && std::string(wavefront_setting) == "1";
@@ -41,7 +42,14 @@ int main(int argc, char **argv) {
     std::string prefix = "fotufilm_halide_ios_";
     for (int i = 2; i < argc; ++i) {
         const std::string argument = argv[i];
-        if (argument == "--bundle") {
+        if (argument.rfind("--general-optimizations=",0)==0) {
+            const auto value=argument.substr(std::string("--general-optimizations=").size());
+            char *end=nullptr;long bits=std::strtol(value.c_str(),&end,10);
+            if(value.empty()||!end||*end||bits<0||bits>kGeneralOptimizationBits) {
+                std::cerr<<"invalid general optimization mask\n";return 2;
+            }
+            general_research=true;general_optimizations=int(bits);
+        } else if (argument == "--bundle") {
             bundle=true;
         } else if (argument == "--three-stage") {
             three_stage = true;
@@ -73,6 +81,9 @@ int main(int argc, char **argv) {
     }
     if (bundle && (!wavefront || platform!="--macos" || three_stage)) {
         std::cerr<<"--bundle requires exclusive opt-in macOS wavefront generation\n";return 2;
+    }
+    if(general_research && (platform!="--macos" || wavefront || three_stage || bundle || work!=Work::OneVariant)) {
+        std::cerr<<"general research requires one explicit macOS general variant, without wavefront\n";return 2;
     }
     const bool simulator = platform == "--simulator";
     const bool macos = platform == "--macos" || platform == "--macos-intel";
@@ -160,6 +171,7 @@ int main(int argc, char **argv) {
         return 2;
     }
     GpuConfiguration defaults;
+    defaults.general_optimizations=general_optimizations;
     defaults.half_blur = !macos && !linux;
     defaults.half_lut = !macos && !linux;
     if (linux) {
@@ -245,6 +257,9 @@ int main(int argc, char **argv) {
         // The Linux shim develops whole frames; the row-window twins are Apple's.
         if (linux && variant.windowed) continue;
         try {
+            if(general_research && (variant.windowed || variant.wavefront_rows ||
+                (variant.name!=prefix+"color_float_realtime" && variant.name!=prefix+"monochrome_float_realtime")))
+                throw std::invalid_argument("general research only admits color/monochrome float realtime general graphs");
             GpuFramePipeline pipeline(variant.features,
                                         "_v" + std::to_string(index), variant.windowed, configuration,
                                         variant.exact_stages, {variant.wavefront_rows, trace_wavefront,

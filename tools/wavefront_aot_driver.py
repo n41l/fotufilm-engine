@@ -15,7 +15,7 @@ import sys
 
 def build(repo, kernels, out, driver, *, definitions=(), driver_definitions=(),
           adapter=None, adapter_definitions=(), trace_overrides=(), diagnostic_control=None, diagnostic_kernels=None,
-          shim_definitions=(), resource_hooks=False, shim_suffix=None):
+          shim_definitions=(), resource_hooks=False, shim_suffix=None, general_research=False):
     repo, kernels, out, driver = (Path(p).resolve() for p in (repo, kernels, out, driver))
     out.mkdir(parents=True, exist_ok=True)
     if not (kernels / ".generated-from").is_file():
@@ -33,21 +33,34 @@ def build(repo, kernels, out, driver, *, definitions=(), driver_definitions=(),
         diagnostic_kernels=Path(diagnostic_kernels).resolve()
         expected=subprocess.check_output([sys.executable,str(repo/'tools/aot-release.py'),'key','macos'],text=True).strip()
         if (diagnostic_kernels/'source-key.txt').read_text().strip()!=expected:raise ValueError('diagnostic kernel source changed')
-        expected_stages=3 if '-DFOTUFILM_THREE_STAGE_RESEARCH=1' in definitions else 2
-        if manifest.get('experiment_stage_count',2)!=expected_stages:
-            raise ValueError('diagnostic control/host stage count mismatch')
-        expected_cut='bundle' if '-DFOTUFILM_BUNDLE_RESEARCH=1' in definitions else 'post_mtf'
-        if manifest.get('experiment_cut','post_mtf')!=expected_cut:
-            raise ValueError('diagnostic control/host cut mismatch')
-        identity_path=diagnostic_kernels/'identity.json'
-        if identity_path.exists() and json.loads(identity_path.read_text()).get('stage_count',2)!=expected_stages:
-            raise ValueError('diagnostic kernel/host stage count mismatch')
-        if identity_path.exists() and json.loads(identity_path.read_text()).get('cut','post_mtf')!=expected_cut:
-            raise ValueError('diagnostic kernel/host cut mismatch')
-        diagnostic_archives=sorted(diagnostic_kernels.glob('fotufilm_halide_ios_*_wavefront_*.a'))
-        if len(diagnostic_archives)!=manifest.get('experimental_archive_count',12):raise ValueError('complete explicit producer/consumer kernel set required')
+        if general_research:
+            identity=json.loads((diagnostic_kernels/'identity.json').read_text())
+            if identity.get('kind')!='general' or identity.get('optimizations') not in (0,1,2,4,8,15):
+                raise ValueError('explicit general-research identity required')
+            expected_names={'fotufilm_halide_ios_color_float_realtime.a','fotufilm_halide_ios_monochrome_float_realtime.a'}
+            diagnostic_archives=sorted(diagnostic_kernels.glob('*.a'))
+            if {p.name for p in diagnostic_archives}!=expected_names:
+                raise ValueError('exactly the two declared general archives required')
+            if identity.get('source_key')!=expected or {p.name:digest(p) for p in diagnostic_archives}!=identity.get('archives'):
+                raise ValueError('general archive identity changed')
+            if any('WAVEFRONT_HOST=1' in flag for flag in definitions) or trace_overrides:
+                raise ValueError('general research cannot use wavefront or trace overrides')
+        else:
+            expected_stages=3 if '-DFOTUFILM_THREE_STAGE_RESEARCH=1' in definitions else 2
+            if manifest.get('experiment_stage_count',2)!=expected_stages:
+                raise ValueError('diagnostic control/host stage count mismatch')
+            expected_cut='bundle' if '-DFOTUFILM_BUNDLE_RESEARCH=1' in definitions else 'post_mtf'
+            if manifest.get('experiment_cut','post_mtf')!=expected_cut:
+                raise ValueError('diagnostic control/host cut mismatch')
+            identity_path=diagnostic_kernels/'identity.json'
+            if identity_path.exists() and json.loads(identity_path.read_text()).get('stage_count',2)!=expected_stages:
+                raise ValueError('diagnostic kernel/host stage count mismatch')
+            if identity_path.exists() and json.loads(identity_path.read_text()).get('cut','post_mtf')!=expected_cut:
+                raise ValueError('diagnostic kernel/host cut mismatch')
+            diagnostic_archives=sorted(diagnostic_kernels.glob('fotufilm_halide_ios_*_wavefront_*.a'))
+            if len(diagnostic_archives)!=manifest.get('experimental_archive_count',12):raise ValueError('complete explicit producer/consumer kernel set required')
         (out/'diagnostic-build.json').write_text(json.dumps({'mixed_candidate_revisions':True,'performance_acceptance':False,
-            'control_manifest_sha256':digest(control/'control.json'),'experimental_source_key':expected,
+            'control_manifest_sha256':digest(control/'control.json'),'experimental_source_key':expected,'general_research':general_research,
             'experimental_archives':{a.name:digest(a) for a in diagnostic_archives}},indent=2)+'\n')
     else:
         source_key = subprocess.check_output(

@@ -39,6 +39,14 @@ public:
           region_blur_(windowed || region_blur) {}
     const GpuConfiguration &configuration() const { return configuration_; }
     bool windowed() const { return windowed_; }
+    bool general_optimization(int32_t bit) const {
+        return !windowed_ && gpu_device_api()==DeviceAPI::Metal
+            && (configuration_.general_optimizations & bit)!=0;
+    }
+    bool register_fusion() const {
+        return gpu_device_api()==DeviceAPI::Metal
+            && (windowed_ || general_optimization(kGeneralRegisters));
+    }
     Target gpu_target() const { return configuration_.target(); }
     DeviceAPI gpu_device_api() const { return configuration_.device; }
     // Preserve the CPU model's sampling and operation order on portable GPU backends.
@@ -246,7 +254,7 @@ public:
     void normalized_taps(Func f, Var x, Var y, Var channel, Expr data, Expr weight,
                          bool stored, const std::string &name) {
         const bool fused = gpu_device_api() == DeviceAPI::WebGPU
-            || (gpu_device_api() == DeviceAPI::Metal && region_blur_);
+            || (gpu_device_api() == DeviceAPI::Metal && (region_blur_ || general_optimization(kGeneralNormalized)));
         if (!fused || !stored) {
             f(x, y, channel) = Halide::sum(data, name + "_sum")
                 / Halide::max(Halide::sum(weight, name + "_weight"), 1.0e-12f);
@@ -270,7 +278,7 @@ public:
     Expr cell_count(Expr valid, Expr start_x, Expr start_y, Expr cells, Expr width, Expr height,
                     const std::string &name) {
         const bool counted = gpu_device_api() == DeviceAPI::WebGPU
-            || (gpu_device_api() == DeviceAPI::Metal && region_blur_);
+            || (gpu_device_api() == DeviceAPI::Metal && (region_blur_ || general_optimization(kGeneralCountedCells)));
         if (!counted) return Halide::sum(valid, name);
         return Halide::cast<float>(cells_inside(start_x, cells, width)
                                    * cells_inside(start_y, cells, height));
@@ -347,7 +355,7 @@ public:
                                                   && y + vertical_taps.x < height,
                                               Halide::cast<float>(kernel(vertical_taps.x, channel)),
                                               0.0f);
-        if (region_blur_ && gpu_device_api() == DeviceAPI::Metal && store_result && !half
+        if ((region_blur_ || general_optimization(kGeneralRadiusOne)) && gpu_device_api() == DeviceAPI::Metal && store_result && !half
             && !merged) {
             return gpu_gaussian_three(bounded, kernel, vertical_data, vertical_weight, extent,
                                       width, height, channels, name);
@@ -394,6 +402,18 @@ public:
             taps.push_back({row(y + offset) * kernel(offset, channel),
                             Halide::select(y + offset >= 0 && y + offset < height,
                                            Halide::cast<float>(kernel(offset, channel)), 0.0f)});
+        }
+        // Isolate the radius-one experiment: larger radii retain the general graph's
+        // separate data/weight reductions unless normalized fusion is explicitly enabled.
+        if (!region_blur_ && general_optimization(kGeneralRadiusOne)
+            && !general_optimization(kGeneralNormalized)) {
+            Func blurred(name);
+            Expr vertical = Halide::sum(vertical_data, name + "_vertical_sum")
+                / Halide::max(Halide::sum(vertical_weight, name + "_vertical_weight"), 1.0e-12f);
+            blurred(x,y,channel)=Halide::select(extent==1,sum_taps(taps),vertical);
+            store_frame(blurred,false,channels);
+            blurred.specialize(extent==1);
+            return blurred;
         }
         Func sums(name + "_vertical_sums");
         sums(x, y, channel) = {Halide::cast(vertical_data.type(), 0),

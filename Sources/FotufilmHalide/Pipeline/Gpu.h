@@ -737,7 +737,7 @@ public:
         Func delivered("frame_delivered" + suffix);
         if (encodes) {
             delivered(x, y, channel) = final_linear(x, y, channel);
-            if (windowed && gpu_device_api() == DeviceAPI::Metal) {
+            if (register_fusion()) {
                 // The output thread develops its own pixel's three channels once, in registers,
                 // rather than reading them back from a frame-sized store.
                 register_stage(delivered);

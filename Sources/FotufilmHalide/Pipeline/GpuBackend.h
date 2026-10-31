@@ -551,7 +551,8 @@ private:
     /// in that kernel's threads rather than stored: the row-window graphs on Metal, which the
     /// row-window host measures.
     bool register_stages() const {
-        return policy_.windowed && schedule_.gpu_device_api() == DeviceAPI::Metal;
+        return schedule_.gpu_device_api()==DeviceAPI::Metal
+            && (policy_.windowed || schedule_.general_optimization(gpu::kGeneralRegisters));
     }
 
     Func remember(Func original, Func view) {
