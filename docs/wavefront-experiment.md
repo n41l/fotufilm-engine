@@ -787,3 +787,22 @@ Restore an old worker with
 `python3 build/wavefront-post-mtf/archived-workers/restore.py <path-substring>`.
 Cleanup ended before measurement; no concurrent compiler or cleanup ran in the
 successful campaign. The assistant did not quit Docker, push or create a PR.
+
+
+## Stage eleven: opt-in three-stage LogExposure control
+
+At the user's request, test an actual third stage before the separate producer
+batch-limit experiment. The new GPU-resident B cache holds post-halation
+LogExposure; it does not persist the individual coarse fields or change the
+per-band wait. The initial four-case diagnostic has no E3 median improvement
+over E2. Only Portra UHD E2 is faster than named R-B1 in this bounded run;
+reference stability is still unfrozen. Retain the prototype as a research control,
+without enabling it by default or promoting a speed claim.
+
+See [stage-eleven results](wavefront-stage11-results.md),
+[provenance](wavefront-stage11-results.json) and
+[two-cache contract/reproduction](wavefront-three-stage-contract.md).
+The prior stage-ten “next batch limit” ordering is historical; the independent
+batch-only, table, persistent coarse-field and asynchronous experiments remain
+unimplemented. Full current-source release/Swift/parity and formal reference,
+retention and performance gates remain pending.

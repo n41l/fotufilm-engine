@@ -20,7 +20,7 @@ for j,(arm,label,color) in enumerate(arms):
     for ax,key,scale in ((axes[0],'median_seconds',1000),(axes[1],'device_total_peak_bytes',1/1024**2)):
         values=[c['arms'][arm]['scores' if key=='median_seconds' else 'memory'][key]*scale for c in r['cases']]
         bars=ax.bar(positions,values,.23,label=label,color=color)
-        ax.bar_label(bars,labels=[f'{v:.2f}' if scale==1000 else f'{v:.0f}' for v in values],fontsize=8,padding=3)
+        ax.bar_label(bars,labels=[f'{v:.2f}' if scale==1000 else f'{v:.0f}' for v in values],fontsize=8,padding=3,rotation=90 if scale==1000 else 0)
 for ax in axes:
     ax.set_xticks(range(4),labels,rotation=16,ha='right');ax.set_ylim(bottom=0)
     ax.spines[['top','right']].set_visible(False);ax.grid(axis='y',alpha=.2);ax.set_axisbelow(True)

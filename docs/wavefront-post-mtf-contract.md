@@ -3,8 +3,9 @@
 Status: the initial T13/T14 diagnostic is complete, 2026-10-31. Results are mixed;
 producer batch-size follow-up is pending. Full release validation is pending.
 See [stage-ten results](wavefront-stage10-results.md). This is a macOS diagnostic;
-the legacy selector and public ABI are unchanged. Halation, table extraction and
-asynchronous submission are separate future experiments.
+the legacy selector and public ABI are unchanged. A separate three-stage LogExposure diagnostic is now complete; see
+[stage-eleven results](wavefront-stage11-results.md). Persistent coarse halation
+fields, table extraction and asynchronous submission remain separate future experiments.
 
 ## Frozen scope and controls
 
