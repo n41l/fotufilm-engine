@@ -1,5 +1,7 @@
 # Stage fifteen: general optimization status
 
+Historical snapshot of the first interrupted attempt. Superseded by [the complete restarted campaign](general-stage15-results.md).
+
 **Implementation and correctness checks are complete. Performance comparison is incomplete: the original1GiB disk guard stopped after5 of28 planned rounds. Defaults remain unchanged.**
 
 Four independent opt-in switches port register fusion, normalized-reduction fusion, analytical valid-cell counts and radius-one specialization into the general graph. No window loop, wavefront, feature pruning, precision change or extra AOT call is introduced. Radius-one preserves the old large-radius fallback.

@@ -863,3 +863,18 @@ controller-check attempt and all unfavorable outcomes. One round per arm/case
 cannot freeze B_ref or pass performance/release/retention gates; no default
 promotion or upstream PR. See [stage-fourteen results](wavefront-stage14-results.md)
 and [full provenance](wavefront-stage14-results.json).
+
+
+## Stage fifteen: reuse local optimizations in whole-frame general
+
+At the user's request, test the first next priority: independent register,
+normalized-reduction, counted-cell and radius-one policies, preserving the
+full general feature graph and one AOT call. Defaults stay0; no window loop,
+wavefront, precision change or automatic combination. Four original R outputs
+support24 direct comparisons, and five complete histories pass70 frames.
+The restarted28-round pilot retains fresh R-B0/R-B1 and same-source G0, all
+unfavorable rows and the first interrupted campaign. Original stability,
+release/parity, retention and holdout gates remain pending; no default or PR.
+See [general-stage15 results](general-stage15-results.md),
+[full provenance](general-stage15-results.json) and
+[contract](general-optimizations-contract.md).
