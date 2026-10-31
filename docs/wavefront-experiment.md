@@ -276,7 +276,7 @@ control. The compact record is `wavefront-stage3-results.json`.
 | Check | Result |
 | --- | --- |
 | Four primary cases × three bands | 12 pixel/reuse/GPU-completion comparisons passed; maximum linear error `2.562999725341797e-6` |
-| Non-traced E, four primary cases × three bands | 12 passed; source/consumer counts and actual private admission checked; outputs byte-identical to the traced matrix |
+| Non-traced E, four primary cases × three bands | 12 passed; source/consumer counts and actual private admission checked; normal and traced outputs independently meet the same clean-R pixel tolerance |
 | Every legacy AOT class against clean R | 36 classes passed at zero tolerance; all complete output records byte-identical and nonconstant |
 | C general/windowed against clean R primary cases | 8 comparisons passed, maximum linear error `2.562999725341797e-6` |
 | Same-process lifecycle against clean R | 14 frames passed, maximum linear error `2.7915591155336372e-6`; includes cache-channel changes, encoded output, fallback, four invalid-option checks, injected submission failure and recovery |
