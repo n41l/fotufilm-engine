@@ -238,7 +238,7 @@
       "log_sha256": "1c117aed8aabcd8718be07c91f0e42d9799f0428787b3d819f2b179822356d50",
       "scope": "required upstream AOT/JIT compatibility check; primary E vs clean R uses the separate stricter 1e-5 contract"
     },
-    "comparison_controller": 26
+    "comparison_controller": 27
   },
   "verification_reproduction": {
     "tool": "tools/prepare-wavefront-verification.py",
@@ -272,7 +272,7 @@
   },
   "comparison_tooling": {
     "collector": "tools/run-wavefront-comparison.py",
-    "synthetic_tests": 26,
+    "synthetic_tests": 27,
     "round_controller_tests": 24,
     "old_unstable_baseline_refused_before_E": true,
     "environment_frozen": "ARM64 Mac model/CPU/GPU/RAM, OS/build, SDK/Xcode and boot session; no serial number or host name",
@@ -282,7 +282,8 @@
       "Preselect the band using the separate tuning workload.",
       "Primary nonregression is separate from final PR acceptance.",
       "Local intermediate attribution, holdouts and resource rotation remain required."
-    ]
+    ],
+    "idle_sleep_prevention": "controller-scoped caffeinate -i -w PID; tested active in scope and released afterwards; explicit user sleep remains possible"
   },
   "all_checks_green": false,
   "window_regression": {
@@ -296,5 +297,19 @@
     "report": "candidate/build/wavefront-baseline/verification.json",
     "sha256": "32b90f1a79cd9971555dd871329e446d7c9b0a7fa2fdbde640c10e3e4e6ffc79"
   },
-  "performance_stage": "fresh v2 clean-R baseline collecting after all compilation jobs completed; no E performance acceptance"
+  "performance_stage": "fresh awake-controlled v2 R baseline collecting; earlier v1 and sleep-interrupted v2 remain unqualified",
+  "v2_sleep_interruption": {
+    "report": "candidate/build/wavefront-benchmark-v2/formal/0a70c5539006/report.json",
+    "completed_rounds": 4,
+    "valid_rounds": 3,
+    "invalid_rounds": 1,
+    "failed_request": "1306",
+    "request_seconds": 925.3893465420697,
+    "max_thermal_state": 3,
+    "power_events": "candidate/build/wavefront-v2-sleep-events.log",
+    "power_events_sha256": "2dbb08652ae2a3f8d10917d91ce1d4fea52bf88c7ad4a1afed6935937a8680eb",
+    "B_ref_frozen": false,
+    "performance_acceptance": false,
+    "scope": "system Dark Wake thermal-emergency sleep crossed the request/deadline; all evidence preserved, not resumed as a valid round"
+  }
 }

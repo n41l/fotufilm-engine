@@ -20,7 +20,7 @@ def protocol():
     entry={'B_ref':'B1','memory_stable':True,'timing_review_required':False,'memory_epsilon':epsilon,
            'arms':{'B0':[round_result(10) for _ in range(3)],'B1':[round_result() for _ in range(6)]}}
     baseline={'complete':True,'B_ref_frozen':True,'frozen_cases':{'pilot':False,'source_base':'base',
-        'worker_sha256':'r','cases':cases,'environment':{'boot':'one'},'warmup_seconds':5,'window_seconds':30,
+        'idle_sleep_prevention':'controller-scoped caffeinate -i','worker_sha256':'r','cases':cases,'environment':{'boot':'one'},'warmup_seconds':5,'window_seconds':30,
         'tail_seconds':2,'retained_idle_seconds':5,'idle_pool_mib':1024,'inflight_frames':1,
         'tool_sources':{'wavefront-benchmark.mm':'common','wavefront_metrics.py':'math'}},
         'cases':{str(i):copy.deepcopy(entry) for i in range(4)}}
@@ -42,6 +42,7 @@ class ProtocolTests(unittest.TestCase):
     def test_valid_frozen_protocol(self):self.check()
     def test_unfrozen_baseline(self):self.rejects(lambda B,V,F,K:B.update(B_ref_frozen=False))
     def test_pilot_baseline(self):self.rejects(lambda B,V,F,K:B['frozen_cases'].update(pilot=True))
+    def test_sleep_uncontrolled_baseline(self):self.rejects(lambda B,V,F,K:B['frozen_cases'].pop('idle_sleep_prevention'))
     def test_new_boot(self):self.rejects(lambda B,V,F,K:K.update(environment={'boot':'two'}))
     def test_changed_worker(self):self.rejects(lambda B,V,F,K:K.update(E_sha='different'))
     def test_traced_verifier(self):self.rejects(lambda B,V,F,K:V.update(normal_experimental_kernel_coverage=False))

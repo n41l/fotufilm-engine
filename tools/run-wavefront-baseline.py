@@ -5,6 +5,7 @@ All worker output, unsuccessful rounds and deadline observations are retained.
 No candidate runs are performed by this script. No image decoding is timed.
 """
 import argparse
+import contextlib
 import hashlib
 import json
 import os
@@ -25,6 +26,27 @@ def atomic_json(path, value):
     with temporary.open('w') as stream:
         json.dump(value,stream,indent=2);stream.write('\n');stream.flush();os.fsync(stream.fileno())
     temporary.replace(path)
+
+
+@contextlib.contextmanager
+def awake_session():
+    """Keep the benchmark controller awake; never override explicit user sleep."""
+    helper=subprocess.Popen(['/usr/bin/caffeinate','-i','-w',str(os.getpid())],
+                            stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+    try:
+        try:
+            helper.wait(timeout=.1)
+            raise RuntimeError('idle-sleep assertion did not stay active')
+        except subprocess.TimeoutExpired:pass
+        yield helper
+    finally:
+        if helper.poll() is None:helper.terminate()
+        helper.wait(timeout=5)
+
+
+def require_awake(helper):
+    if helper is None or helper.poll() is not None:
+        raise RuntimeError('benchmark idle-sleep assertion is not active')
 
 
 def environment_snapshot():
@@ -191,7 +213,7 @@ def run_round(worker, pack, image, mode, root, *, expected_band=None):
     return result
 
 
-def main():
+def main(*, awake_helper=None):
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--reference',required=True,type=Path)
     parser.add_argument('--worker',required=True,type=Path)
@@ -201,6 +223,7 @@ def main():
     parser.add_argument('--pilot',action='store_true',help='one round per mode on the first case; never freezes B_ref')
     parser.add_argument('--resume',type=Path,help='recover completed rounds and preserve interrupted attempts')
     args=parser.parse_args()
+    require_awake(awake_helper)
     reference=args.reference.resolve();worker=args.worker.resolve()
     if subprocess.check_output(['git','-C',str(reference),'status','--porcelain'],text=True):raise ValueError('R must be clean')
     base=subprocess.check_output(['git','-C',str(reference),'rev-parse','HEAD'],text=True).strip()
@@ -218,7 +241,7 @@ def main():
             cases.append({'id':f'{stock}-coffee-{size}','stock':stock,'size':size,'pack':str(path),
                 'pack_sha256':pack['sha256'],'input':str(image),'input_sha256':workload['sha256']})
     if args.pilot:cases=cases[:1]
-    freeze={'environment':environment_snapshot(),'source_base':base,'worker_sha256':sha(worker),'prepared_sha256':sha(args.prepared),
+    freeze={'idle_sleep_prevention':'controller-scoped caffeinate -i','environment':environment_snapshot(),'source_base':base,'worker_sha256':sha(worker),'prepared_sha256':sha(args.prepared),
             'corpus_primary':'coffee; SDR photograph, upscaled workload','seed':42,'idle_pool_mib':1024,
             'inflight_frames':1,'warmup_seconds':5,'window_seconds':30,'tail_seconds':2,'retained_idle_seconds':5,
             'process_isolation':'fresh process per arm; no system shader cache purge',
@@ -239,6 +262,7 @@ def main():
         atomic_json(run/'report.json',report)
         atomic_json(args.output/'latest.json',{'run':str(run),'report':str(run/'report.json')})
     def acquire(case,mode,index):
+        require_awake(awake_helper)
         root=run/case['id']/f'{mode}-{index}'
         attempts=[root,*sorted(root.parent.glob(root.name+'-retry-*'))]
         recovered=[(p,recover_round(p,mode,case['input'])) for p in attempts if (p/'round.json').exists()]
@@ -285,6 +309,7 @@ def main():
             entry['timing_drift_ratio']=max(rates)/min(rates)-1
             entry['timing_review_required']=entry['timing_drift_ratio']>.05
             checkpoint()
+        require_awake(awake_helper)
         report['complete']=True
         report['B_ref_frozen']=not args.pilot and all(e.get('memory_stable') for e in report['cases'].values())
         report['thermal_review_required']=any(r['memory']['max_thermal_state']>=2
@@ -301,4 +326,5 @@ def main():
     return 0
 
 
-if __name__=='__main__':raise SystemExit(main())
+if __name__=='__main__':
+    with awake_session() as helper:raise SystemExit(main(awake_helper=helper))

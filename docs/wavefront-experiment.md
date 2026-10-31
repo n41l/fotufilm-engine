@@ -397,3 +397,16 @@ latency (+5%), worst-round p95 (+10%), median throughput (at least 95%) and pair
 changes against the **unchanged** B/B epsilon. Matched-R drift/noise or thermal state at serious
 requires review. A primary pass is not final performance acceptance: tuning/holdouts, local
 intermediate attribution, same-process resource rotation and PR review remain separate gates.
+
+The first new v2 attempt stopped after four rounds (three valid, one invalid): request 1306
+crossed a system Dark Wake thermal-emergency sleep and took about 925.4 seconds, beyond the
+unchanged two-second tail. `pmset` recorded the matching sleep/wake interval; thermal state was
+critical during the stalled request and nominal after full wake. The invalid round and power
+evidence remain preserved under `build/wavefront-benchmark-v2/formal/0a70c5539006/` and
+`build/wavefront-v2-sleep-events.log`. It was not converted into a valid score or resumed over.
+
+Both collection CLIs now hold a controller-scoped `caffeinate -i -w PID` assertion and verify
+that it remains active before each worker. It prevents idle system sleep without changing
+display policy or overriding explicit user sleep, and releases automatically on controller exit.
+The assertion's creation/release was tested directly. A fresh run uses
+`build/wavefront-benchmark-v2/awake/`; no E score is collected before its B_ref is frozen.

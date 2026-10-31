@@ -22,6 +22,7 @@ def validate_protocol(baseline, verification, fixtures, *, band, R_sha, E_sha, f
     if not baseline.get('complete') or not baseline.get('B_ref_frozen'):
         raise ValueError('stable frozen clean-R B_ref is required before collecting E scores')
     frozen=baseline['frozen_cases']
+    if frozen.get('idle_sleep_prevention')!='controller-scoped caffeinate -i':raise ValueError('fresh awake-controlled baseline required')
     if frozen.get('environment')!=environment:raise ValueError('Mac, OS, boot or toolchain changed; freeze a fresh R baseline')
     if frozen.get('pilot') or baseline.get('thermal_review_required') or baseline.get('timing_review_required'):
         raise ValueError('baseline still requires review')
@@ -91,13 +92,13 @@ def assess(arms, epsilon):
             'local_intermediate_peak_reduction':None}
 
 
-def main():
+def main(*, awake_helper=None):
     parser=argparse.ArgumentParser(description=__doc__)
     for name in ('reference','reference-worker','worker','baseline-report','normal-verification','verification-fixtures','output'):
         parser.add_argument('--'+name,required=True,type=Path)
     parser.add_argument('--band',required=True,type=int)
     parser.add_argument('--resume',type=Path)
-    args=parser.parse_args();repo=Path(__file__).resolve().parents[1]
+    args=parser.parse_args();b.require_awake(awake_helper);repo=Path(__file__).resolve().parents[1]
     baseline=json.loads(args.baseline_report.read_text());verification=json.loads(args.normal_verification.read_text())
     fixtures=json.loads(args.verification_fixtures.read_text())
     if args.reference.resolve()==repo or subprocess.check_output(['git','-C',str(args.reference),'status','--porcelain'],text=True):
@@ -131,6 +132,7 @@ def main():
             report['cases'][case['id']]=entry
             for index in range(3):
                 for arm in (('B','E') if index%2==0 else ('E','B')):
+                    b.require_awake(awake_helper)
                     mode=reference['B_ref'] if arm=='B' else 'E';root=run/case['id']/f'{arm}-{index}'
                     attempts=[root,*sorted(root.parent.glob(root.name+'-retry-*'))]
                     recovered=[(p,b.recover_round(p,mode,case['input'])) for p in attempts if (p/'round.json').exists()]
@@ -150,6 +152,7 @@ def main():
                     print(json.dumps({'case':case['id'],'arm':arm,'pair':index,'scores':result['scores'],'memory':result['memory']}),flush=True)
                     if not result['scores']['valid']:raise RuntimeError('invalid round; preserved and not replaceable')
             entry['assessment']=assess(arms,reference['memory_epsilon']);checkpoint()
+        b.require_awake(awake_helper)
         report['complete']=True
         report['all_primary_nonregression']=all(c['assessment']['primary_nonregression'] for c in report['cases'].values())
         report['any_median_improvement_at_least_10pct']=any(c['assessment']['median_improvement_at_least_10pct'] for c in report['cases'].values())
@@ -158,4 +161,5 @@ def main():
     print('REPORT',run/'report.json',flush=True)
 
 
-if __name__=='__main__':main()
+if __name__=='__main__':
+    with b.awake_session() as helper:main(awake_helper=helper)
