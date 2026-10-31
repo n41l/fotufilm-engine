@@ -806,3 +806,22 @@ The prior stage-ten “next batch limit” ordering is historical; the independe
 batch-only, table, persistent coarse-field and asynchronous experiments remain
 unimplemented. Full current-source release/Swift/parity and formal reference,
 retention and performance gates remain pending.
+
+
+## Stage twelve: revised two-stage responsibilities
+
+The user clarified and authorized a two-stage multi-output experiment. Stage one
+now emits selected light plus three coarse blurred fields; stage two consumes
+both and fuses the original tail. There is no third fields-only invocation. All
+four output hashes match original E2; A/F and final MTF production traces pass,
+as do lifecycle, default release build and 18 targeted release Swift tests.
+
+The eight-round paired pilot is mixed: three lower medians, HP5 UHD about 3.2%
+higher; HD peaks decrease, UHD peaks increase. Portra UHD arms have different
+thermal maxima. No stable speedup/default promotion/PR is claimed. See
+[stage-twelve results](wavefront-stage12-results.md),
+[provenance](wavefront-stage12-results.json) and
+[two-stage contract](wavefront-bundle-contract.md).
+The old three-unit coarse-field proposal remains unexecuted as that topology.
+Producer lead based on safe edge demand is an independent, unimplemented next
+control; the present experiment preserves margin360/band512/A2048/sync.
