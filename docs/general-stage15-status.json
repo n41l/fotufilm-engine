@@ -1,0 +1,275 @@
+{
+  "stage": 15,
+  "status": "implementation_and_correctness_complete; timing interrupted by original disk guard",
+  "implementation_commit": "107bb9a5fc8ed4b4b370d9bae00c70390ce8f25d",
+  "source_key": "794eca5c6bed0565227f037d1257b51c27779de06aca5ed7777bd1ae142d6b03",
+  "reference_base": "96623ba0831a52dbddcda35727a206d4123a8b5f",
+  "performance_complete": false,
+  "performance_acceptance": false,
+  "B_ref_frozen": false,
+  "default_changed": false,
+  "Taggii_changed": false,
+  "checks": {
+    "oracle_outputs": 4,
+    "direct_pixel_comparisons": 24,
+    "candidate_pixel_comparisons": 20,
+    "pixel_max_linear_error": 2.562999725341797e-06,
+    "G0_bitwise_R_B0_cases": 4,
+    "history_comparisons": 70,
+    "history_active_current_archive_frames": 60,
+    "history_max_linear_error": 2.652406692504883e-06,
+    "python_tests": 189,
+    "CPU_stages": 11,
+    "Metal_stages": 11,
+    "Cxx17_release_build": true,
+    "focused_Swift_tests": 18
+  },
+  "timing": {
+    "planned_rounds": 28,
+    "completed_rounds": 5,
+    "failure": "less than1GiB free; stop before next arm",
+    "partial_observations": [
+      {
+        "case": "portra400-coffee-1920x1080",
+        "arm": "R-B0",
+        "median_ms": 14.65687493328005,
+        "p95_ms": 16.420125029981136,
+        "device_peak_mib": 462.25,
+        "scores": {
+          "valid": true,
+          "reasons": [],
+          "request_count": 2033,
+          "success_by_deadline": 2033,
+          "success_in_window": 2032,
+          "throughput_fps": 67.73333333333333,
+          "median_seconds": 0.01465687493328005,
+          "p95_seconds": 0.016420125029981136,
+          "statistics_are_diagnostic_only": false
+        },
+        "memory": {
+          "device_total_peak_bytes": 484704256,
+          "process_lifetime_peak_bytes": 642778048,
+          "retained_device_bytes": 484704256,
+          "retained_process_footprint_bytes": 570213312,
+          "max_thermal_state": 0
+        },
+        "round_path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/general-optimizations-timing/c70734ff59be/portra400-coffee-1920x1080-R-B0/round.json"
+      },
+      {
+        "case": "portra400-coffee-1920x1080",
+        "arm": "G0",
+        "median_ms": 14.869958453346044,
+        "p95_ms": 16.839583055116236,
+        "device_peak_mib": 462.25,
+        "scores": {
+          "valid": true,
+          "reasons": [],
+          "request_count": 2002,
+          "success_by_deadline": 2002,
+          "success_in_window": 2001,
+          "throughput_fps": 66.7,
+          "median_seconds": 0.014869958453346044,
+          "p95_seconds": 0.016839583055116236,
+          "statistics_are_diagnostic_only": false
+        },
+        "memory": {
+          "device_total_peak_bytes": 484704256,
+          "process_lifetime_peak_bytes": 644187048,
+          "retained_device_bytes": 484704256,
+          "retained_process_footprint_bytes": 571556776,
+          "max_thermal_state": 1
+        },
+        "round_path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/general-optimizations-timing/c70734ff59be/portra400-coffee-1920x1080-G0/round.json"
+      },
+      {
+        "case": "portra400-coffee-1920x1080",
+        "arm": "registers",
+        "median_ms": 14.365875045768917,
+        "p95_ms": 17.680541961453855,
+        "device_peak_mib": 550.28125,
+        "scores": {
+          "valid": true,
+          "reasons": [],
+          "request_count": 2041,
+          "success_by_deadline": 2041,
+          "success_in_window": 2040,
+          "throughput_fps": 68.0,
+          "median_seconds": 0.014365875045768917,
+          "p95_seconds": 0.017680541961453855,
+          "statistics_are_diagnostic_only": false
+        },
+        "memory": {
+          "device_total_peak_bytes": 577011712,
+          "process_lifetime_peak_bytes": 736068568,
+          "retained_device_bytes": 577011712,
+          "retained_process_footprint_bytes": 663503832,
+          "max_thermal_state": 1
+        },
+        "round_path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/general-optimizations-timing/c70734ff59be/portra400-coffee-1920x1080-registers/round.json"
+      },
+      {
+        "case": "portra400-coffee-1920x1080",
+        "arm": "normalized",
+        "median_ms": 18.08752096258104,
+        "p95_ms": 31.53533407021314,
+        "device_peak_mib": 462.25,
+        "scores": {
+          "valid": true,
+          "reasons": [],
+          "request_count": 1480,
+          "success_by_deadline": 1480,
+          "success_in_window": 1479,
+          "throughput_fps": 49.3,
+          "median_seconds": 0.01808752096258104,
+          "p95_seconds": 0.03153533407021314,
+          "statistics_are_diagnostic_only": false
+        },
+        "memory": {
+          "device_total_peak_bytes": 484704256,
+          "process_lifetime_peak_bytes": 642745304,
+          "retained_device_bytes": 484704256,
+          "retained_process_footprint_bytes": 570147800,
+          "max_thermal_state": 1
+        },
+        "round_path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/general-optimizations-timing/c70734ff59be/portra400-coffee-1920x1080-normalized/round.json"
+      },
+      {
+        "case": "portra400-coffee-1920x1080",
+        "arm": "counted",
+        "median_ms": 23.969167028553784,
+        "p95_ms": 56.62591697182506,
+        "device_peak_mib": 462.25,
+        "scores": {
+          "valid": true,
+          "reasons": [],
+          "request_count": 1027,
+          "success_by_deadline": 1027,
+          "success_in_window": 1026,
+          "throughput_fps": 34.2,
+          "median_seconds": 0.023969167028553784,
+          "p95_seconds": 0.05662591697182506,
+          "statistics_are_diagnostic_only": false
+        },
+        "memory": {
+          "device_total_peak_bytes": 484704256,
+          "process_lifetime_peak_bytes": 643842984,
+          "retained_device_bytes": 484704256,
+          "retained_process_footprint_bytes": 571229096,
+          "max_thermal_state": 1
+        },
+        "round_path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/general-optimizations-timing/c70734ff59be/portra400-coffee-1920x1080-counted/round.json"
+      }
+    ],
+    "not_measured": {
+      "Portra HD": [
+        "radius1",
+        "R-B1"
+      ],
+      "Portra UHD": "all7arms",
+      "HP5 HD": "all7arms",
+      "HP5 UHD": "all7arms"
+    }
+  },
+  "current_free_bytes": 1016082432,
+  "interpretation": [
+    "Do not select an optimization from this incomplete campaign or call the initial slowdown a proven code effect. All successful/unfavorable rows are retained.",
+    "R-B0/G0 medians on the one partially completed case are14.657/14.870ms. Registers14.366ms with88.03MiB extra device peak; normalized18.088ms; counted23.969ms. These are isolated observations under changing storage/load, not formal effect estimates.",
+    "Environment swap usage is12.8GB in every saved pre-arm snapshot; its constancy does not establish active swap as the slowdown cause. Disk headroom declined and the original1GiB guard stopped before arm6. No thresholds relaxed.",
+    "No native builds, GPU verification, plotting or cache cleanup ran during the interrupted timing campaign. Native current workers and AOT remain unchanged. Docker/user services and other tasks caches were not stopped/deleted.",
+    "First pixel attempt ended on original R-B0 HP5 UHD dump write exit2 after21 successful rows, retained. Same workers reran complete numerical proof after own caches/old workers/Metal source files were handled.",
+    "The local general changes are explicitly opt-in; default0 and original full feature graph/precision/one-call geometry remain. Other priorities and combinations remain unexecuted."
+  ],
+  "evidence": {
+    "pixels": {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/general-optimizations-proof-v2/report.json",
+      "sha256": "31ed41cb1f1478dfebe84e2a785b1aed0e3f842ec582df92198c3fcbeddc7a8a"
+    },
+    "history": {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/general-optimizations-history/report.json",
+      "sha256": "15d189b2977cce9c30db78ffc0ce66f5ed67e34882a85d55e372658b14ed003d"
+    },
+    "interrupted_timing": {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/general-optimizations-timing/c70734ff59be/report.json",
+      "sha256": "89bda7d681c61f457415a75ddf9cd81a2971acff8a9c4a5d4b6d4ba21b02dad5"
+    },
+    "first_pixel_attempt": {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/general-optimizations-proof/report.json",
+      "sha256": "c13024c99a15cb33fac7cbfafdf7afea780ee5a6f5119d22b2428aa7845b1885"
+    }
+  },
+  "workers": {
+    "G0": {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/general-optimizations-proof/G0/runner",
+      "sha256": "1f45cc5d1df1c125a883d26e84d41ea7009970577c59513563ed0df3e71b5d08"
+    },
+    "registers": {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/general-optimizations-proof/registers/runner",
+      "sha256": "1a2877cf17a13ece379cdd6131cef8fa8b78290679f08bbee207d5eb0d4a8f78"
+    },
+    "normalized": {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/general-optimizations-proof/normalized/runner",
+      "sha256": "96ce22b1d9a8c1bfadf0d079734dbe61b0e1afaffa644694a23d82ca3dad2031"
+    },
+    "counted": {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/general-optimizations-proof/counted/runner",
+      "sha256": "6cccbf58923357ad26dbe81e7f3d8d184cb8ebb86b942d18df61be26c044ed97"
+    },
+    "radius1": {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/general-optimizations-proof/radius1/runner",
+      "sha256": "2650333e3bacc0f7cb99146416aa7017da4bc0bd56b9f644adf8a7e5f9579e25"
+    },
+    "R-B0": {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/reference/build/wavefront-benchmark-v2/instrumented/runner",
+      "sha256": "eff89993d9b138ea0197c5bb2c08c7d157d8facfea596a413805b9f4ddc3339b"
+    },
+    "R-B1": {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/reference/build/wavefront-benchmark-v2/instrumented/runner",
+      "sha256": "eff89993d9b138ea0197c5bb2c08c7d157d8facfea596a413805b9f4ddc3339b"
+    }
+  },
+  "identities": {
+    "G0": {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/general-optimizations/G0/identity.json",
+      "sha256": "b7619fef640a947697d3c0ad2c896e570839f93726cd48ba0e6522213a856f92"
+    },
+    "registers": {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/general-optimizations/registers/identity.json",
+      "sha256": "2459da7d64447f61fd3467b58b2111538812a00000a9be55f6b72b015830d009"
+    },
+    "normalized": {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/general-optimizations/normalized/identity.json",
+      "sha256": "a5edf394c63ceba89ada53a5e8c7ae9877541015a543778ccffed5b7fd3e665f"
+    },
+    "counted": {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/general-optimizations/counted/identity.json",
+      "sha256": "d87c331b09f220070fd04c93054538eaef1fdc97deb19cf79757c964b6aaf84f"
+    },
+    "radius1": {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/general-optimizations/radius1/identity.json",
+      "sha256": "a533779732ee616fe45ffd17ec2a5f4767831241c81a1fd8b2025657a1c50b80"
+    }
+  },
+  "logs": {
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/general-optimizations-logs/stage15-swift-tests.log": "28b537d80ab33d78fcc548be1d4bc1dc6313ae8aaa2bcb9becbf25e63c304cd4",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/general-optimizations-logs/stage15-proof-v2.log": "0f687cef18d127ef2ed642b688280475e2c9c5fbf29aad91e7542a098f0fa0b1",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/general-optimizations-logs/stage15-stages.log": "1b748c97b11a3b0aa655add2d5e4bc7bf4357ea3a3165ad88e2e59e23db00b55",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/general-optimizations-logs/stage15-prepare.log": "ac7310f1b39794f9b65450445897bfbca3f959dbe6a8a8be13b08689568152c2",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/general-optimizations-logs/stage15-swift-build.log": "8fe7f96deeb2ea233407693023e1522e8fdecaed5ed5bda54e75f950e050e788",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/general-optimizations-logs/stage15-controller-tests.log": "e6ec182765cd965f2837d8eeaef5a64af48a104f245cd1a0b7281559194c57c1",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/general-optimizations-logs/stage15-history.log": "51920fe3cf0a124cbc6af3fb43d4f74ed2285b00c7a1a11a6b6b907539f567bb",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/general-optimizations-logs/stage15-proof.log": "7dfa048e1f9d55dc1160ad6ea83ae874afce80b80472cd861bc60fa7f70a977b",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/general-optimizations-logs/stage15-timing.log": "603ef250f12ebc93a0c5a00e5ed491d679173254b7992fe9f9d1828aadbe66d7",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/general-optimizations-logs/stage15-python.log": "eb178bbc8bd2b7d994affcb1b5dd42b61075bc0ef53349a10eef7ceaebd962c1"
+  },
+  "cleanup": {
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/stage15-cleanup01.json": "30613d3621c64d9f55add07aa3d32bb0c3a786ddf02e5c2f5a7c0dd1f85f851a",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/stage15-metal-sources/manifest.json": "77173e1097aed6a459d4aaf6ac307299497b1f9703017957687400f889766edc"
+  },
+  "remaining": [
+    "restore sufficient disk headroom and avoid other build/test interference",
+    "rerun all28 predeclared rounds from start without merging interrupted data",
+    "full current-source release AOT/JIT parity and broader regression coverage",
+    "balanced repeats/holdout, stable B_ref, formal footprint/retention/performance gates",
+    "combined optimizations and later priority experiments; no promotion or PR"
+  ]
+}
