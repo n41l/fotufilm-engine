@@ -4,6 +4,7 @@ import argparse,importlib.util,json,os,subprocess,hashlib
 from pathlib import Path
 c=Path(__file__).resolve().parents[1]
 p=argparse.ArgumentParser(description=__doc__)
+p.add_argument('--bundle',action='store_true')
 for name in ('build','output','fixtures','reference-worker'):p.add_argument('--'+name,required=True,type=Path)
 a=p.parse_args();a.build=a.build.resolve()
 s=importlib.util.spec_from_file_location('d',c/'tools/wavefront_aot_driver.py');m=importlib.util.module_from_spec(s);s.loader.exec_module(m)
@@ -12,19 +13,25 @@ sha=lambda p:hashlib.sha256(Path(p).read_bytes()).hexdigest()
 frozen=json.loads(a.fixtures.read_text());ref=a.reference_worker.resolve()
 assert sha(ref)==frozen['worker_sha256']
 workers={}
-for stage,trace in ((2,False),(3,False),(3,True)):
- key=str(stage)+('trace' if trace else '')
- workers[key]=m.build(c,a.build/f'control-{stage}/kernels',out/key,c/'tools/wavefront-benchmark.mm',
-  definitions=('-DFOTUFILM_AOT_WAVEFRONT_HOST=1',)+(('-DFOTUFILM_THREE_STAGE_RESEARCH=1',) if stage==3 else ()),
+for stage,trace in (((2,False),(2,True)) if a.bundle else ((2,False),(3,False),(3,True))):
+ key=('bundle' if a.bundle else str(stage))+('trace' if trace else '')
+ workers[key]=m.build(c,a.build/('control-bundle/kernels' if a.bundle else f'control-{stage}/kernels'),out/key,c/'tools/wavefront-benchmark.mm',
+  definitions=('-DFOTUFILM_AOT_WAVEFRONT_HOST=1',)+(('-DFOTUFILM_BUNDLE_RESEARCH=1',) if a.bundle else ('-DFOTUFILM_THREE_STAGE_RESEARCH=1',) if stage==3 else ()),
   driver_definitions=('-Dfotufilm_halide_metal_process_linear_float=fotufilm_wavefront_bench_process_linear_float',),
   adapter=c/'tools/wavefront-benchmark-adapter.cpp',
   adapter_definitions=('-DFOTUFILM_WAVEFRONT_RUNTIME_BAND=1',)+(('-DFOTUFILM_WAVEFRONT_TRACE=1','-x','objective-c++','-fblocks') if trace else ()),
-  diagnostic_control=a.build/f'control-{stage}',
-  diagnostic_kernels=a.build/('three-normal' if stage==3 else 'two-normal'),
-  trace_overrides=sorted((a.build/'three-trace').glob('*.a')) if trace else ())
+  diagnostic_control=a.build/('control-bundle' if a.bundle else f'control-{stage}'),
+  diagnostic_kernels=a.build/('bundle-normal' if a.bundle else 'three-normal' if stage==3 else 'two-normal'),
+  trace_overrides=sorted((a.build/('bundle-trace' if a.bundle else 'three-trace')).glob('*.a')) if trace else ())
+if a.bundle:
+ workers['2']=m.build(c,a.build/'control-2/kernels',out/'2',c/'tools/wavefront-benchmark.mm',
+  definitions=('-DFOTUFILM_AOT_WAVEFRONT_HOST=1',),
+  driver_definitions=('-Dfotufilm_halide_metal_process_linear_float=fotufilm_wavefront_bench_process_linear_float',),
+  adapter=c/'tools/wavefront-benchmark-adapter.cpp',adapter_definitions=('-DFOTUFILM_WAVEFRONT_RUNTIME_BAND=1',),
+  diagnostic_control=a.build/'control-2',diagnostic_kernels=a.build/'control-normal')
 compare=out/'compare';subprocess.run(['xcrun','clang++','-O2','-std=c++17',str(c/'tools/wavefront-compare.cpp'),'-o',str(compare)],check=True)
-report={'complete':False,'scope':'full-film three-stage prototype, two call-scoped GPU row caches; mixed legacy diagnostic only',
- 'stage_count':3,'performance_acceptance':False,'workers':{k:{'path':str(p),'sha256':sha(p)} for k,p in workers.items()},'results':[]}
+report={'complete':False,'scope':'full-film private wavefront prototype; mixed legacy diagnostic only',
+ 'stage_count':2 if a.bundle else 3,'cut':'bundle' if a.bundle else 'post_mtf','performance_acceptance':False,'workers':{k:{'path':str(p),'sha256':sha(p)} for k,p in workers.items()},'results':[]}
 def save():(out/'report.json').write_text(json.dumps(report,indent=2)+'\n')
 save()
 try:

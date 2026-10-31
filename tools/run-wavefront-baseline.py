@@ -118,13 +118,15 @@ def three_stage_accounting(stderr, expected_stages, height, source_calls, output
     return b, [] if valid else ['invalid three-stage row accounting']
 
 
-def run_round(worker, pack, image, mode, root, *, expected_band=None, expected_ring_rows=1024, expected_stage_count=2):
+def run_round(worker, pack, image, mode, root, *, expected_band=None, expected_ring_rows=1024, expected_stage_count=2, expected_cut="post_mtf", expected_field_rows=None):
     # The CLI remains clean-R only. The comparison controller explicitly admits E here.
     experimental = mode == "E" and expected_band in (64,128,256,512)
     if not experimental and (mode not in ("B0", "B1") or expected_band is not None):
         raise ValueError("R B0/B1 or explicit E with a supported band is required")
     if expected_stage_count not in (2,3) or (expected_stage_count==3 and not experimental):
         raise ValueError("stage count must be 2, or 3 for explicit E")
+    if expected_cut not in ('post_mtf','bundle') or (expected_cut=='bundle' and (not experimental or expected_stage_count!=2 or expected_band!=512 or expected_field_rows is None)):
+        raise ValueError('explicit bundle requires two stages, 512 rows and verified field dimensions')
     root.mkdir(parents=True)
     records=[]; pending={}; events=[]; issues=[]; window=None; offset=None; deadline_missed=False
     start=time.monotonic()
@@ -159,6 +161,8 @@ def run_round(worker, pack, image, mode, root, *, expected_band=None, expected_r
                             if experimental:
                                 if '_wavefront_' not in actual or not actual.endswith('_'+str(expected_band)):
                                     issues.append('requested E variant not actually executed')
+                                if ('_wavefront_bundle_' in actual)!=(expected_cut=='bundle'):
+                                    issues.append('requested experimental cut not actually executed')
                                 if record['aot_calls']<2 or record['gpu_dispatches']<record['aot_calls']:
                                     issues.append('missing actual E GPU work')
                             else:
@@ -197,6 +201,13 @@ def run_round(worker, pack, image, mode, root, *, expected_band=None, expected_r
             rows,source,consumers,capacity=map(int,counts[0])
             if rows!=height or source<1 or consumers!=(height+expected_band-1)//expected_band or capacity!=expected_ring_rows:
                 issues.append('invalid E row accounting')
+            marker=re.findall(r'BUNDLE_COUNTS ([^\n]+)',stderr)
+            if expected_cut=='bundle':
+                values={k:int(v) for k,v in re.findall(r'(\w+)=(\d+)',marker[0])} if len(marker)==1 else {}
+                if (values.get('light_rows')!=height or values.get('producer_calls')!=source or values.get('consumer_calls')!=consumers
+                    or any(values.get('field_rows'+str(i))!=expected_field_rows[i] or values.get('field_updates'+str(i),0)<1 for i in range(3))):
+                    issues.append('bundle field accounting missing or inconsistent')
+            elif marker:issues.append('unexpected bundle worker')
             extra,stage_issues=three_stage_accounting(stderr,expected_stage_count,height,source,consumers)
             issues+=stage_issues
             if any(r.get('aot_calls')!=source+consumers+extra for r in records):issues.append('per-call E stage count changed')
@@ -228,6 +239,7 @@ def run_round(worker, pack, image, mode, root, *, expected_band=None, expected_r
     if experimental:
         result['experimental_band']=expected_band
         result['expected_stage_count']=expected_stage_count
+        result['expected_cut']=expected_cut
     atomic_json(root/'round.json',result)
     return result
 

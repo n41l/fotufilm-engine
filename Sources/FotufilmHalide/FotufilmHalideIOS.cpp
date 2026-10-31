@@ -10,6 +10,9 @@
 
 #include "FotufilmHalideIOSVariants.h"
 #include "FotufilmAotFrame.h"
+#if FOTUFILM_BUNDLE_RESEARCH
+#include "fotufilm_bundle_declarations.h"
+#endif
 #if FOTUFILM_THREE_STAGE_RESEARCH
 #include "fotufilm_three_stage_declarations.h"
 #endif
@@ -330,6 +333,9 @@ int run_wavefront(const WavefrontVariant &variant, halide_buffer_t *out,
     if (result) result->drain_status = drain_error;
     return error ? error : drain_error;
 }
+#if FOTUFILM_BUNDLE_RESEARCH
+#include "../../tools/wavefront-bundle-scheduler.h"
+#endif
 #if FOTUFILM_THREE_STAGE_RESEARCH
 #include "../../tools/wavefront-three-stage-scheduler.h"
 #endif
@@ -493,7 +499,7 @@ int run_aot(ExecutionState &state, halide_buffer_t *in, halide_buffer_t *out,
         const int64_t post_mtf_reach = fotufilm::wavefront_post_mtf_reach(frame,feature_mask);
         reason = std::max(source_reach,post_mtf_reach) > fotufilm::gpu::kWavefrontLightMargin ? "source demand exceeds private row-cache bound"
             : "unsupported geometry, transport or spatial reach";
-#if FOTUFILM_THREE_STAGE_RESEARCH
+#if FOTUFILM_THREE_STAGE_RESEARCH || FOTUFILM_BUNDLE_RESEARCH
         const bool stage_band_supported=wavefront->rows==512;
 #else
         const bool stage_band_supported=true;
@@ -519,7 +525,19 @@ int run_aot(ExecutionState &state, halide_buffer_t *in, halide_buffer_t *out,
                     wavefront_result->actual_mode = 1;
                     wavefront_result->reason = "admitted";
                 }
-#if FOTUFILM_THREE_STAGE_RESEARCH
+#if FOTUFILM_BUNDLE_RESEARCH
+                BundleFunction bundle_producer=nullptr;
+#define FOTUFILM_PICK_BUNDLE(variant_name, stages_name, variant_mask) \
+                if(experimental.source==fotufilm_halide_ios_##variant_name##_wavefront_light_##stages_name) { \
+                    bundle_producer=fotufilm_halide_ios_##variant_name##_wavefront_bundle_source_##stages_name; \
+                    experimental.consumer=fotufilm_halide_ios_##variant_name##_wavefront_bundle_##stages_name##_512; }
+                FOTUFILM_AOT_WAVEFRONT_LIGHT_VARIANTS(FOTUFILM_PICK_BUNDLE)
+#undef FOTUFILM_PICK_BUNDLE
+                int strides[]={frame.halation_stride_0,frame.halation_stride_1,frame.halation_stride_2};
+                int radii[]={frame.halation_strided_radius_0,frame.halation_strided_radius_1,frame.halation_strided_radius_2};
+                return run_wavefront_bundle(experimental,bundle_producer,out,width,height,configuration,
+                    strides,radii,int(fotufilm::wavefront_log_reach(frame,feature_mask)),*wavefront,wavefront_result,
+#elif FOTUFILM_THREE_STAGE_RESEARCH
                 FrameFunction halation_stage=nullptr;
 #define FOTUFILM_PICK_HALATION(variant_name, stages_name, variant_mask) \
                 if (experimental.source==fotufilm_halide_ios_##variant_name##_wavefront_light_##stages_name) \
@@ -534,9 +552,9 @@ int run_aot(ExecutionState &state, halide_buffer_t *in, halide_buffer_t *out,
 #else
                 return run_wavefront(experimental,out,width,height,configuration,*wavefront,wavefront_result,
 #endif
-                    [&](FrameFunction function,halide_buffer_t *private_cfg,halide_buffer_t *destination) {
+                    [&](auto function,halide_buffer_t *private_cfg,auto... destinations) {
                         return function(FOTUFILM_AOT_FRAME_ARGUMENTS(in, private_cfg, exposure, film, paper, width, height,
-                            frame,seed,origin_x,origin_y,feature_mask,configuration,film_tiles.raw_buffer(),film_on ? 1 : 0),destination);
+                            frame,seed,origin_x,origin_y,feature_mask,configuration,film_tiles.raw_buffer(),film_on ? 1 : 0),destinations...);
                     });
             }
         }

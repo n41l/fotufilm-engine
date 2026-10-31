@@ -9,7 +9,7 @@ namespace fotufilm::pipelines {
 /// Internal research schedule. Zero rows preserves the original pipeline and cache key.
 /// Admission at execution must additionally bound full-frame reach to kWindowMaximumReach.
 struct WavefrontSchedule {
-    enum class Light { None, Export, Consume, ExportLog, ConsumeLog };
+    enum class Light { None, Export, Consume, ExportLog, ConsumeLog, ExportBundle, ConsumeBundle };
     int rows = 0;
     bool trace = false;
     Light light = Light::None;
@@ -414,7 +414,7 @@ public:
                        GpuConfiguration configuration = default_gpu_configuration(),
                        bool exact_stages = false,
                        WavefrontSchedule wavefront = {})
-        : GpuSchedule(configuration, windowed, wavefront.light == WavefrontSchedule::Light::Export || wavefront.light == WavefrontSchedule::Light::ExportLog),
+        : GpuSchedule(configuration, windowed, wavefront.light == WavefrontSchedule::Light::Export || wavefront.light == WavefrontSchedule::Light::ExportLog || wavefront.light == WavefrontSchedule::Light::ExportBundle),
           FrameParams("frame_", suffix),
           float_io_((feature_mask & FOTUFILM_FRAME_FLOAT_IO) != 0),
           realtime_(!float_io_
@@ -460,7 +460,7 @@ public:
             const bool supported = exact == classes
                 ? (stages == FOTUFILM_AOT_PRINTED_NEGATIVE || stages == FOTUFILM_AOT_PRINTED_NEGATIVE_LUMA)
                 : (exact == (classes | FOTUFILM_FRAME_MONOCHROME) && stages == FOTUFILM_AOT_PRINTED_SLIDE);
-            if (windowed != (wavefront.light == WavefrontSchedule::Light::Consume || wavefront.light == WavefrontSchedule::Light::ConsumeLog)
+            if (windowed != (wavefront.light == WavefrontSchedule::Light::Consume || wavefront.light == WavefrontSchedule::Light::ConsumeLog || wavefront.light == WavefrontSchedule::Light::ConsumeBundle)
                 || !exact_stages || !supported || gpu_device_api() != DeviceAPI::Metal
                 || (wavefront.rows != 64 && wavefront.rows != 128 && wavefront.rows != 256 && wavefront.rows != 512))
                 throw std::invalid_argument("unsupported experimental wavefront graph");
@@ -540,7 +540,7 @@ public:
         policy.half_store = fast(kStillFastHalfStore);
         policy.approximate = approximate_;
         policy.realtime = realtime_;
-        policy.windowed = windowed || wavefront.light == WavefrontSchedule::Light::ExportLog;
+        policy.windowed = windowed || wavefront.light == WavefrontSchedule::Light::ExportLog || wavefront.light == WavefrontSchedule::Light::ExportBundle;
         // The reference CPU samples a 2048-entry table of each curve. The browser, Vulkan and
         // the fast still road sample the same table; the native reference road evaluates the
         // analytic curve, which the table matches within 1e-4 D.
@@ -565,19 +565,38 @@ public:
         std::unique_ptr<LightFrontier> frontier, log_frontier;
         const bool exports_log = wavefront.light == WavefrontSchedule::Light::ExportLog;
         const bool consumes_log = wavefront.light == WavefrontSchedule::Light::ConsumeLog;
+        const bool exports_bundle=wavefront.light==WavefrontSchedule::Light::ExportBundle;
+        const bool consumes_bundle=wavefront.light==WavefrontSchedule::Light::ConsumeBundle;
+        Func bundle_light("frame_wavefront_bundle_light"+suffix);
+        CoarseFrontier coarse;coarse.consume=consumes_bundle;
+        if (exports_bundle||consumes_bundle) backend.coarse_frontier(&coarse);
         const int frontier_channels = 3;
         if (wavefront.light != WavefrontSchedule::Light::None) {
             Expr count = kWavefrontLightBase + width_ * kWavefrontLightRows * frontier_channels;
             if (exports_log || consumes_log) count += width_ * kWavefrontLogRows * frontier_channels;
+            if (exports_bundle||consumes_bundle) {
+                Expr strides[]={halation_stride_0_,halation_stride_1_,halation_stride_2_};
+                for (Expr stride:strides) count+=((width_+stride-1)/stride)*((height_+stride-1)/stride)*3;
+            }
             configuration_.dim(0).set_bounds(0, count);
             if (!consumes_log) {
                 frontier = std::make_unique<LightFrontier>();
-                if (wavefront.light == WavefrontSchedule::Light::Consume || exports_log) {
+                if (wavefront.light == WavefrontSchedule::Light::Consume || exports_log || consumes_bundle) {
                     Func view("frame_wavefront_light" + suffix);
                     view(x, y, channel) = configuration_(kWavefrontLightBase + x
                         + (y % kWavefrontLightRows) * width_ + channel * width_ * kWavefrontLightRows);
                     frontier->external = view;
                 }
+                if (exports_bundle) frontier->external_builder=[&,bundle_light](Func values) mutable {
+                    bundle_light(x,y,channel)=values(x,y,channel);
+                    Expr lo=bundle_light.output_buffer().dim(1).min();
+                    Expr hi=lo+bundle_light.output_buffer().dim(1).extent()-1;
+                    Func hybrid("frame_wavefront_bundle_hybrid"+suffix);
+                    hybrid(x,y,channel)=Halide::select(y>=lo&&y<=hi,
+                        bundle_light(x,Halide::clamp(y,lo,hi),channel),
+                        configuration_(kWavefrontLightBase+x+(y%kWavefrontLightRows)*width_+channel*width_*kWavefrontLightRows));
+                    return hybrid;
+                };
                 backend.light_frontier(frontier.get());
             }
             if (exports_log || consumes_log) {
@@ -729,10 +748,12 @@ public:
         Func linear_delivery = windowed ? delivered : final_linear;
 
         const bool exports_light = wavefront.light == WavefrontSchedule::Light::Export;
-        const bool exports_field = exports_light || exports_log;
-        Func output(std::string(exports_log ? "frame_wavefront_log_output" : exports_light ? "frame_wavefront_light_output" : "frame_output") + suffix);
+        const bool exports_field = exports_light || exports_log || exports_bundle;
+        Func output=exports_bundle ? bundle_light : Func(std::string(exports_log ? "frame_wavefront_log_output" : exports_light ? "frame_wavefront_light_output" : "frame_output") + suffix);
         Expr safe_channel = Halide::min(channel, 2);
-        if (exports_field) {
+        if (exports_bundle) {
+            // Defined at the MTF cut; coarse outputs depend on this same output.
+        } else if (exports_field) {
             output(x, y, channel) = (exports_log ? log_frontier : frontier)->captured(x, y, channel);
         } else if (density_out_) {
             output(x, y, channel) = Halide::cast(
@@ -893,7 +914,26 @@ public:
                 }
             }
         }
-        pipeline_ = Pipeline(output);
+        if (exports_bundle) {
+            std::vector<Func> outputs{output};
+            Expr strides[]={halation_stride_0_,halation_stride_1_,halation_stride_2_};
+            for(int i=0;i<3;++i) {
+                if (!coarse.fields[i].defined()) throw std::runtime_error("bundle missing halation field");
+                Func field=coarse.fields[i];
+                Expr w=(width_+strides[i]-1)/strides[i],h=(height_+strides[i]-1)/strides[i];
+                field.output_buffer().dim(0).set_stride(1);
+                field.output_buffer().dim(2).set_bounds(0,3).set_stride(w*h);
+                if(wavefront.trace) {
+                    field.trace_realizations();
+                    for(const auto &entry:Halide::Internal::find_transitive_calls(field.function())) {
+                        Halide::LoopLevel level;level.set(entry.second.schedule().compute_level());
+                        if(level.lock().is_root()) {Func stage(entry.second);stage.trace_realizations();}
+                    }
+                }
+                outputs.push_back(field);
+            }
+            pipeline_=Pipeline(outputs);
+        } else pipeline_ = Pipeline(output);
 #if !defined(FOTUFILM_HALIDE_AOT_GENERATOR)
         if (!cached_.prepare(pipeline_,
             "frame:" + std::to_string(feature_mask) + ":" + std::to_string(windowed) + ":" + this->configuration().cache_key()

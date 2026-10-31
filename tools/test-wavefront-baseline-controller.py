@@ -32,7 +32,7 @@ class ControllerTests(unittest.TestCase):
         self.assertEqual(controller.compact(result,Path('/round.json')),
                          {'scores':{'valid':True},'round_path':'/round.json'})
 
-    def check(self,change=None,*,experimental=False,stderr=None,band=256,ring=1024,stages=2):
+    def check(self,change=None,*,experimental=False,stderr=None,band=256,ring=1024,stages=2,cut="post_mtf",bundle_marker=True):
         with tempfile.TemporaryDirectory() as temporary:
             root=Path(temporary);image=root/'input';image.write_bytes(bytes(16));pack=root/'pack';pack.write_bytes(b'fixture')
             memory={'device_current_bytes':100,'device_peak_bytes':120,'process_footprint_bytes':200,
@@ -50,7 +50,7 @@ class ControllerTests(unittest.TestCase):
             if experimental:
                 events[0]['height']=1080
                 for event in events:
-                    if event['type']=='call_complete':event.update(actual_variant=f'color_wavefront_negative_{band}',aot_calls=9,gpu_dispatches=9)
+                    if event['type']=='call_complete':event.update(actual_variant=f'color_wavefront_{"bundle_" if cut=="bundle" else ""}negative_{band}',aot_calls=9,gpu_dispatches=9)
                 if stderr is None:
                     consumers=(1080+band-1)//band
                     for event in events:
@@ -60,13 +60,15 @@ class ControllerTests(unittest.TestCase):
                 stderr+='THREE_STAGE_COUNTS light_rows=1080 log_rows=1080 light_calls=4 log_calls=4 output_calls=3 log_ring_rows=1024 log_reach=5 halo_reach=56\n'
                 for event in events:
                     if event['type']=='call_complete':event.update(aot_calls=11,gpu_dispatches=11)
+            if cut=='bundle' and bundle_marker and stderr is not None and 'BUNDLE_COUNTS' not in stderr:
+                stderr+='BUNDLE_COUNTS light_rows=1080 producer_calls=4 consumer_calls=3 field_rows0=540 field_rows1=270 field_rows2=270 field_updates0=2 field_updates1=2 field_updates2=2\n'
             if change:change(events)
             worker=root/'worker.py';worker.write_text('#!/usr/bin/env python3\nimport json\n'
                 +'events=json.loads('+repr(json.dumps(events))+')\nfor e in events:print(json.dumps(e),flush=True)\n')
             if stderr:
                 worker.write_text(worker.read_text()+'import sys\nsys.stderr.write('+repr(stderr)+')\n')
             worker.chmod(0o755)
-            return controller.run_round(worker,pack,image,'E' if experimental else 'B0',root/'round',expected_band=band if experimental else None,expected_ring_rows=ring,expected_stage_count=stages)
+            return controller.run_round(worker,pack,image,'E' if experimental else 'B0',root/'round',expected_band=band if experimental else None,expected_ring_rows=ring,expected_stage_count=stages,expected_cut=cut,expected_field_rows=(540,270,270) if cut=="bundle" else None)
 
     def test_three_stage_round_counts_all_calls(self):
         self.assertTrue(self.check(experimental=True,band=512,ring=2048,stages=3)['scores']['valid'])
@@ -81,6 +83,16 @@ class ControllerTests(unittest.TestCase):
         for bad in (marker.replace('log_rows=1080','log_rows=1079'),marker.replace('log_ring_rows=1024','log_ring_rows=2048'),marker.replace('light_calls=4','light_calls=5'),marker.replace('log_reach=5','log_reach=1000')):
             self.assertTrue(controller.three_stage_accounting(bad,3,1080,4,3)[1])
         self.assertTrue(controller.three_stage_accounting(marker,2,1080,4,3)[1])
+
+    def test_bundle_round(self):
+        self.assertTrue(self.check(experimental=True,band=512,ring=2048,cut='bundle')['scores']['valid'])
+    def test_bundle_missing_counts_rejected(self):
+        self.assertFalse(self.check(experimental=True,band=512,ring=2048,cut='bundle',bundle_marker=False)['scores']['valid'])
+    def test_bundle_old_cut_rejected(self):
+        self.assertFalse(self.check(lambda e:e[5].update(actual_variant='color_wavefront_negative_512'),experimental=True,band=512,ring=2048,cut='bundle')['scores']['valid'])
+    def test_bundle_wrong_field_height_rejected(self):
+        stderr='WAVEFRONT_POLICY requested=1 actual=1 rows=512 reason=admitted\nWAVEFRONT_COUNTS rows=1080 source_calls=4 consumer_calls=3 ring_rows=2048\nBUNDLE_COUNTS light_rows=1080 producer_calls=4 consumer_calls=3 field_rows0=539 field_rows1=270 field_rows2=270 field_updates0=2 field_updates1=2 field_updates2=2\n'
+        self.assertFalse(self.check(experimental=True,band=512,ring=2048,cut='bundle',stderr=stderr)['scores']['valid'])
 
     def test_consistent_synthetic_round(self):self.assertTrue(self.check()['scores']['valid'])
     def test_warmup_cancellation_rejected(self):self.assertFalse(self.check(lambda e:e[1].update(status='cancelled'))['scores']['valid'])

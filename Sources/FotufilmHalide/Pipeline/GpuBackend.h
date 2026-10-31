@@ -6,6 +6,7 @@
 #include "../Graph/Frame.h"
 #include "../FotufilmCompiledCache.h"
 #include "FilmTileStore.h"
+#include "WavefrontLightLayout.h"
 
 #include <algorithm>
 #include <cmath>
@@ -69,6 +70,11 @@ struct LightFrontier {
     Func external;
     Func captured;
     int matches = 0;
+    std::function<Func(Func)> external_builder;
+};
+struct CoarseFrontier {
+    bool consume = false;
+    std::array<Func,3> fields;
 };
 
 class GpuBackend : public graph::Backend {
@@ -79,6 +85,8 @@ public:
           paper_lut_(paper_lut) {}
 
     void light_frontier(LightFrontier *frontier) { frontiers_.push_back(frontier); }
+
+    void coarse_frontier(CoarseFrontier *value) { coarse_ = value; }
 
     bool approximate() const override { return policy_.approximate; }
     bool half_lut_math() const override { return policy_.half_tetra; }
@@ -95,6 +103,7 @@ public:
         for (LightFrontier *frontier : frontiers_) if (point == frontier->point) {
             ++frontier->matches;
             frontier->captured = values;
+            if (frontier->external_builder) frontier->external=frontier->external_builder(values);
             return remember(values, frontier->external.defined() ? frontier->external : values);
         }
         if (!values.defined() || stored_.count(values.name())) return values;
@@ -244,6 +253,22 @@ public:
             }
             return center;
         };
+        if (halation && coarse_ && coarse_->consume) {
+            Expr base=kWavefrontLightBase+width*kWavefrontLightRows*3;
+            for (int i=0;i<3;++i) {
+                Expr w=(width+strides[i]-1)/strides[i],h=(height+strides[i]-1)/strides[i];
+                Expr offset=base;
+                auto at=[&](Expr cx,Expr cy) {
+                    Expr inside=cx>=0&&cx<w&&cy>=0&&cy<h;
+                    return Halide::select(inside,configuration_(offset+Halide::clamp(cx,0,w-1)
+                        +Halide::clamp(cy,0,h-1)*w+Halide::min(channel,2)*w*h),0.f);
+                };
+                auto valid=[&](Expr cx,Expr cy) {return Halide::select(cx>=0&&cx<w&&cy>=0&&cy<h,1.f,0.f);};
+                scattered_at[i]=read_scale(i,strides[i],at,valid);
+                base+=w*h*3;
+            }
+            return scattered_at;
+        }
         if (halation && policy_.fields_in) {
             // The grids arrive whole-frame behind the configuration: frame cells are their own
             // cells, and a cell off the grid reads zero and weighs nothing, as a cell off a
@@ -308,6 +333,7 @@ public:
             Func blurred = schedule_.gpu_triple_box_blur(
                 down_view, strided_radii[scale_index], down_width, down_height, half,
                 scale_name + "_spread", channels);
+            if (halation && coarse_ && !coarse_->consume) coarse_->fields[scale_index]=blurred;
             Func bounded_blur = constant_exterior(
                 blurred, typed_zero(blurred),
                 {{0, down_width}, {0, down_height}, {0, channels}});
@@ -535,6 +561,7 @@ private:
     }
 
     std::vector<LightFrontier *> frontiers_;
+    CoarseFrontier *coarse_ = nullptr;
     GpuSchedule &schedule_;
     GpuPolicy policy_;
     FrameParams &p_;

@@ -30,7 +30,7 @@ int main(int argc, char **argv) {
     Work work = Work::Everything;
     int wanted = 0;
     bool count_only = false;
-    bool three_stage = false;
+    bool three_stage = false, bundle = false;
     // Build policy only; runtime requests use explicit per-call options.
     const char *wavefront_setting = std::getenv("FOTUFILM_AOT_WAVEFRONT");
     const bool wavefront = wavefront_setting && std::string(wavefront_setting) == "1";
@@ -41,7 +41,9 @@ int main(int argc, char **argv) {
     std::string prefix = "fotufilm_halide_ios_";
     for (int i = 2; i < argc; ++i) {
         const std::string argument = argv[i];
-        if (argument == "--three-stage") {
+        if (argument == "--bundle") {
+            bundle=true;
+        } else if (argument == "--three-stage") {
             three_stage = true;
         } else if (argument == "--count") {
             count_only = true;
@@ -69,6 +71,9 @@ int main(int argc, char **argv) {
         std::cerr << "--three-stage requires opt-in macOS wavefront generation\n";
         return 2;
     }
+    if (bundle && (!wavefront || platform!="--macos" || three_stage)) {
+        std::cerr<<"--bundle requires exclusive opt-in macOS wavefront generation\n";return 2;
+    }
     const bool simulator = platform == "--simulator";
     const bool macos = platform == "--macos" || platform == "--macos-intel";
     const bool intel = platform == "--macos-intel";
@@ -92,6 +97,7 @@ int main(int argc, char **argv) {
         bool exports_light = false;
         bool exports_log = false;
         bool consumes_log = false;
+        bool exports_bundle = false, consumes_bundle = false;
     };
 #define FOTUFILM_AOT_GENERATOR_ENTRY(variant_name, variant_mask) \
     {prefix + #variant_name, (variant_mask), false, false, false},
@@ -128,6 +134,15 @@ int main(int argc, char **argv) {
                             variant_mask, false, false, true, 512, false, true});
         FOTUFILM_AOT_WAVEFRONT_LIGHT_VARIANTS(FOTUFILM_WAVEFRONT_LOG_ENTRY)
 #undef FOTUFILM_WAVEFRONT_LOG_ENTRY
+    }
+    if(bundle) {
+#define FOTUFILM_BUNDLE_ENTRY(variant_name, stages_name, variant_mask) \
+        { Variant producer{prefix+#variant_name "_wavefront_bundle_source_" #stages_name,variant_mask,false,false,true,512}; \
+          producer.exports_bundle=true;variants.push_back(producer); \
+          Variant consumer{prefix+#variant_name "_wavefront_bundle_" #stages_name "_512",variant_mask,false,true,true,512}; \
+          consumer.consumes_bundle=true;variants.push_back(consumer); }
+        FOTUFILM_AOT_WAVEFRONT_LIGHT_VARIANTS(FOTUFILM_BUNDLE_ENTRY)
+#undef FOTUFILM_BUNDLE_ENTRY
     }
     // Linux's two sets share one runtime, compiled with --extras.
     variants[0].runtime = !linux;
@@ -230,7 +245,9 @@ int main(int argc, char **argv) {
             GpuFramePipeline pipeline(variant.features,
                                         "_v" + std::to_string(index), variant.windowed, configuration,
                                         variant.exact_stages, {variant.wavefront_rows, trace_wavefront,
-                                            variant.exports_log ? WavefrontSchedule::Light::ExportLog
+                                            variant.exports_bundle ? WavefrontSchedule::Light::ExportBundle
+                                            : variant.consumes_bundle ? WavefrontSchedule::Light::ConsumeBundle
+                                            : variant.exports_log ? WavefrontSchedule::Light::ExportLog
                                             : variant.consumes_log ? WavefrontSchedule::Light::ConsumeLog
                                             : variant.wavefront_rows ? (variant.exports_light ? WavefrontSchedule::Light::Export
                                                                                              : WavefrontSchedule::Light::Consume)

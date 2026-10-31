@@ -367,6 +367,18 @@
       "second_cut": "LogExposure",
       "log_ring_rows": 1024,
       "doc": "Explicit --three-stage research build only: three per-class halation/log exporters and log-consuming 512 consumers; other bands keep their two-stage kernels. No default legacy selection."
+    },
+    "bundle_research": {
+      "band": 512,
+      "light_ring_rows": 2048,
+      "producer_margin": 360,
+      "outputs": [
+        "light",
+        "halation_0",
+        "halation_1",
+        "halation_2"
+      ],
+      "field_layout": "planar-float32"
     }
   }
 }
