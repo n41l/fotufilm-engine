@@ -65,6 +65,7 @@ struct GpuPolicy {
 
 // A cut at the original final MTF-selected light expression, never a replacement formula.
 struct LightFrontier {
+    graph::Store point = graph::Store::MtfSelected;
     Func external;
     Func captured;
     int matches = 0;
@@ -77,7 +78,7 @@ public:
         : schedule_(schedule), policy_(policy), p_(p), configuration_(configuration), film_lut_(film_lut),
           paper_lut_(paper_lut) {}
 
-    void light_frontier(LightFrontier *frontier) { frontier_ = frontier; }
+    void light_frontier(LightFrontier *frontier) { frontiers_.push_back(frontier); }
 
     bool approximate() const override { return policy_.approximate; }
     bool half_lut_math() const override { return policy_.half_tetra; }
@@ -91,10 +92,10 @@ public:
     using graph::Backend::store;
     Func store(Func values, graph::Store point, int channels, Expr branch) override {
         using graph::Store;
-        if (frontier_ && point == Store::MtfSelected) {
-            ++frontier_->matches;
-            frontier_->captured = values;
-            return remember(values, frontier_->external.defined() ? frontier_->external : values);
+        for (LightFrontier *frontier : frontiers_) if (point == frontier->point) {
+            ++frontier->matches;
+            frontier->captured = values;
+            return remember(values, frontier->external.defined() ? frontier->external : values);
         }
         if (!values.defined() || stored_.count(values.name())) return values;
         const bool half = policy_.half_store;
@@ -524,7 +525,7 @@ private:
     /// in that kernel's threads rather than stored: the row-window graphs on Metal, which the
     /// row-window host measures.
     bool register_stages() const {
-        return schedule_.windowed() && schedule_.gpu_device_api() == DeviceAPI::Metal;
+        return policy_.windowed && schedule_.gpu_device_api() == DeviceAPI::Metal;
     }
 
     Func remember(Func original, Func view) {
@@ -533,7 +534,7 @@ private:
         return view;
     }
 
-    LightFrontier *frontier_ = nullptr;
+    std::vector<LightFrontier *> frontiers_;
     GpuSchedule &schedule_;
     GpuPolicy policy_;
     FrameParams &p_;

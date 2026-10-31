@@ -106,11 +106,25 @@ def sha(path):
     return digest.hexdigest()
 
 
-def run_round(worker, pack, image, mode, root, *, expected_band=None, expected_ring_rows=1024):
+def three_stage_accounting(stderr, expected_stages, height, source_calls, output_calls):
+    """Verify the extra real AOT calls in the explicit three-stage research host."""
+    rows=re.findall(r'THREE_STAGE_COUNTS light_rows=(\d+) log_rows=(\d+) light_calls=(\d+) log_calls=(\d+) output_calls=(\d+) log_ring_rows=(\d+) log_reach=(\d+) halo_reach=(\d+)',stderr)
+    if expected_stages==2:
+        return 0, ['unexpected three-stage worker'] if rows else []
+    if len(rows)!=1:return 0,['three-stage row accounting missing or duplicated']
+    light,log,a,b,c,capacity,reach,halo=map(int,rows[0])
+    valid=(light==log==height and a==source_calls and c==output_calls and b>=c
+        and capacity==1024 and 512+2*reach<=capacity and 512+2*(reach+halo)<=2048)
+    return b, [] if valid else ['invalid three-stage row accounting']
+
+
+def run_round(worker, pack, image, mode, root, *, expected_band=None, expected_ring_rows=1024, expected_stage_count=2):
     # The CLI remains clean-R only. The comparison controller explicitly admits E here.
     experimental = mode == "E" and expected_band in (64,128,256,512)
     if not experimental and (mode not in ("B0", "B1") or expected_band is not None):
         raise ValueError("R B0/B1 or explicit E with a supported band is required")
+    if expected_stage_count not in (2,3) or (expected_stage_count==3 and not experimental):
+        raise ValueError("stage count must be 2, or 3 for explicit E")
     root.mkdir(parents=True)
     records=[]; pending={}; events=[]; issues=[]; window=None; offset=None; deadline_missed=False
     start=time.monotonic()
@@ -183,7 +197,9 @@ def run_round(worker, pack, image, mode, root, *, expected_band=None, expected_r
             rows,source,consumers,capacity=map(int,counts[0])
             if rows!=height or source<1 or consumers!=(height+expected_band-1)//expected_band or capacity!=expected_ring_rows:
                 issues.append('invalid E row accounting')
-            if any(r.get('aot_calls')!=source+consumers for r in records):issues.append('per-call E source/consumer count changed')
+            extra,stage_issues=three_stage_accounting(stderr,expected_stage_count,height,source,consumers)
+            issues+=stage_issues
+            if any(r.get('aot_calls')!=source+consumers+extra for r in records):issues.append('per-call E stage count changed')
     retained=next((e for e in events if e['type']=='retained'),None)
     if retained is None:issues.append('retained-memory observation missing')
     hashes=[e['output_sha256'] for e in events if e['type'] in ('warmup_complete','measurement_complete')]
@@ -209,7 +225,9 @@ def run_round(worker, pack, image, mode, root, *, expected_band=None, expected_r
     result={'requested_mode':mode,'identity':identity,'scores':scores,'memory':memory_metrics,
             'requests':records,'events_path':str(root/'events.jsonl'),
             'phase_events':[e for e in events if e['type'] not in ('call_start','call_complete')]}
-    if experimental:result['experimental_band']=expected_band
+    if experimental:
+        result['experimental_band']=expected_band
+        result['expected_stage_count']=expected_stage_count
     atomic_json(root/'round.json',result)
     return result
 

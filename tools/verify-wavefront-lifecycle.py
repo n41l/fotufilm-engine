@@ -21,10 +21,14 @@ def main():
     p.add_argument('--kernels',required=True,type=Path)
     p.add_argument('--catalog',required=True,type=Path)
     p.add_argument('--band',type=int,choices=(64,128,256,512),default=256)
+    p.add_argument('--three-stage',action='store_true',help='explicit three-stage research host; requires band 512')
+    p.add_argument('--fail-log',action='store_true',help='inject failure after the first successful halation/log call')
     p.add_argument('--compress-reference',action='store_true',help='losslessly compress R dumps before running C to limit temporary disk use')
     p.add_argument('--diagnostic-control',type=Path)
     p.add_argument('--diagnostic-kernels',type=Path)
     args=p.parse_args();candidate=Path(__file__).resolve().parents[1];reference=args.reference.resolve()
+    if (args.three_stage and args.band!=512) or (args.fail_log and not args.three_stage):
+        raise ValueError('three-stage requires 512 rows; log failure requires three-stage')
     if candidate==reference or subprocess.check_output(['git','-C',str(reference),'status','--porcelain'],text=True):
         raise ValueError('R must remain a separate clean checkout')
     catalog=json.loads(args.catalog.read_text())
@@ -40,12 +44,13 @@ def main():
     driver=candidate/'tools/wavefront-lifecycle.cpp'
     runners={'R':build(reference,args.reference_kernels,root/'R-build',driver),
              'C':build(candidate,args.kernels,root/'C-build',driver,
-                 definitions=('-DFOTUFILM_AOT_WAVEFRONT_HOST=1','-DFOTUFILM_WAVEFRONT_TESTING=1'),
-                 driver_definitions=('-DFOTUFILM_WAVEFRONT_OPTIONS_TESTS=1',f'-DFOTUFILM_LIFECYCLE_BAND={args.band}',),
+                 definitions=('-DFOTUFILM_AOT_WAVEFRONT_HOST=1','-DFOTUFILM_WAVEFRONT_TESTING=1')+(('-DFOTUFILM_THREE_STAGE_RESEARCH=1',) if args.three_stage else ()),
+                 driver_definitions=('-DFOTUFILM_WAVEFRONT_OPTIONS_TESTS=1',f'-DFOTUFILM_LIFECYCLE_BAND={args.band}',)+(('-DFOTUFILM_THREE_STAGE_RESEARCH=1',) if args.three_stage else ())+(('-DFOTUFILM_LIFECYCLE_LOG_FAILURE=1',) if args.fail_log else ()),
                  **(dict(diagnostic_control=args.diagnostic_control,diagnostic_kernels=args.diagnostic_kernels) if args.diagnostic_control else {}))}
     compare=root/'compare'
     subprocess.run(['xcrun','clang++','-std=c++17','-O2',str(candidate/'tools/wavefront-compare.cpp'),'-o',str(compare)],check=True)
     report={'scope':'fourteen compared synchronous calls plus a C-only injected submission failure per engine in one process; A/B/A, geometry, stock, input, seed, alpha, camera gate, stage/still/exact/band fallback',
+            'stage_count':3 if args.three_stage else 2,'failure_edge':'log' if args.fail_log else 'light+log' if args.three_stage else 'light',
             'mixed_candidate_revisions':bool(args.diagnostic_control),'final_candidate_accepted':False,
             'reference_base':catalog['base_sha'],'driver_sha256':b.sha(driver),
             'runner_sha256':{k:b.sha(v) for k,v in runners.items()},
@@ -75,6 +80,8 @@ def main():
                 raise AssertionError('invalid-option rejection checks missing')
             if label=='C' and not any(e['type']=='injected_failure' and e['passed'] and e['drained'] for e in events):
                 raise AssertionError('injected failure/drain/recovery checks missing')
+            if label=='C' and args.three_stage and not args.fail_log and not any(e['type']=='log_injected_failure' and e['passed'] and e['drained'] for e in events):
+                raise AssertionError('second-stage failure/drain checks missing')
         for left,right in zip(frames['R'],frames['C']):
             frame=left['frame']
             if frame!=right['frame']:raise AssertionError('frame history changed')

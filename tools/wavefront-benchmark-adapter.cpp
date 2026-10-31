@@ -85,9 +85,10 @@ static bool drain_observer() {
 }
 static void rows_trace(void *context,int32_t event,int32_t band,int32_t start,int32_t rows,int32_t slot) noexcept {
     generation=band+1;
-    phase=event==1 ? 1 : event==3 ? 2 : 0;
+    phase=event==1 ? 1 : event==3 ? 2 : event==6 ? 3 : 0;
     if (event==1) std::fprintf(stderr,"ROW_PLAN %d %d %d %d %d\n",band,start,rows,slot,
         static_cast<FotufilmWavefrontResult *>(context)->ring_rows);
+    if (event==6) std::fprintf(stderr,"LOG_PLAN %d %d %d %d 1024\n",band,start,rows,slot);
     if (event==3) std::fprintf(stderr,"CONSUMER_PLAN %d %d %d\n",band,start,rows);
     if (event==5) std::fprintf(stderr,"BAND_COMPLETE %d\n",band);
 }

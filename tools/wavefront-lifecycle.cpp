@@ -34,6 +34,12 @@ struct Pack {
         std::fclose(f);return ok;
     }
 };
+#if FOTUFILM_THREE_STAGE_RESEARCH
+struct LogProduction {int calls=0,rows=0;};
+static void log_production(void *context,int32_t event,int32_t,int32_t,int32_t rows,int32_t) noexcept {
+    if (event==7) {auto &p=*static_cast<LogProduction *>(context);++p.calls;p.rows+=rows;}
+}
+#endif
 int main(int argc,char **argv) {
     if (argc!=4) return 2;
     Pack color,mono;if (!color.load(argv[1]) || !mono.load(argv[2])) return 2;
@@ -110,16 +116,41 @@ int main(int argc,char **argv) {
         const char *reason="original API";
 #if FOTUFILM_WAVEFRONT_OPTIONS_TESTS
         FotufilmWavefrontOptions options;options.rows=frame==7 ? 17 : FOTUFILM_LIFECYCLE_BAND;options.mode=frame==8 ? 0 : 1;
+#if FOTUFILM_THREE_STAGE_RESEARCH
+        LogProduction log;options.trace=log_production;options.trace_context=&log;
+#endif
+#if FOTUFILM_LIFECYCLE_LOG_FAILURE
+        if (frame==11) options.test_fail_after_source_call=-1;
+#else
         if (frame==11) options.test_fail_after_source_call=1;
+#endif
         FotufilmWavefrontResult result;
         status=fotufilm_halide_metal_process_linear_float_wavefront(input.data(),output.data(),
             width,height,origin,origin,config.data(),p.exposure.data(),p.film.data(),p.paper.data(),
             33,uint64_t(frame+1),mask,seed,&options,&result);
         actual_mode=result.actual_mode;reason=result.reason;
         if (frame==11) {
-            if (status!=-93 || result.actual_mode!=1 || result.producer_calls!=1
-                || result.consumer_calls!=0 || result.drain_status!=0 || fotufilm_bench_aot_calls!=1) return 1;
+#if FOTUFILM_LIFECYCLE_LOG_FAILURE
+            const int expected_error=-95,expected_submissions=2;
+            if (log.calls!=1) return 1;
+#else
+            const int expected_error=-93,expected_submissions=1;
+#endif
+            if (status!=expected_error || result.actual_mode!=1 || result.producer_calls!=1
+                || result.consumer_calls!=0 || result.drain_status!=0 || fotufilm_bench_aot_calls!=expected_submissions) return 1;
             for (float value:output) if (!std::isnan(value)) return 1;
+#if FOTUFILM_THREE_STAGE_RESEARCH && !FOTUFILM_LIFECYCLE_LOG_FAILURE
+            // A second failure in the same process checks the other cache edge and
+            // recovery from the first failure before frame 12 validates normal output.
+            options.test_fail_after_source_call=-1;fotufilm_bench_aot_calls=0;log={};
+            const int log_status=fotufilm_halide_metal_process_linear_float_wavefront(input.data(),output.data(),
+                width,height,origin,origin,config.data(),p.exposure.data(),p.film.data(),p.paper.data(),
+                33,uint64_t(frame+1),mask,seed,&options,&result);
+            if (log_status!=-95 || result.actual_mode!=1 || result.producer_calls!=1
+                || result.consumer_calls!=0 || result.drain_status!=0 || fotufilm_bench_aot_calls!=2 || log.calls!=1) return 1;
+            for (float value:output) if (!std::isnan(value)) return 1;
+            std::puts("{\"type\":\"log_injected_failure\",\"frame\":11,\"passed\":true,\"drained\":true}");
+#endif
             std::puts("{\"type\":\"injected_failure\",\"frame\":11,\"passed\":true,\"drained\":true,\"consumer_calls\":0}");
             continue;
         }
@@ -127,6 +158,10 @@ int main(int argc,char **argv) {
         if (actual_mode==1) {
             if (result.producer_rows!=height || result.consumer_calls!=(height+options.rows-1)/options.rows || result.ring_rows!=fotufilm::gpu::kWavefrontLightRows) return 1;
             expected_calls=result.producer_calls+result.consumer_calls;
+#if FOTUFILM_THREE_STAGE_RESEARCH
+            if (log.rows!=height || log.calls<result.consumer_calls) return 1;
+            expected_calls+=log.calls;
+#endif
         }
 #else
         status=fotufilm_halide_metal_process_linear_float(input.data(),output.data(),width,height,

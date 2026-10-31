@@ -9,7 +9,7 @@ namespace fotufilm::pipelines {
 /// Internal research schedule. Zero rows preserves the original pipeline and cache key.
 /// Admission at execution must additionally bound full-frame reach to kWindowMaximumReach.
 struct WavefrontSchedule {
-    enum class Light { None, Export, Consume };
+    enum class Light { None, Export, Consume, ExportLog, ConsumeLog };
     int rows = 0;
     bool trace = false;
     Light light = Light::None;
@@ -414,7 +414,7 @@ public:
                        GpuConfiguration configuration = default_gpu_configuration(),
                        bool exact_stages = false,
                        WavefrontSchedule wavefront = {})
-        : GpuSchedule(configuration, windowed, wavefront.light == WavefrontSchedule::Light::Export),
+        : GpuSchedule(configuration, windowed, wavefront.light == WavefrontSchedule::Light::Export || wavefront.light == WavefrontSchedule::Light::ExportLog),
           FrameParams("frame_", suffix),
           float_io_((feature_mask & FOTUFILM_FRAME_FLOAT_IO) != 0),
           realtime_(!float_io_
@@ -460,7 +460,7 @@ public:
             const bool supported = exact == classes
                 ? (stages == FOTUFILM_AOT_PRINTED_NEGATIVE || stages == FOTUFILM_AOT_PRINTED_NEGATIVE_LUMA)
                 : (exact == (classes | FOTUFILM_FRAME_MONOCHROME) && stages == FOTUFILM_AOT_PRINTED_SLIDE);
-            if (windowed != (wavefront.light == WavefrontSchedule::Light::Consume)
+            if (windowed != (wavefront.light == WavefrontSchedule::Light::Consume || wavefront.light == WavefrontSchedule::Light::ConsumeLog)
                 || !exact_stages || !supported || gpu_device_api() != DeviceAPI::Metal
                 || (wavefront.rows != 64 && wavefront.rows != 128 && wavefront.rows != 256 && wavefront.rows != 512))
                 throw std::invalid_argument("unsupported experimental wavefront graph");
@@ -540,7 +540,7 @@ public:
         policy.half_store = fast(kStillFastHalfStore);
         policy.approximate = approximate_;
         policy.realtime = realtime_;
-        policy.windowed = windowed;
+        policy.windowed = windowed || wavefront.light == WavefrontSchedule::Light::ExportLog;
         // The reference CPU samples a 2048-entry table of each curve. The browser, Vulkan and
         // the fast still road sample the same table; the native reference road evaluates the
         // analytic curve, which the table matches within 1e-4 D.
@@ -562,19 +562,35 @@ public:
         policy.film_lut_base = film_lut_base;
         policy.paper_lut_base = paper_lut_base;
         GpuBackend backend(*this, policy, *this, configuration_, film_lut_, paper_lut_);
-        std::unique_ptr<LightFrontier> frontier;
-        const int frontier_channels = 3; // The final MTF selection is RGB, including luma variants.
+        std::unique_ptr<LightFrontier> frontier, log_frontier;
+        const bool exports_log = wavefront.light == WavefrontSchedule::Light::ExportLog;
+        const bool consumes_log = wavefront.light == WavefrontSchedule::Light::ConsumeLog;
+        const int frontier_channels = 3;
         if (wavefront.light != WavefrontSchedule::Light::None) {
-            frontier = std::make_unique<LightFrontier>();
-            // Store::MtfSelected occurs exactly once; exact-stage graphs may elide its named select.
-            configuration_.dim(0).set_bounds(0, kWavefrontLightBase + width_ * kWavefrontLightRows * frontier_channels);
-            if (wavefront.light == WavefrontSchedule::Light::Consume) {
-                Func view("frame_wavefront_light" + suffix);
-                view(x, y, channel) = configuration_(kWavefrontLightBase + x
-                    + (y % kWavefrontLightRows) * width_ + channel * width_ * kWavefrontLightRows);
-                frontier->external = view;
+            Expr count = kWavefrontLightBase + width_ * kWavefrontLightRows * frontier_channels;
+            if (exports_log || consumes_log) count += width_ * kWavefrontLogRows * frontier_channels;
+            configuration_.dim(0).set_bounds(0, count);
+            if (!consumes_log) {
+                frontier = std::make_unique<LightFrontier>();
+                if (wavefront.light == WavefrontSchedule::Light::Consume || exports_log) {
+                    Func view("frame_wavefront_light" + suffix);
+                    view(x, y, channel) = configuration_(kWavefrontLightBase + x
+                        + (y % kWavefrontLightRows) * width_ + channel * width_ * kWavefrontLightRows);
+                    frontier->external = view;
+                }
+                backend.light_frontier(frontier.get());
             }
-            backend.light_frontier(frontier.get());
+            if (exports_log || consumes_log) {
+                log_frontier = std::make_unique<LightFrontier>();
+                log_frontier->point = graph::Store::LogExposure;
+                if (consumes_log) {
+                    Func view("frame_wavefront_log" + suffix);
+                    view(x,y,channel) = configuration_(kWavefrontLightBase + width_*kWavefrontLightRows*3
+                        + x + (y % kWavefrontLogRows)*width_ + channel*width_*kWavefrontLogRows);
+                    log_frontier->external = view;
+                }
+                backend.light_frontier(log_frontier.get());
+            }
         }
 
 
@@ -631,6 +647,8 @@ public:
         graph::Developed developed_frame = graph::build_develop(backend, inputs, x, y, channel);
         if (frontier && (frontier->matches != 1 || !frontier->captured.defined()))
             throw std::invalid_argument("missing or ambiguous post-MTF light cut");
+        if (log_frontier && (log_frontier->matches != 1 || !log_frontier->captured.defined()))
+            throw std::invalid_argument("missing or ambiguous post-halation log cut");
         Func light = developed_frame.light;
         Func developed = developed_frame.developed;
         Func flat_density = developed_frame.flat_density;
@@ -711,10 +729,11 @@ public:
         Func linear_delivery = windowed ? delivered : final_linear;
 
         const bool exports_light = wavefront.light == WavefrontSchedule::Light::Export;
-        Func output(std::string(exports_light ? "frame_wavefront_light_output" : "frame_output") + suffix);
+        const bool exports_field = exports_light || exports_log;
+        Func output(std::string(exports_log ? "frame_wavefront_log_output" : exports_light ? "frame_wavefront_light_output" : "frame_output") + suffix);
         Expr safe_channel = Halide::min(channel, 2);
-        if (exports_light) {
-            output(x, y, channel) = frontier->captured(x, y, channel);
+        if (exports_field) {
+            output(x, y, channel) = (exports_log ? log_frontier : frontier)->captured(x, y, channel);
         } else if (density_out_) {
             output(x, y, channel) = Halide::cast(
                 float_io_ ? Float(32) : Float(16),
@@ -819,11 +838,11 @@ public:
                 0.0f, coverage));
             output(x, y, channel) = Halide::select(channel == 3, alpha, color);
         }
-        const int output_channels = exports_light ? frontier_channels : light_out_ ? 3 : 4;
-        output.output_buffer().dim(0).set_stride(exports_light ? 1 : output_channels);
-        output.output_buffer().dim(2).set_stride(exports_light ? width_ * kWavefrontLightRows : Expr(1));
+        const int output_channels = exports_field ? frontier_channels : light_out_ ? 3 : 4;
+        output.output_buffer().dim(0).set_stride(exports_field ? 1 : output_channels);
+        output.output_buffer().dim(2).set_stride(exports_field ? width_ * (exports_log ? kWavefrontLogRows : kWavefrontLightRows) : Expr(1));
         output.output_buffer().dim(2).set_bounds(0, output_channels);
-        if (wavefront.trace && exports_light) output.trace_realizations();
+        if (wavefront.trace && exports_field) output.trace_realizations();
         if (windowed) {
             // The AOT shim checks the complete spatial reach before selecting this
             // graph. Global coordinates and the original boundary rules remain in
@@ -852,7 +871,7 @@ public:
         // Specialize only full-frame graphs. Windowed graphs keep one consumer loop;
         // host_output_encode's uniform configuration select still skips fitting when it
         // is disabled.
-        if (!exports_light && encodes && !windowed) {
+        if (!exports_field && encodes && !windowed) {
             for (Expr shape : {on_encode && shape_linear, on_encode && shape_power,
                                on_encode && shape_log, on_encode}) {
                 output.specialize(shape)

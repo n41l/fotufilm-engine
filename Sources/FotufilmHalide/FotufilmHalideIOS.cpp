@@ -10,6 +10,9 @@
 
 #include "FotufilmHalideIOSVariants.h"
 #include "FotufilmAotFrame.h"
+#if FOTUFILM_THREE_STAGE_RESEARCH
+#include "fotufilm_three_stage_declarations.h"
+#endif
 #include "FotufilmFilmTileBuild.h"
 #include "FotufilmNegativeScan.h"
 #include "fotufilm_halide_ios_negative_cpu.h"
@@ -327,6 +330,9 @@ int run_wavefront(const WavefrontVariant &variant, halide_buffer_t *out,
     if (result) result->drain_status = drain_error;
     return error ? error : drain_error;
 }
+#if FOTUFILM_THREE_STAGE_RESEARCH
+#include "../../tools/wavefront-three-stage-scheduler.h"
+#endif
 #endif
 
 int run_aot(ExecutionState &state, halide_buffer_t *in, halide_buffer_t *out,
@@ -487,7 +493,12 @@ int run_aot(ExecutionState &state, halide_buffer_t *in, halide_buffer_t *out,
         const int64_t post_mtf_reach = fotufilm::wavefront_post_mtf_reach(frame,feature_mask);
         reason = std::max(source_reach,post_mtf_reach) > fotufilm::gpu::kWavefrontLightMargin ? "source demand exceeds private row-cache bound"
             : "unsupported geometry, transport or spatial reach";
-        if (window_eligible && std::max(source_reach,post_mtf_reach) <= fotufilm::gpu::kWavefrontLightMargin) {
+#if FOTUFILM_THREE_STAGE_RESEARCH
+        const bool stage_band_supported=wavefront->rows==512;
+#else
+        const bool stage_band_supported=true;
+#endif
+        if (window_eligible && stage_band_supported && std::max(source_reach,post_mtf_reach) <= fotufilm::gpu::kWavefrontLightMargin) {
             bool carries_warp = false;
             for (int i = 0; i < 3 * FOTUFILM_COUPLER_WARP_SAMPLES; ++i)
                 carries_warp |= configuration[FOTUFILM_CONFIG_COUPLER_WARP + i] != 0.0f;
@@ -508,7 +519,21 @@ int run_aot(ExecutionState &state, halide_buffer_t *in, halide_buffer_t *out,
                     wavefront_result->actual_mode = 1;
                     wavefront_result->reason = "admitted";
                 }
+#if FOTUFILM_THREE_STAGE_RESEARCH
+                FrameFunction halation_stage=nullptr;
+#define FOTUFILM_PICK_HALATION(variant_name, stages_name, variant_mask) \
+                if (experimental.source==fotufilm_halide_ios_##variant_name##_wavefront_light_##stages_name) \
+                    halation_stage=fotufilm_halide_ios_##variant_name##_wavefront_halation_##stages_name;
+                FOTUFILM_AOT_WAVEFRONT_LIGHT_VARIANTS(FOTUFILM_PICK_HALATION)
+#undef FOTUFILM_PICK_HALATION
+                if (wavefront->rows!=512) return -94;
+                const int log_reach=int(fotufilm::wavefront_log_reach(frame,feature_mask));
+                const int halo_reach=int(post_mtf_reach-log_reach);
+                return run_wavefront_three_stage(experimental,halation_stage,out,width,height,configuration,
+                    log_reach,halo_reach,*wavefront,wavefront_result,
+#else
                 return run_wavefront(experimental,out,width,height,configuration,*wavefront,wavefront_result,
+#endif
                     [&](FrameFunction function,halide_buffer_t *private_cfg,halide_buffer_t *destination) {
                         return function(FOTUFILM_AOT_FRAME_ARGUMENTS(in, private_cfg, exposure, film, paper, width, height,
                             frame,seed,origin_x,origin_y,feature_mask,configuration,film_tiles.raw_buffer(),film_on ? 1 : 0),destination);

@@ -22,6 +22,17 @@ inline int64_t wavefront_post_mtf_reach(const ResolvedFrameParams &frame, int32_
     return halation + chemistry + ((feature_mask & FOTUFILM_FRAME_PRINT_MTF) ? int64_t(frame.print_mtf_radius) : 0);
 }
 
+// The final stage reads log exposure after halation; only chemistry and print
+// expand this edge. Grain's coordinate field is independent of the image input.
+inline int64_t wavefront_log_reach(const ResolvedFrameParams &frame,int32_t mask) {
+    int64_t reach=0;
+    if ((mask & FOTUFILM_FRAME_COUPLERS) && (mask & FOTUFILM_FRAME_COUPLER_DIFFUSION))
+        reach=gaussian_grid_reach(frame.coupler_sigma,frame.coupler_radius);
+    if (mask & FOTUFILM_FRAME_ADJACENCY)
+        reach=std::max(reach,gaussian_grid_reach(frame.adjacency_sigma,frame.adjacency_radius));
+    return reach+((mask & FOTUFILM_FRAME_PRINT_MTF) ? int64_t(frame.print_mtf_radius) : 0);
+}
+
 // Conservative serial source demand, distinct from the legacy performance estimate.
 inline int64_t wavefront_source_reach(const ResolvedFrameParams &frame,
                                      const float *configuration,int32_t feature_mask) {

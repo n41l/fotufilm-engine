@@ -33,6 +33,12 @@ def build(repo, kernels, out, driver, *, definitions=(), driver_definitions=(),
         diagnostic_kernels=Path(diagnostic_kernels).resolve()
         expected=subprocess.check_output([sys.executable,str(repo/'tools/aot-release.py'),'key','macos'],text=True).strip()
         if (diagnostic_kernels/'source-key.txt').read_text().strip()!=expected:raise ValueError('diagnostic kernel source changed')
+        expected_stages=3 if '-DFOTUFILM_THREE_STAGE_RESEARCH=1' in definitions else 2
+        if manifest.get('experiment_stage_count',2)!=expected_stages:
+            raise ValueError('diagnostic control/host stage count mismatch')
+        identity_path=diagnostic_kernels/'identity.json'
+        if identity_path.exists() and json.loads(identity_path.read_text()).get('stage_count',2)!=expected_stages:
+            raise ValueError('diagnostic kernel/host stage count mismatch')
         diagnostic_archives=sorted(diagnostic_kernels.glob('fotufilm_halide_ios_*_wavefront_*.a'))
         if len(diagnostic_archives)!=manifest.get('experimental_archive_count',12):raise ValueError('complete explicit producer/consumer kernel set required')
         (out/'diagnostic-build.json').write_text(json.dumps({'mixed_candidate_revisions':True,'performance_acceptance':False,

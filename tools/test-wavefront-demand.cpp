@@ -23,5 +23,10 @@ int main() {
     // MTF is before this edge, and random-field blur is independent of image light.
     p.mtf_radius_0=999;p.mtf_luma_radius=999;p.grain_radius=999;
     if (fotufilm::wavefront_post_mtf_reach(p,h|a|c|d|m)!=125) return 1;
-    std::puts("post-MTF dependency checks=11 passed");
+    const Case log_cases[]={{0,0},{h,0},{a,12},{c,0},{d,0},{c|d,3},
+        {a|c|d,12},{h|a|c|d|m,13},{FOTUFILM_FRAME_GRAIN|FOTUFILM_FRAME_MTF,0},
+        {h|a|c|d|m|FOTUFILM_FRAME_GRAIN,13}};
+    for (auto test:log_cases)
+        if (fotufilm::wavefront_log_reach(p,test.mask)!=test.expected) return 1;
+    std::puts("post-MTF dependency checks=11; post-halation log dependency checks=10 passed");
 }

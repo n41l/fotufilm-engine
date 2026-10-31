@@ -32,7 +32,7 @@ class ControllerTests(unittest.TestCase):
         self.assertEqual(controller.compact(result,Path('/round.json')),
                          {'scores':{'valid':True},'round_path':'/round.json'})
 
-    def check(self,change=None,*,experimental=False,stderr=None,band=256,ring=1024):
+    def check(self,change=None,*,experimental=False,stderr=None,band=256,ring=1024,stages=2):
         with tempfile.TemporaryDirectory() as temporary:
             root=Path(temporary);image=root/'input';image.write_bytes(bytes(16));pack=root/'pack';pack.write_bytes(b'fixture')
             memory={'device_current_bytes':100,'device_peak_bytes':120,'process_footprint_bytes':200,
@@ -56,13 +56,31 @@ class ControllerTests(unittest.TestCase):
                     for event in events:
                         if event['type']=='call_complete':event.update(aot_calls=4+consumers,gpu_dispatches=4+consumers)
                     stderr=f'WAVEFRONT_POLICY requested=1 actual=1 rows={band} reason=admitted\nWAVEFRONT_COUNTS rows=1080 source_calls=4 consumer_calls={consumers} ring_rows={ring}\n'
+            if stages==3 and stderr and 'THREE_STAGE_COUNTS' not in stderr:
+                stderr+='THREE_STAGE_COUNTS light_rows=1080 log_rows=1080 light_calls=4 log_calls=4 output_calls=3 log_ring_rows=1024 log_reach=5 halo_reach=56\n'
+                for event in events:
+                    if event['type']=='call_complete':event.update(aot_calls=11,gpu_dispatches=11)
             if change:change(events)
             worker=root/'worker.py';worker.write_text('#!/usr/bin/env python3\nimport json\n'
                 +'events=json.loads('+repr(json.dumps(events))+')\nfor e in events:print(json.dumps(e),flush=True)\n')
             if stderr:
                 worker.write_text(worker.read_text()+'import sys\nsys.stderr.write('+repr(stderr)+')\n')
             worker.chmod(0o755)
-            return controller.run_round(worker,pack,image,'E' if experimental else 'B0',root/'round',expected_band=band if experimental else None,expected_ring_rows=ring)
+            return controller.run_round(worker,pack,image,'E' if experimental else 'B0',root/'round',expected_band=band if experimental else None,expected_ring_rows=ring,expected_stage_count=stages)
+
+    def test_three_stage_round_counts_all_calls(self):
+        self.assertTrue(self.check(experimental=True,band=512,ring=2048,stages=3)['scores']['valid'])
+    def test_three_stage_missing_middle_call_rejected(self):
+        self.assertFalse(self.check(lambda e:e[5].update(aot_calls=7),experimental=True,band=512,ring=2048,stages=3)['scores']['valid'])
+    def test_three_stage_missing_or_duplicate_marker_rejected(self):
+        marker='THREE_STAGE_COUNTS light_rows=1080 log_rows=1080 light_calls=4 log_calls=4 output_calls=3 log_ring_rows=1024 log_reach=5 halo_reach=56\n'
+        for text in ('',marker+marker):
+            self.assertTrue(controller.three_stage_accounting(text,3,1080,4,3)[1])
+    def test_three_stage_wrong_cache_or_coverage_rejected(self):
+        marker='THREE_STAGE_COUNTS light_rows=1080 log_rows=1080 light_calls=4 log_calls=4 output_calls=3 log_ring_rows=1024 log_reach=5 halo_reach=56\n'
+        for bad in (marker.replace('log_rows=1080','log_rows=1079'),marker.replace('log_ring_rows=1024','log_ring_rows=2048'),marker.replace('light_calls=4','light_calls=5'),marker.replace('log_reach=5','log_reach=1000')):
+            self.assertTrue(controller.three_stage_accounting(bad,3,1080,4,3)[1])
+        self.assertTrue(controller.three_stage_accounting(marker,2,1080,4,3)[1])
 
     def test_consistent_synthetic_round(self):self.assertTrue(self.check()['scores']['valid'])
     def test_warmup_cancellation_rejected(self):self.assertFalse(self.check(lambda e:e[1].update(status='cancelled'))['scores']['valid'])
