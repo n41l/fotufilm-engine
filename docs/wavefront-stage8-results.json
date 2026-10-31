@@ -1,0 +1,823 @@
+{
+  "scope": "first diagnostic R-B1/E whole-frame API latency campaign; no formal performance acceptance",
+  "complete": true,
+  "B_ref_frozen": false,
+  "performance_acceptance": false,
+  "band_selected": null,
+  "Docker_shutdown_performed": false,
+  "upstream_PR_created": false,
+  "pushed": false,
+  "source_base": "96623ba0831a52dbddcda35727a206d4123a8b5f",
+  "candidate_parent_commit": "b09a06292c3560517f9be6d51cf726b4985912b6",
+  "production_sources_modified_in_this_stage": false,
+  "workers": {
+    "R": {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/reference/build/wavefront-benchmark-v2/instrumented/runner",
+      "sha256": "eff89993d9b138ea0197c5bb2c08c7d157d8facfea596a413805b9f4ddc3339b"
+    },
+    "E64": {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/wavefront-candidate/9baf1b6d6b30/band-64/runner",
+      "sha256": "b9b092d907d6f611cbf6acd2b1550414d55fea25da4fe5dbdb8667ce14ceab09"
+    },
+    "E128": {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/wavefront-candidate/9baf1b6d6b30/band-128/runner",
+      "sha256": "3176c88373806e5cd955582fb891ad19381fa570ff2562c352f3eaa177f12102"
+    },
+    "E256": {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/wavefront-candidate/9baf1b6d6b30/band-256/runner",
+      "sha256": "d69c0cdbfa222fb94491125d362ac290f5c0a93517812019b046b6a6b6f24157"
+    }
+  },
+  "sources": {
+    "run-wavefront-latency-diagnostic.py": "a29a8658c0fc8804878dd46e10d3bff81c7e9db18a2a57962e4d272639639de9",
+    "run-wavefront-baseline.py": "3ad0d651d5a5ed56f1dfdd861722eb38d7a45bbb6b36fa4094a5713641255930",
+    "wavefront-benchmark.mm": "680c889bdf9217728f4458d04dbe8c2283e78b9a3ae607cfba1a130d2a599cc1",
+    "wavefront_metrics.py": "5cc21b16c88df2043400c05105ab6c18f7fc70a3a3dcaea3f265fa6afa3edc75"
+  },
+  "environment": {
+    "architecture": "arm64",
+    "model": "Mac16,8",
+    "cpu": "Apple M4 Pro",
+    "cpu_count": 12,
+    "memory_bytes": 25769803776,
+    "boot_session": "5267CB93-1C5B-4A21-A255-FB5B165630BD",
+    "os_version": "27.0.1",
+    "os_build": "26A434",
+    "xcode": "Xcode 27.1\nBuild version 27A9269",
+    "sdk": "27.0",
+    "gpus": [
+      {
+        "sppci_model": "Apple M4 Pro",
+        "spdisplays_vendor": "sppci_vendor_Apple",
+        "sppci_cores": "16"
+      }
+    ]
+  },
+  "protocol": {
+    "warmup_seconds": 5,
+    "measurement_seconds": 30,
+    "tail_seconds": 2,
+    "retained_idle_seconds": 5,
+    "inflight_frames": 1,
+    "pool_MiB": 1024,
+    "fresh_process_each_round": true,
+    "R_mode": "B1",
+    "E_rounds_per_band_case": 1,
+    "pair_order": {
+      "64": [
+        "R",
+        "E"
+      ],
+      "128": [
+        "E",
+        "R"
+      ],
+      "256": [
+        "R",
+        "E"
+      ]
+    }
+  },
+  "valid_rounds": 24,
+  "diagnostic_E_timing_rounds": 12,
+  "formal_E_comparison_rounds": 0,
+  "measurement_requests": 40689,
+  "case_results": {
+    "portra400-coffee-1920x1080": {
+      "pairs": [
+        {
+          "band": 64,
+          "rounds_valid": true,
+          "R_median_ms": 7.070458494126797,
+          "E_median_ms": 25.00416594557464,
+          "R_p95_ms": 8.497833041474223,
+          "E_p95_ms": 47.92295803781599,
+          "E_over_adjacent_R_median_ratio": 3.536427795502201,
+          "R_FPS": 134.56666666666666,
+          "E_FPS": 34.53333333333333,
+          "R_requests": 4038,
+          "E_requests": 1037
+        },
+        {
+          "band": 128,
+          "rounds_valid": true,
+          "R_median_ms": 7.111000013537705,
+          "E_median_ms": 15.03995805978775,
+          "R_p95_ms": 8.530584047548473,
+          "E_p95_ms": 31.774459057487547,
+          "E_over_adjacent_R_median_ratio": 2.1150271454303384,
+          "R_FPS": 132.63333333333333,
+          "E_FPS": 57.2,
+          "R_requests": 3980,
+          "E_requests": 1717
+        },
+        {
+          "band": 256,
+          "rounds_valid": true,
+          "R_median_ms": 7.471041986718774,
+          "E_median_ms": 17.360457917675376,
+          "R_p95_ms": 11.73254195600748,
+          "E_p95_ms": 31.187540967948735,
+          "E_over_adjacent_R_median_ratio": 2.3236996858720587,
+          "R_FPS": 125.53333333333333,
+          "E_FPS": 54.13333333333333,
+          "R_requests": 3767,
+          "E_requests": 1625
+        }
+      ],
+      "R_median_range_ratio": 0.05665594288188358,
+      "R_timing_review_required": true,
+      "all_rounds_valid": true,
+      "B_ref_frozen": false,
+      "performance_acceptance": false,
+      "R_control_median_ms": [
+        7.070458494126797,
+        7.111000013537705,
+        7.471041986718774
+      ],
+      "R_control_p95_ms": [
+        8.497833041474223,
+        8.530584047548473,
+        11.73254195600748
+      ],
+      "R_control_FPS": [
+        134.56666666666666,
+        132.63333333333333,
+        125.53333333333333
+      ],
+      "R_FPS_range_ratio": 0.07195963887413703,
+      "max_thermal_state": 1
+    },
+    "portra400-coffee-3840x2160": {
+      "pairs": [
+        {
+          "band": 64,
+          "rounds_valid": true,
+          "R_median_ms": 49.14358397945762,
+          "E_median_ms": 93.08620798401535,
+          "R_p95_ms": 78.3433330943808,
+          "E_p95_ms": 136.82999997399747,
+          "E_over_adjacent_R_median_ratio": 1.894168077422397,
+          "R_FPS": 18.866666666666667,
+          "E_FPS": 10.066666666666666,
+          "R_requests": 567,
+          "E_requests": 303
+        },
+        {
+          "band": 128,
+          "rounds_valid": true,
+          "R_median_ms": 42.21854195930064,
+          "E_median_ms": 69.97566705103964,
+          "R_p95_ms": 53.16079093609005,
+          "E_p95_ms": 101.86158400028944,
+          "E_over_adjacent_R_median_ratio": 1.657462901454468,
+          "R_FPS": 23.0,
+          "E_FPS": 13.133333333333333,
+          "R_requests": 691,
+          "E_requests": 395
+        },
+        {
+          "band": 256,
+          "rounds_valid": true,
+          "R_median_ms": 44.85258390195668,
+          "E_median_ms": 58.45356301870197,
+          "R_p95_ms": 56.79191695526242,
+          "E_p95_ms": 81.70829096343368,
+          "E_over_adjacent_R_median_ratio": 1.3032373596686355,
+          "R_FPS": 21.666666666666668,
+          "E_FPS": 16.566666666666666,
+          "R_requests": 651,
+          "E_requests": 498
+        }
+      ],
+      "R_median_range_ratio": 0.16402845050482395,
+      "R_timing_review_required": true,
+      "all_rounds_valid": true,
+      "B_ref_frozen": false,
+      "performance_acceptance": false,
+      "R_control_median_ms": [
+        49.14358397945762,
+        42.21854195930064,
+        44.85258390195668
+      ],
+      "R_control_p95_ms": [
+        78.3433330943808,
+        53.16079093609005,
+        56.79191695526242
+      ],
+      "R_control_FPS": [
+        18.866666666666667,
+        23.0,
+        21.666666666666668
+      ],
+      "R_FPS_range_ratio": 0.21908127208480566,
+      "max_thermal_state": 1
+    },
+    "hp5plus400-coffee-1920x1080": {
+      "pairs": [
+        {
+          "band": 64,
+          "rounds_valid": true,
+          "R_median_ms": 8.24160355841741,
+          "E_median_ms": 21.862020948901772,
+          "R_p95_ms": 10.42770897038281,
+          "E_p95_ms": 53.60070802271366,
+          "E_over_adjacent_R_median_ratio": 2.6526416605629377,
+          "R_FPS": 119.7,
+          "E_FPS": 33.03333333333333,
+          "R_requests": 3592,
+          "E_requests": 992
+        },
+        {
+          "band": 128,
+          "rounds_valid": true,
+          "R_median_ms": 9.485375019721687,
+          "E_median_ms": 13.792707934044302,
+          "R_p95_ms": 13.894500094465911,
+          "E_p95_ms": 24.862167076207697,
+          "E_over_adjacent_R_median_ratio": 1.4541025426371594,
+          "R_FPS": 97.73333333333333,
+          "E_FPS": 65.86666666666666,
+          "R_requests": 2933,
+          "E_requests": 1977
+        },
+        {
+          "band": 256,
+          "rounds_valid": true,
+          "R_median_ms": 9.14241699501872,
+          "E_median_ms": 10.890646022744477,
+          "R_p95_ms": 12.646915973164141,
+          "E_p95_ms": 12.211082968860865,
+          "E_over_adjacent_R_median_ratio": 1.191221755546513,
+          "R_FPS": 105.93333333333334,
+          "E_FPS": 92.1,
+          "R_requests": 3179,
+          "E_requests": 2764
+        }
+      ],
+      "R_median_range_ratio": 0.15091376969157588,
+      "R_timing_review_required": true,
+      "all_rounds_valid": true,
+      "B_ref_frozen": false,
+      "performance_acceptance": false,
+      "R_control_median_ms": [
+        8.24160355841741,
+        9.485375019721687,
+        9.14241699501872
+      ],
+      "R_control_p95_ms": [
+        10.42770897038281,
+        13.894500094465911,
+        12.646915973164141
+      ],
+      "R_control_FPS": [
+        119.7,
+        97.73333333333333,
+        105.93333333333334
+      ],
+      "R_FPS_range_ratio": 0.2247612551159619,
+      "max_thermal_state": 1
+    },
+    "hp5plus400-coffee-3840x2160": {
+      "pairs": [
+        {
+          "band": 64,
+          "rounds_valid": true,
+          "R_median_ms": 24.68066697474569,
+          "E_median_ms": 57.524083531461656,
+          "R_p95_ms": 31.713667092844844,
+          "E_p95_ms": 60.56054192595184,
+          "E_over_adjacent_R_median_ratio": 2.3307345620085043,
+          "R_FPS": 39.53333333333333,
+          "E_FPS": 17.366666666666667,
+          "R_requests": 1187,
+          "E_requests": 522
+        },
+        {
+          "band": 128,
+          "rounds_valid": true,
+          "R_median_ms": 23.700375051703304,
+          "E_median_ms": 38.72320847585797,
+          "R_p95_ms": 30.31004103831947,
+          "E_p95_ms": 40.9069579327479,
+          "E_over_adjacent_R_median_ratio": 1.633864797134297,
+          "R_FPS": 41.7,
+          "E_FPS": 26.1,
+          "R_requests": 1252,
+          "E_requests": 784
+        },
+        {
+          "band": 256,
+          "rounds_valid": true,
+          "R_median_ms": 23.669687449000776,
+          "E_median_ms": 30.895791540388018,
+          "R_p95_ms": 27.908042073249817,
+          "E_p95_ms": 32.83691604156047,
+          "E_over_adjacent_R_median_ratio": 1.3052893751536332,
+          "R_FPS": 41.833333333333336,
+          "E_FPS": 32.7,
+          "R_requests": 1256,
+          "E_requests": 982
+        }
+      ],
+      "R_median_range_ratio": 0.04271199304693796,
+      "R_timing_review_required": false,
+      "all_rounds_valid": true,
+      "B_ref_frozen": false,
+      "performance_acceptance": false,
+      "R_control_median_ms": [
+        24.68066697474569,
+        23.700375051703304,
+        23.669687449000776
+      ],
+      "R_control_p95_ms": [
+        31.713667092844844,
+        30.31004103831947,
+        27.908042073249817
+      ],
+      "R_control_FPS": [
+        39.53333333333333,
+        41.7,
+        41.833333333333336
+      ],
+      "R_FPS_range_ratio": 0.058178752107926,
+      "max_thermal_state": 1
+    }
+  },
+  "observed_E_over_adjacent_R_median_ratio_range": [
+    1.191221755546513,
+    3.536427795502201
+  ],
+  "E_median_greater_than_adjacent_R_count": 12,
+  "artifacts": {
+    "report": {
+      "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/report.json",
+      "sha256": "d16f1c7c3222629fcb3df02c8452f477b56c5f6f2bdc1afdac596204cef12bbe"
+    },
+    "controller_log": {
+      "path": "candidate/build/wavefront-latency-diagnostic.log",
+      "sha256": "d54a96b0b0db16ed7469e8b75a32f04b92d286c4a43fd35a33e5fa96a7342830"
+    },
+    "post_campaign": {
+      "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/post-campaign.json",
+      "sha256": "a874cdcf6213817ab874bfeedd16714d4a7bd74dddfe81a15dfe40aa77641902"
+    }
+  },
+  "raw_round_artifacts": [
+    {
+      "round.json": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-1920x1080/64-R/round.json",
+        "sha256": "cd43bdddf2651cac88b57ea5d37b1b199264e88c67635f983949d8cbac1de70f"
+      },
+      "events.jsonl": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-1920x1080/64-R/events.jsonl",
+        "sha256": "8dc671f7e725e79c04d51bdb3bb80a3382d45104d46a938fc94b54c137fa7ff2"
+      },
+      "stderr.log": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-1920x1080/64-R/stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "environment": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-1920x1080/64-R-environment.json",
+        "sha256": "e32ba233de3a6b80b582bf1b643901e4ffb3d2cd38ca731f6594fd7257e9a810"
+      }
+    },
+    {
+      "round.json": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-1920x1080/64-E/round.json",
+        "sha256": "07c034b829c72ea471b87ce9cce7906a608b640a9949a59e44ddef90dfae6b67"
+      },
+      "events.jsonl": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-1920x1080/64-E/events.jsonl",
+        "sha256": "56805bc7062f729572e5cc9249e375b5eef876799376357b483f9693cfd98313"
+      },
+      "stderr.log": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-1920x1080/64-E/stderr.log",
+        "sha256": "7207087c78240248320fdc111cddcaa4a0d91f6c85a5d4636814c21b5deeb9eb"
+      },
+      "environment": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-1920x1080/64-E-environment.json",
+        "sha256": "ea44868e22c5f5141bdaadc7fba472045a80b4381d25d8e4c232f199008a19ce"
+      }
+    },
+    {
+      "round.json": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-1920x1080/128-R/round.json",
+        "sha256": "0c14d2d4734c5b1b5a115414832a5133ff5fdbaca5d5f6028b1872b4cd597ce2"
+      },
+      "events.jsonl": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-1920x1080/128-R/events.jsonl",
+        "sha256": "3e4d0d21e47aa3870a1b3259e81dc9d8cbb70e05078de5592f9d41cdf6348606"
+      },
+      "stderr.log": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-1920x1080/128-R/stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "environment": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-1920x1080/128-R-environment.json",
+        "sha256": "c2fe79e43a5fe6d735b2170583ad27fa1df1f3bd55e8fce2c6bd314257160642"
+      }
+    },
+    {
+      "round.json": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-1920x1080/128-E/round.json",
+        "sha256": "366715c77179c5adde7c4595837f5c90dadd35e20c3eb12556ac3e53e8f3fb0d"
+      },
+      "events.jsonl": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-1920x1080/128-E/events.jsonl",
+        "sha256": "4c65cb19cf494beefe814719c70b922147d8e715fa0c457ba1cd4e5726fe1736"
+      },
+      "stderr.log": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-1920x1080/128-E/stderr.log",
+        "sha256": "d4ed631d5620d8654a7a3518058f1287778d64ff92c72390c1cdd806fb9726e1"
+      },
+      "environment": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-1920x1080/128-E-environment.json",
+        "sha256": "9d1cc24e271fddd0aadc785f200aaae00a81561af80b13f35d6d30cf22461bca"
+      }
+    },
+    {
+      "round.json": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-1920x1080/256-R/round.json",
+        "sha256": "88ddfd411875c57c8a164f2b728fc3991e0f9426fab08d5f42553ab4cfee601f"
+      },
+      "events.jsonl": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-1920x1080/256-R/events.jsonl",
+        "sha256": "d9c763173d1342e188def6bc05e667dd9ffd9c8120111cba097fa68f61c7e9c3"
+      },
+      "stderr.log": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-1920x1080/256-R/stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "environment": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-1920x1080/256-R-environment.json",
+        "sha256": "6ffb0b59324c947eabfea59d3d7669564008f7c5907a9101ad1de3a65a3d35cc"
+      }
+    },
+    {
+      "round.json": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-1920x1080/256-E/round.json",
+        "sha256": "9cd2eef59720645b5b5d3ccdee7df3178eeca41f41dcab0b482a47f1350ea47a"
+      },
+      "events.jsonl": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-1920x1080/256-E/events.jsonl",
+        "sha256": "ed7a67a3be94fe0311ec8e9191d0bdf49e172e59116cd32da5bc9dcd3a71de53"
+      },
+      "stderr.log": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-1920x1080/256-E/stderr.log",
+        "sha256": "299e68281e8a9abc6ab849a922452cc8d0a9dd5cdb41b34a4ad1ca1d5647f720"
+      },
+      "environment": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-1920x1080/256-E-environment.json",
+        "sha256": "b8a576e70b4ea9fd9b1082165710f42000d092c5634abebdc227ba0a285bca93"
+      }
+    },
+    {
+      "round.json": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-3840x2160/64-R/round.json",
+        "sha256": "78aff791037c6cbb0c9ecf7e4b8b3fb5ab608a1d71c629dd586b0cd7fea3c708"
+      },
+      "events.jsonl": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-3840x2160/64-R/events.jsonl",
+        "sha256": "239a51cabd2dfc6cda8d9c23a144f5a285e0e9ac8d4a3f030521fb3dfefabaaa"
+      },
+      "stderr.log": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-3840x2160/64-R/stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "environment": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-3840x2160/64-R-environment.json",
+        "sha256": "38637be2ae9df1a6df2392474048cf0a0e67aa3b77ce628acbaeb98472635844"
+      }
+    },
+    {
+      "round.json": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-3840x2160/64-E/round.json",
+        "sha256": "5ca30f9db0a4a4c5fe41c40b1f7797a045864858ee1c83a340f3f6c4bc2f36a4"
+      },
+      "events.jsonl": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-3840x2160/64-E/events.jsonl",
+        "sha256": "0b6abab8207b6994951dbe701d81b8fbe281fe7c0a9d091b89cab91c18d30b7c"
+      },
+      "stderr.log": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-3840x2160/64-E/stderr.log",
+        "sha256": "294a034c6ce75fdce689f4c4b30f7b99c2692ad2437c411bf51b6f348095538c"
+      },
+      "environment": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-3840x2160/64-E-environment.json",
+        "sha256": "58c6aa8bead3f64d86e5dcc1c02c2e994d4778f27c9c4226d4da9fde179c6985"
+      }
+    },
+    {
+      "round.json": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-3840x2160/128-R/round.json",
+        "sha256": "64c8cd183de0646dd0d3d809b5819cdb60067854c5769f98ebda118e55a85ae9"
+      },
+      "events.jsonl": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-3840x2160/128-R/events.jsonl",
+        "sha256": "ff48e2f54c706151a88b0e474800ced8d3de19ba3e0690ab16620868fc00fd75"
+      },
+      "stderr.log": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-3840x2160/128-R/stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "environment": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-3840x2160/128-R-environment.json",
+        "sha256": "b8bcb563b6c28feaca4b0e3a15f60c5a717f23ce208abf8c423b6dcc16d137c1"
+      }
+    },
+    {
+      "round.json": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-3840x2160/128-E/round.json",
+        "sha256": "53a0b437dc8b30c4fed402a2ad0444046529b27945a1c0d598a2743c170e8026"
+      },
+      "events.jsonl": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-3840x2160/128-E/events.jsonl",
+        "sha256": "581800198cae8911d0269bcd52cceba6fab8b94b21007c42c0b2e751357b0466"
+      },
+      "stderr.log": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-3840x2160/128-E/stderr.log",
+        "sha256": "89317dbc2aea0bf8b3457ad8b61d65d34861b93941af0563072ad7ac0d301497"
+      },
+      "environment": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-3840x2160/128-E-environment.json",
+        "sha256": "b18e30de5cf438bc57dd290114b08c395ed7959073ac5d95e6b7a6e6d77c474f"
+      }
+    },
+    {
+      "round.json": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-3840x2160/256-R/round.json",
+        "sha256": "31830d809c36022b0d06dea8702d5ad7ce7f1c4932917906a30fc10b71a37b23"
+      },
+      "events.jsonl": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-3840x2160/256-R/events.jsonl",
+        "sha256": "ca56c8593c4d4bfaba8486cfd075f0d50c287e187e37857042005f631242c8a3"
+      },
+      "stderr.log": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-3840x2160/256-R/stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "environment": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-3840x2160/256-R-environment.json",
+        "sha256": "119c8b099faf77a3d13efb23535461eb543067b38b87fccd11a42de01635cee6"
+      }
+    },
+    {
+      "round.json": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-3840x2160/256-E/round.json",
+        "sha256": "26210a1ca23e45196d413089321903c1db8533585b5c93347df28d0ec40d49dc"
+      },
+      "events.jsonl": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-3840x2160/256-E/events.jsonl",
+        "sha256": "79f1c5512c24b71ef64d52f7483e58fcf122a3552ae1420c2b2d46a962871dfc"
+      },
+      "stderr.log": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-3840x2160/256-E/stderr.log",
+        "sha256": "9e564fadb0cea16ab49c3fac6cc1250c921c908d536337fcef5d6c0e73e03217"
+      },
+      "environment": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/portra400-coffee-3840x2160/256-E-environment.json",
+        "sha256": "f74624d640abde8c115c10716a89e1be113c0938ca2b684f923cda3120395cbf"
+      }
+    },
+    {
+      "round.json": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-1920x1080/64-R/round.json",
+        "sha256": "e09dec34dbfd36563504b0f57ac4df06fac8e53231e394026cf8f052905a388b"
+      },
+      "events.jsonl": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-1920x1080/64-R/events.jsonl",
+        "sha256": "1a164580512ce1bccfe8a227595d02f25afb8bb85ea294c3af84e09bf1dc8326"
+      },
+      "stderr.log": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-1920x1080/64-R/stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "environment": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-1920x1080/64-R-environment.json",
+        "sha256": "39f55acd274a236ef0ab0c9b774dbfdb954f49b6d2771a899a9c62271e68fc8b"
+      }
+    },
+    {
+      "round.json": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-1920x1080/64-E/round.json",
+        "sha256": "bcd0e0d788c352fc54435ff80bae3b44a096dafd795087fc56cc95a7a3df7415"
+      },
+      "events.jsonl": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-1920x1080/64-E/events.jsonl",
+        "sha256": "a96cfe67a54c06eba0f32d8064f34b4f4cac0de56ee5853a1f4f28cd5d18f563"
+      },
+      "stderr.log": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-1920x1080/64-E/stderr.log",
+        "sha256": "7207087c78240248320fdc111cddcaa4a0d91f6c85a5d4636814c21b5deeb9eb"
+      },
+      "environment": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-1920x1080/64-E-environment.json",
+        "sha256": "3e10d2681fb969dcf9b1a0d17496857d155e25e68b23cb37c0a85058769d70b6"
+      }
+    },
+    {
+      "round.json": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-1920x1080/128-R/round.json",
+        "sha256": "6083e378f8b890cfa4191a727b6e90191b0f9709d029eac36e64de8851fb34b5"
+      },
+      "events.jsonl": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-1920x1080/128-R/events.jsonl",
+        "sha256": "28b0bd5f7312143cf19b3ad024f78d1f5a41698b50fd26c3b6f093528135bcbc"
+      },
+      "stderr.log": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-1920x1080/128-R/stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "environment": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-1920x1080/128-R-environment.json",
+        "sha256": "7af86dd83f31c80d96ed0ce7af891a1c13561c1f06e5c83e3d5793cde5ddfd63"
+      }
+    },
+    {
+      "round.json": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-1920x1080/128-E/round.json",
+        "sha256": "4e9bbca85831d8f88b653d04e0236fee62a0f8ef88bc457a3e19d9c012260847"
+      },
+      "events.jsonl": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-1920x1080/128-E/events.jsonl",
+        "sha256": "1b999a9820230a894b11859a0fab8db81ff88ba59aa19c966fc3a274dbcc6871"
+      },
+      "stderr.log": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-1920x1080/128-E/stderr.log",
+        "sha256": "d4ed631d5620d8654a7a3518058f1287778d64ff92c72390c1cdd806fb9726e1"
+      },
+      "environment": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-1920x1080/128-E-environment.json",
+        "sha256": "2e487f9a3d208b4f218c495be009891cb74f4b5780b017158d2b79896464e4af"
+      }
+    },
+    {
+      "round.json": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-1920x1080/256-R/round.json",
+        "sha256": "4cdb1ff105821a80b43c4e312a4ae9e25bb3a13ec1ee20ccc9ba2c71d7ef7047"
+      },
+      "events.jsonl": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-1920x1080/256-R/events.jsonl",
+        "sha256": "a2f837da4e3607311761572da55fffa984ba89713e55e503c9db104e9eb37a87"
+      },
+      "stderr.log": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-1920x1080/256-R/stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "environment": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-1920x1080/256-R-environment.json",
+        "sha256": "3ab573ecfbd2ffa1bf2cd3c6722dd5822bea41eeeb3639a4950b469b00d0d48d"
+      }
+    },
+    {
+      "round.json": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-1920x1080/256-E/round.json",
+        "sha256": "5fa371d60fa6f01aefa45004f55d65b3eefa353817d4212c90b9e337f3e52f67"
+      },
+      "events.jsonl": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-1920x1080/256-E/events.jsonl",
+        "sha256": "9e6393eb0430d798f54934bf8bfea5cf64767b9f8ac9e32be2cc306948508784"
+      },
+      "stderr.log": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-1920x1080/256-E/stderr.log",
+        "sha256": "299e68281e8a9abc6ab849a922452cc8d0a9dd5cdb41b34a4ad1ca1d5647f720"
+      },
+      "environment": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-1920x1080/256-E-environment.json",
+        "sha256": "fdacf4e90b32ce156c1448dcc60635e3602cf5157a99073553c95c2e059de15e"
+      }
+    },
+    {
+      "round.json": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-3840x2160/64-R/round.json",
+        "sha256": "70f67838f0535aa157994ff953e4914cb08703dd588f8037edb4798fd59b0435"
+      },
+      "events.jsonl": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-3840x2160/64-R/events.jsonl",
+        "sha256": "12181564daae6feaa08782f8090b06c7f3cf569fcc18e5f08cb1a0048102102b"
+      },
+      "stderr.log": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-3840x2160/64-R/stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "environment": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-3840x2160/64-R-environment.json",
+        "sha256": "324beb7de001813a1d28090d9868abf85349371035e0411c6353ae8170c9b080"
+      }
+    },
+    {
+      "round.json": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-3840x2160/64-E/round.json",
+        "sha256": "dc3de455f2c31798195110ca3b0ef4964660ff1a5f99a48763e798502e54f2c2"
+      },
+      "events.jsonl": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-3840x2160/64-E/events.jsonl",
+        "sha256": "f73d0eb486e6eb8fbb180fe3745d34375387a590a8127898330cded75da7bac3"
+      },
+      "stderr.log": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-3840x2160/64-E/stderr.log",
+        "sha256": "294a034c6ce75fdce689f4c4b30f7b99c2692ad2437c411bf51b6f348095538c"
+      },
+      "environment": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-3840x2160/64-E-environment.json",
+        "sha256": "1b96c07d34184518031bc5d5a901f9293013441e463db8f69e046ce34e3aeced"
+      }
+    },
+    {
+      "round.json": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-3840x2160/128-R/round.json",
+        "sha256": "18401f25fa03667d2430d8cab3593a79c90eeea31ff7681c1cc7e17ed58904a3"
+      },
+      "events.jsonl": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-3840x2160/128-R/events.jsonl",
+        "sha256": "fd89174f0ab058639eb7ce8ea8a1cba44f546d961790d45f38a71ad46fd826ca"
+      },
+      "stderr.log": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-3840x2160/128-R/stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "environment": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-3840x2160/128-R-environment.json",
+        "sha256": "7cab0951b1b4eca0d1258687dc6dcb3ca2e2bfb54c6e11cd9589828f1ddb1041"
+      }
+    },
+    {
+      "round.json": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-3840x2160/128-E/round.json",
+        "sha256": "905e2f0e9e9748815dbe57d2cc84ac1880cf7feeeae9a58aa5210a07c958b524"
+      },
+      "events.jsonl": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-3840x2160/128-E/events.jsonl",
+        "sha256": "338bd8c71779e4c3b221b1022cabdf9c9f143c2f4b5f231ab06dd321cbe04b35"
+      },
+      "stderr.log": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-3840x2160/128-E/stderr.log",
+        "sha256": "89317dbc2aea0bf8b3457ad8b61d65d34861b93941af0563072ad7ac0d301497"
+      },
+      "environment": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-3840x2160/128-E-environment.json",
+        "sha256": "ce60905bff4505be721819bc16be19b2a2dee6b1b217be67543fe12702a3d0fe"
+      }
+    },
+    {
+      "round.json": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-3840x2160/256-R/round.json",
+        "sha256": "610ab021f5df89f9635f53fcd73f4fcd804768256c15ea5f8354d32c2ff994e5"
+      },
+      "events.jsonl": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-3840x2160/256-R/events.jsonl",
+        "sha256": "0ce2d59e2c7db5ea542fce70ccc9f0956ca6620eca2e8661b19fc34a752eac63"
+      },
+      "stderr.log": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-3840x2160/256-R/stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "environment": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-3840x2160/256-R-environment.json",
+        "sha256": "ea56d099a124286a754d4535850fd5a0ff122ce5f94c83db8c3d08e246913e55"
+      }
+    },
+    {
+      "round.json": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-3840x2160/256-E/round.json",
+        "sha256": "7c480970139b244ab96b9e8055a5361c570fa405cd568180c5501e7de86ce370"
+      },
+      "events.jsonl": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-3840x2160/256-E/events.jsonl",
+        "sha256": "5faf76e27f8c05ae69663b2f4b6d1ac36c29167b351c95dbaa6c67b31dd09250"
+      },
+      "stderr.log": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-3840x2160/256-E/stderr.log",
+        "sha256": "9e564fadb0cea16ab49c3fac6cc1250c921c908d536337fcef5d6c0e73e03217"
+      },
+      "environment": {
+        "path": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/hp5plus400-coffee-3840x2160/256-E-environment.json",
+        "sha256": "7bffd7e4ccba134b5088eb113964e461858fd2f61ec30a98ed2bddca72b62f72"
+      }
+    }
+  ],
+  "source_snapshot": "candidate/build/wavefront-latency-diagnostic/96b5234434e8/source-snapshot",
+  "tests": {
+    "diagnostic_aggregation": 5,
+    "existing_metric_accounting": 16,
+    "existing_comparison_gating": 27,
+    "failed": 0
+  },
+  "test_source_sha256": {
+    "test-wavefront-latency-diagnostic.py": "584707c78209d185ab6551c58c05508f9930448840da8c7bcf4e9a1818ea20bf",
+    "test-wavefront-metrics.py": "f7b3bb820ba59f6397acd174afb4e0b9599045bf5ffe5d73bdfaae6d2fa03654",
+    "test-wavefront-comparison.py": "3539ab9bd6a2ee32c1ca07bbfa2a28cab829aad09bb5f4d4081a86cde5eeabbd"
+  },
+  "limitations": [
+    "One E window per band/case; no E between-round reproducibility estimate.",
+    "Each ratio uses its adjacent R-B1 control; R-B1 is not a frozen B_ref.",
+    "Shared memory/thermal/background GPU variability remains uncontrolled; Docker remains running.",
+    "Whole synchronous API includes upload/dispatch/wait/readback, excludes image decoding/file output and application display.",
+    "API timing includes the same lightweight counters in R/E; resource detail observers are absent.",
+    "No tuning/holdout decision or formal speed/memory/PR acceptance.",
+    "R controls vary across the session. Preserve every observation; do not treat cross-band ranking as stable tuning evidence.",
+    "Reported latency is per-request synchronous API elapsed time. Throughput is independently counted over the window, not 1000/median.",
+    "Prior cleanup-footprint nonregression failure remains unresolved; this timing campaign does not change resource acceptance."
+  ]
+}

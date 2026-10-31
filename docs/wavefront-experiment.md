@@ -610,3 +610,55 @@ and default-builder isolation. The campaign preserves source snapshots, four wor
 raw traces, process records and unfavorable results. [Stage-seven results](wavefront-stage7-results.json)
 contains the source/worker identities and artifact hashes for 119 recorded resource processes.
 No production AOT was regenerated in this stage; no branch was pushed or upstream PR created.
+
+
+## First R/E latency diagnostic
+
+This first latency diagnostic measures R/E while the formal reference remains unfrozen.
+A separate diagnostic controller reuses the unchanged, already pixel-verified normal R and
+E64/E128/E256 workers. It does not change the formal collector's stable-B_ref requirement.
+Four primary cases each run three adjacent pairs: R/E64, E128/R, R/E256. Each arm is a fresh
+process with five-second warmup, thirty-second measurement, two-second tail and five-second
+retained idle; the original 1 GiB pool and one in-flight frame are unchanged. Docker stays running.
+Each E band/case has one measurement window; this does not estimate E between-round variance.
+
+All 24 rounds passed accounting, successful real variant/GPU execution and own-arm output
+hash checks. The timings cover the synchronous API (upload, compute, waits and readback),
+excluding image decoding/file writes/application presentation. They use the identical lightweight
+counters in both arms; detailed resource observers are absent. Old baseline records supply only
+pixel hashes. Median and nearest-rank p95 are per-request; window FPS is independently counted.
+
+| Case | R controls median range ms | E64 median / p95 ms | E128 median / p95 ms | E256 median / p95 ms |
+| --- | --- | --- | --- | --- |
+| Portra 1080p | 7.07–7.47 | 25.00 / 47.92 | 15.04 / 31.77 | 17.36 / 31.19 |
+| Portra 4K | 42.22–49.14 | 93.09 / 136.83 | 69.98 / 101.86 | 58.45 / 81.71 |
+| HP5 1080p | 8.24–9.49 | 21.86 / 53.60 | 13.79 / 24.86 | 10.89 / 12.21 |
+| HP5 4K | 23.67–24.68 | 57.52 / 60.56 | 38.72 / 40.91 | 30.90 / 32.84 |
+
+| Case | E64 / adjacent R | E128 / adjacent R | E256 / adjacent R | R median range drift |
+| --- | --- | --- | --- | --- |
+| Portra 1080p | 3.54× | 2.12× | 2.32× | 5.67% |
+| Portra 4K | 1.89× | 1.66× | 1.30× | 16.40% |
+| HP5 1080p | 2.65× | 1.45× | 1.19× | 15.09% |
+| HP5 4K | 2.33× | 1.63× | 1.31× | 4.27% |
+
+Every ratio uses its adjacent original R control, not a frozen B_ref or a shared selected R
+score. Larger bands were not uniformly faster in these observations. No band is selected from
+the primary cases. Preserve the reference drift, p95 tails and all rounds: these are diagnostic
+results, not a formal speed/PR pass. The stage-seven cleanup-footprint failure remains open.
+
+```sh
+python3 tools/test-wavefront-latency-diagnostic.py
+python3 tools/test-wavefront-metrics.py
+python3 tools/test-wavefront-comparison.py
+python3 tools/run-wavefront-latency-diagnostic.py --reference ../reference \
+  --fixtures build/wavefront-corpus/frozen-verification-v2.json \
+  --verification build/wavefront-candidate/9baf1b6d6b30/verification.json \
+  --baseline-report build/wavefront-benchmark-v2/awake/0c2977588b8c/report.json \
+  --output build/wavefront-latency-diagnostic
+```
+
+Five diagnostic aggregation tests, 16 existing metric-accounting tests and 27 existing
+comparison/gating tests pass. [Stage-eight results](wavefront-stage8-results.json) preserve
+the exact workers/sources, all 24 raw-round hashes, environment and observed comparisons.
+No production code or AOT was changed, no branch pushed and no upstream PR created.
