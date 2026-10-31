@@ -825,3 +825,24 @@ thermal maxima. No stable speedup/default promotion/PR is claimed. See
 The old three-unit coarse-field proposal remains unexecuted as that topology.
 Producer lead based on safe edge demand is an independent, unimplemented next
 control; the present experiment preserves margin360/band512/A2048/sync.
+
+
+## Stage thirteen: actual original pipeline comparison
+
+The prior stage-twelve control was our earlier E2, not upstream's original
+pipeline. A fresh twelve-round, three-arm comparison reuses the clean frozen
+original worker for general B0 and default-enabled-window B1, plus the unchanged
+revised E2 worker. All four direct B1 pixel comparisons are bitwise equal.
+
+The revised E2 is slower than original default B1 in every observed median:
+Portra HD +24.1%, Portra UHD+luma +17.6%, HP5 HD +30.1%, HP5 UHD +16.7%.
+It beats general B0, but B0 is not default on these eligible inputs. Three
+device peaks decrease relative to B1; HP5 HD increases by about 4 MiB.
+
+Each arm/case has one round; B_ref remains unfrozen. B1 uses 1080-row windows
+and E2 uses 512-row bands, with different call/cache lifetimes; this is not
+exclusive cut-position attribution. Keep the original default for speed; no
+default promotion or speedup PR. No engine/AOT change was made in this stage.
+Producer-lead tightening remains unimplemented. See
+[stage-thirteen results](wavefront-stage13-results.md) and
+[full provenance](wavefront-stage13-results.json).

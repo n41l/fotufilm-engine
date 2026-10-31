@@ -1,0 +1,459 @@
+{
+  "stage": 13,
+  "scope": "contemporaneous original general/default-windowed versus revised E2, frozen Mac C/AOT boundary; not a single-variable cut or PR acceptance test",
+  "candidate_implementation_commit": "70fa45378391eb16b09cd98b12d480d70796acd1",
+  "comparison_tools_commit": "f24a40df644c5b1f9c79a99c47d25e44f4e5ba73",
+  "reference_base": "96623ba0831a52dbddcda35727a206d4123a8b5f",
+  "candidate_source_key": "638d31302552b9a1c5da4a1c482d044bf04e53ce25fa2629efd80ef748dfaf80",
+  "comparison_complete": true,
+  "performance_acceptance": false,
+  "B_ref_frozen": false,
+  "final_candidate_accepted": false,
+  "decision": "keep original enabled-window default; revised E2 is slower than original B1 in all four pilot cases and does not justify a speedup replacement",
+  "configurations": {
+    "R-B0": "clean original general/full-frame path, windows disabled",
+    "R-B1": "clean original enabled-window selector, 1080-row windows for these eligible cases; this is the original default",
+    "bundle": "unchanged 70fa453 two-stage multi-output worker, band512, A2048, producer margin360"
+  },
+  "protocol": {
+    "warmup_seconds": 5,
+    "window_seconds": 30,
+    "tail_seconds": 2,
+    "idle_seconds": 5,
+    "inflight_frames": 1,
+    "pool_mib": 1024,
+    "candidate_band_rows": 512,
+    "candidate_light_ring_rows": 2048,
+    "candidate_producer_margin": 360,
+    "rounds_per_case_arm": 1,
+    "image_dumps": false,
+    "minimum_free_bytes": 1073741824,
+    "evidence_budget_bytes": 134217728,
+    "order_policy": "predeclared rotating three-arm order; fourth case reverses original arms; single-round diagnostic only"
+  },
+  "measurement_rounds": 12,
+  "measurement_requests": 23974,
+  "cases": [
+    {
+      "case": "portra400-coffee-1920x1080",
+      "order": [
+        "R-B0",
+        "R-B1",
+        "bundle"
+      ],
+      "arms": {
+        "R-B0": {
+          "median_ms": 12.765520485118032,
+          "p95_ms": 15.0272500468418,
+          "throughput_fps": 76.96666666666667,
+          "measurement_requests": 2310,
+          "device_peak_mib": 462.25,
+          "memory": {
+            "device_total_peak_bytes": 484704256,
+            "process_lifetime_peak_bytes": 642761616,
+            "retained_device_bytes": 484704256,
+            "retained_process_footprint_bytes": 570147728,
+            "max_thermal_state": 0
+          },
+          "actual_variants": [
+            "fotufilm_halide_ios_color_float_realtime"
+          ],
+          "aot_calls": [
+            1
+          ],
+          "gpu_dispatches": [
+            49
+          ],
+          "round_path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/wavefront-upstream/timing/b1a71a88f24b/portra400-coffee-1920x1080-R-B0/round.json"
+        },
+        "R-B1": {
+          "median_ms": 7.2850005235522985,
+          "p95_ms": 11.313291965052485,
+          "throughput_fps": 126.3,
+          "measurement_requests": 3790,
+          "device_peak_mib": 334.28125,
+          "memory": {
+            "device_total_peak_bytes": 350519296,
+            "process_lifetime_peak_bytes": 508740448,
+            "retained_device_bytes": 350519296,
+            "retained_process_footprint_bytes": 436208480,
+            "max_thermal_state": 0
+          },
+          "actual_variants": [
+            "fotufilm_halide_ios_color_float_realtime_windowed_negative"
+          ],
+          "aot_calls": [
+            1
+          ],
+          "gpu_dispatches": [
+            41
+          ],
+          "round_path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/wavefront-upstream/timing/b1a71a88f24b/portra400-coffee-1920x1080-R-B1/round.json"
+        },
+        "bundle": {
+          "median_ms": 9.043124970048666,
+          "p95_ms": 16.62870799191296,
+          "throughput_fps": 99.4,
+          "measurement_requests": 2983,
+          "device_peak_mib": 314.984375,
+          "memory": {
+            "device_total_peak_bytes": 330285056,
+            "process_lifetime_peak_bytes": 486916960,
+            "retained_device_bytes": 330285056,
+            "retained_process_footprint_bytes": 414335840,
+            "max_thermal_state": 0
+          },
+          "actual_variants": [
+            "fotufilm_halide_ios_color_float_realtime_wavefront_bundle_negative_512"
+          ],
+          "aot_calls": [
+            5
+          ],
+          "gpu_dispatches": [
+            110
+          ],
+          "round_path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/wavefront-upstream/timing/b1a71a88f24b/portra400-coffee-1920x1080-bundle/round.json"
+        }
+      },
+      "new_vs_default_observed_median_increase": 0.24133484147494255,
+      "new_vs_general_observed_median_reduction": 0.29159762967823455,
+      "new_vs_default_device_peak_change_mib": -19.296875,
+      "new_vs_default_thermal_maxima_equal": true
+    },
+    {
+      "case": "portra400-coffee-3840x2160",
+      "order": [
+        "R-B1",
+        "bundle",
+        "R-B0"
+      ],
+      "arms": {
+        "R-B1": {
+          "median_ms": 43.132083024829626,
+          "p95_ms": 62.15541705023497,
+          "throughput_fps": 22.2,
+          "measurement_requests": 667,
+          "device_peak_mib": 1183.71875,
+          "memory": {
+            "device_total_peak_bytes": 1241219072,
+            "process_lifetime_peak_bytes": 1800619160,
+            "retained_device_bytes": 1241219072,
+            "retained_process_footprint_bytes": 1526678680,
+            "max_thermal_state": 1
+          },
+          "actual_variants": [
+            "fotufilm_halide_ios_color_float_realtime_windowed_negative_luma"
+          ],
+          "aot_calls": [
+            1
+          ],
+          "gpu_dispatches": [
+            77
+          ],
+          "round_path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/wavefront-upstream/timing/b1a71a88f24b/portra400-coffee-3840x2160-R-B1/round.json"
+        },
+        "bundle": {
+          "median_ms": 50.742208026349545,
+          "p95_ms": 82.79883395880461,
+          "throughput_fps": 18.133333333333333,
+          "measurement_requests": 545,
+          "device_peak_mib": 1090.09375,
+          "memory": {
+            "device_total_peak_bytes": 1143046144,
+            "process_lifetime_peak_bytes": 1608238280,
+            "retained_device_bytes": 1143046144,
+            "retained_process_footprint_bytes": 1426605232,
+            "max_thermal_state": 1
+          },
+          "actual_variants": [
+            "fotufilm_halide_ios_color_float_realtime_wavefront_bundle_negative_luma_512"
+          ],
+          "aot_calls": [
+            10
+          ],
+          "gpu_dispatches": [
+            240
+          ],
+          "round_path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/wavefront-upstream/timing/b1a71a88f24b/portra400-coffee-3840x2160-bundle/round.json"
+        },
+        "R-B0": {
+          "median_ms": 87.79941697139293,
+          "p95_ms": 114.6724580321461,
+          "throughput_fps": 10.866666666666667,
+          "measurement_requests": 327,
+          "device_peak_mib": 1734.25,
+          "memory": {
+            "device_total_peak_bytes": 1818492928,
+            "process_lifetime_peak_bytes": 2377549024,
+            "retained_device_bytes": 1482948608,
+            "retained_process_footprint_bytes": 1768162552,
+            "max_thermal_state": 1
+          },
+          "actual_variants": [
+            "fotufilm_halide_ios_color_float_realtime"
+          ],
+          "aot_calls": [
+            1
+          ],
+          "gpu_dispatches": [
+            54
+          ],
+          "round_path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/wavefront-upstream/timing/b1a71a88f24b/portra400-coffee-3840x2160-R-B0/round.json"
+        }
+      },
+      "new_vs_default_observed_median_increase": 0.17643768786077496,
+      "new_vs_general_observed_median_reduction": 0.4220666858997193,
+      "new_vs_default_device_peak_change_mib": -93.625,
+      "new_vs_default_thermal_maxima_equal": true
+    },
+    {
+      "case": "hp5plus400-coffee-1920x1080",
+      "order": [
+        "bundle",
+        "R-B0",
+        "R-B1"
+      ],
+      "arms": {
+        "bundle": {
+          "median_ms": 8.680833445396274,
+          "p95_ms": 11.447084019891918,
+          "throughput_fps": 110.83333333333333,
+          "measurement_requests": 3326,
+          "device_peak_mib": 278.84375,
+          "memory": {
+            "device_total_peak_bytes": 292388864,
+            "process_lifetime_peak_bytes": 448922536,
+            "retained_device_bytes": 292388864,
+            "retained_process_footprint_bytes": 376341416,
+            "max_thermal_state": 1
+          },
+          "actual_variants": [
+            "fotufilm_halide_ios_monochrome_float_realtime_wavefront_bundle_printed_slide_512"
+          ],
+          "aot_calls": [
+            5
+          ],
+          "gpu_dispatches": [
+            86
+          ],
+          "round_path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/wavefront-upstream/timing/b1a71a88f24b/hp5plus400-coffee-1920x1080-bundle/round.json"
+        },
+        "R-B0": {
+          "median_ms": 11.301624937914312,
+          "p95_ms": 13.195375096984208,
+          "throughput_fps": 87.4,
+          "measurement_requests": 2623,
+          "device_peak_mib": 482.78125,
+          "memory": {
+            "device_total_peak_bytes": 506232832,
+            "process_lifetime_peak_bytes": 664994728,
+            "retained_device_bytes": 506232832,
+            "retained_process_footprint_bytes": 592413608,
+            "max_thermal_state": 1
+          },
+          "actual_variants": [
+            "fotufilm_halide_ios_monochrome_float_realtime"
+          ],
+          "aot_calls": [
+            1
+          ],
+          "gpu_dispatches": [
+            40
+          ],
+          "round_path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/wavefront-upstream/timing/b1a71a88f24b/hp5plus400-coffee-1920x1080-R-B0/round.json"
+        },
+        "R-B1": {
+          "median_ms": 6.673957977909595,
+          "p95_ms": 8.886291994713247,
+          "throughput_fps": 142.76666666666668,
+          "measurement_requests": 4284,
+          "device_peak_mib": 274.8125,
+          "memory": {
+            "device_total_peak_bytes": 288161792,
+            "process_lifetime_peak_bytes": 446792568,
+            "retained_device_bytes": 288161792,
+            "retained_process_footprint_bytes": 374227832,
+            "max_thermal_state": 1
+          },
+          "actual_variants": [
+            "fotufilm_halide_ios_monochrome_float_realtime_windowed_printed_slide"
+          ],
+          "aot_calls": [
+            1
+          ],
+          "gpu_dispatches": [
+            33
+          ],
+          "round_path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/wavefront-upstream/timing/b1a71a88f24b/hp5plus400-coffee-1920x1080-R-B1/round.json"
+        }
+      },
+      "new_vs_default_observed_median_increase": 0.30070244285764436,
+      "new_vs_general_observed_median_reduction": 0.2318951041921321,
+      "new_vs_default_device_peak_change_mib": 4.03125,
+      "new_vs_default_thermal_maxima_equal": true
+    },
+    {
+      "case": "hp5plus400-coffee-3840x2160",
+      "order": [
+        "bundle",
+        "R-B1",
+        "R-B0"
+      ],
+      "arms": {
+        "bundle": {
+          "median_ms": 24.503291002474725,
+          "p95_ms": 30.82733298651874,
+          "throughput_fps": 39.86666666666667,
+          "measurement_requests": 1197,
+          "device_peak_mib": 642.5,
+          "memory": {
+            "device_total_peak_bytes": 673710080,
+            "process_lifetime_peak_bytes": 1029686472,
+            "retained_device_bytes": 673710080,
+            "retained_process_footprint_bytes": 957088968,
+            "max_thermal_state": 1
+          },
+          "actual_variants": [
+            "fotufilm_halide_ios_monochrome_float_realtime_wavefront_bundle_printed_slide_512"
+          ],
+          "aot_calls": [
+            10
+          ],
+          "gpu_dispatches": [
+            175
+          ],
+          "round_path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/wavefront-upstream/timing/b1a71a88f24b/hp5plus400-coffee-3840x2160-bundle/round.json"
+        },
+        "R-B1": {
+          "median_ms": 20.9985839901492,
+          "p95_ms": 25.798332993872464,
+          "throughput_fps": 47.06666666666667,
+          "measurement_requests": 1413,
+          "device_peak_mib": 667.71875,
+          "memory": {
+            "device_total_peak_bytes": 700153856,
+            "process_lifetime_peak_bytes": 1058194536,
+            "retained_device_bytes": 700153856,
+            "retained_process_footprint_bytes": 985662568,
+            "max_thermal_state": 1
+          },
+          "actual_variants": [
+            "fotufilm_halide_ios_monochrome_float_realtime_windowed_printed_slide"
+          ],
+          "aot_calls": [
+            1
+          ],
+          "gpu_dispatches": [
+            55
+          ],
+          "round_path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/wavefront-upstream/timing/b1a71a88f24b/hp5plus400-coffee-3840x2160-R-B1/round.json"
+        },
+        "R-B0": {
+          "median_ms": 58.31216694787145,
+          "p95_ms": 66.34595897048712,
+          "throughput_fps": 16.933333333333334,
+          "measurement_requests": 509,
+          "device_peak_mib": 1574.375,
+          "memory": {
+            "device_total_peak_bytes": 1650851840,
+            "process_lifetime_peak_bytes": 2176484744,
+            "retained_device_bytes": 1415970816,
+            "retained_process_footprint_bytes": 1701561760,
+            "max_thermal_state": 1
+          },
+          "actual_variants": [
+            "fotufilm_halide_ios_monochrome_float_realtime"
+          ],
+          "aot_calls": [
+            1
+          ],
+          "gpu_dispatches": [
+            40
+          ],
+          "round_path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/wavefront-upstream/timing/b1a71a88f24b/hp5plus400-coffee-3840x2160-R-B0/round.json"
+        }
+      },
+      "new_vs_default_observed_median_increase": 0.16690206415678532,
+      "new_vs_general_observed_median_reduction": 0.5797911090428245,
+      "new_vs_default_device_peak_change_mib": -25.21875,
+      "new_vs_default_thermal_maxima_equal": true
+    }
+  ],
+  "workers": {
+    "R-B0": {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/reference/build/wavefront-benchmark-v2/instrumented/runner",
+      "sha256": "eff89993d9b138ea0197c5bb2c08c7d157d8facfea596a413805b9f4ddc3339b"
+    },
+    "R-B1": {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/reference/build/wavefront-benchmark-v2/instrumented/runner",
+      "sha256": "eff89993d9b138ea0197c5bb2c08c7d157d8facfea596a413805b9f4ddc3339b"
+    },
+    "bundle": {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/wavefront-bundle/verification-v2/bundle/runner",
+      "sha256": "c4f1b316f0e50493a90113073ade4e7bfe848b0e3e15501cf457411b6c67e724"
+    }
+  },
+  "checks": {
+    "new_direct_original_windowed_pixel_comparisons": 4,
+    "bitwise_equal_cases": 4,
+    "finite": true,
+    "alpha_exact": true,
+    "general_R_proof": "existing separate stage12 numerical proof, hash-checked; own general phase hashes match that proof",
+    "actual_pipeline_and_AOT_GPU_work_validated": true,
+    "own_arm_warm_measurement_hashes_verified": true,
+    "reference_clean_before_and_after": true,
+    "controller_syntax_checked": true,
+    "engine_changed_this_stage": false,
+    "new_AOT_generated_this_stage": false
+  },
+  "interpretation": [
+    "The previous stage12 Original E2 column was our earlier experimental cut, not the upstream original. This report adds actual clean upstream controls.",
+    "The new candidate is faster than original general B0 but slower than original default-windowed B1 in all four observed warm medians. General-only comparison would overstate a useful upstream speed benefit.",
+    "Relative to B1, three device peaks decrease and HP5 HD increases. Full footprint and retention are retained; neither partial memory savings nor C/C improvements pass original speed/nonregression gates.",
+    "Window/band sizes differ (original1080, candidate512), as do AOT invocation/table lifetimes and cache structure. This compares current paths/configurations; it does not isolate cut position or prove every two-stage architecture is slower.",
+    "Each case/arm has one round. Coarse maximum thermal states match between B1 and candidate for these cases, but background/GPU-frequency drift is not controlled. B_ref remains unfrozen; no stable causal or broad-platform claim.",
+    "Existing verified binaries and the same common measurement driver are used. No assistant-owned native build, GPU verification or cache cleanup ran during timing. The assistant did not quit Docker or change user services."
+  ],
+  "evidence": {
+    "timing": {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/wavefront-upstream/timing/b1a71a88f24b/report.json",
+      "sha256": "174797f2d1c75c18e36f843f9ce05cc7af99a7d801ac83400f0e78776bc89805"
+    },
+    "direct_windowed_pixels": {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/wavefront-upstream/pixels/report.json",
+      "sha256": "14d2226bcbfcc37c84b4940800a1d4f127cc39a0a2bb36714c67f2ab81d2b3b9"
+    },
+    "general_pixels": {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/wavefront-bundle/verification-v2/report.json",
+      "sha256": "c052c28afc710eb0922f750b57ee6c1b754b4560ff4e41600b312b2f951f6f66"
+    },
+    "candidate_trace": {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/wavefront-bundle/verification-v2/bundle-trace.json",
+      "sha256": "de070905758c7f1e90e69a80e72cf1579fe5bf1ffe432ddc547c99212d779e40"
+    },
+    "frozen_fixtures": {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/wavefront-corpus/frozen-verification-v2.json",
+      "sha256": "beb1b0724aeea750bc88d76dd00adf4b9970ad9f0559fe214006a0bcd57f8668"
+    }
+  },
+  "comparison_tools": {
+    "verify-wavefront-upstream.py": "41bc6ae03b489a080fadf9fd7d937367319d1ddc4c638eb322ad09422c0be175",
+    "run-wavefront-upstream-diagnostic.py": "9befd04524318de39e7e765f4116f45f7dad808ccfde8a9e63fdb0f879eb7283",
+    "plot-wavefront-upstream-diagnostic.py": "063cb49d9691ebeb52e00ca0f20d194fb6646f4e3d8cc905bcf92d2e5fd60427",
+    "run-wavefront-baseline.py": "1fb35ccfd9f6c03055c75896cdbd362f60c7af57cff39c19f1690e59411ab4f4",
+    "wavefront_metrics.py": "5cc21b16c88df2043400c05105ab6c18f7fc70a3a3dcaea3f265fa6afa3edc75"
+  },
+  "figure": {
+    "path": "/Users/kunhuang/.codex/visualizations/2026/10/30/01a18d11-7818-7982-b2f7-71166c1fc048/fotufilm-original-stage13/comparison.png",
+    "sha256": "61f2f164df1eae1cc01c256e4caced3c36bce3738bcbf7e528317bcfcdd0f2cd",
+    "svg_sha256": "c7c2b72c39c6e56b681cdf20ac1e0f482a93d5a48fa4a96461f3be0a9c504f4b"
+  },
+  "not_done": [
+    "repeated balanced original/candidate timing and holdout",
+    "frozen stable best baseline B_ref",
+    "formal memory/footprint/retention/locality acceptance",
+    "same-band controlled cut attribution and exclusive per-stage GPU cost",
+    "full current-source release AOT/parity and broad render regressions beyond stage12 checks",
+    "any default replacement, upstream PR or Taggii/iOS integration"
+  ]
+}
