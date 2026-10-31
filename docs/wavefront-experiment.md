@@ -276,6 +276,7 @@ control. The compact record is `wavefront-stage3-results.json`.
 | Check | Result |
 | --- | --- |
 | Four primary cases × three bands | 12 pixel/reuse/GPU-completion comparisons passed; maximum linear error `2.562999725341797e-6` |
+| Non-traced E, four primary cases × three bands | 12 passed; source/consumer counts and actual private admission checked; outputs byte-identical to the traced matrix |
 | Every legacy AOT class against clean R | 36 classes passed at zero tolerance; all complete output records byte-identical and nonconstant |
 | C general/windowed against clean R primary cases | 8 comparisons passed, maximum linear error `2.562999725341797e-6` |
 | Same-process lifecycle against clean R | 14 frames passed, maximum linear error `2.7915591155336372e-6`; includes cache-channel changes, encoded output, fallback, four invalid-option checks, injected submission failure and recovery |
@@ -338,7 +339,7 @@ python3 tools/probe-wavefront-catalog.py --candidate-experiment --reference . \
 ```
 
 The managed verifier checks all four main cases and three bands against clean R. The candidate
-verifier independently checks C general/windowed against R. The lifecycle verifier keeps each
+verifier independently checks C general/windowed and all three non-traced E bands against R. The lifecycle verifier keeps each
 engine in one process across changed stocks, odd geometry, input, seed, alpha, gate, stage mask,
 still/exact, band and legacy requests. It also checks invalid private options, negative/HDR
 floats, encoded output, conservative reach fallback, and a test-only source-submission failure

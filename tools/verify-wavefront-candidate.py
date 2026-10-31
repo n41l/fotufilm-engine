@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Full-pixel C general/windowed regression against independent frozen R. Never a performance gate."""
+"""Full-pixel C general/windowed and non-traced E against independent frozen R. Never a performance gate."""
 import argparse
 import json
 import os
+import re
 from pathlib import Path
 import subprocess
 import uuid
@@ -39,9 +40,15 @@ def main():
     kernels=args.kernels.resolve()
     runners={'C_B0':build(candidate,kernels,root/'legacy',driver)}
     runners['C_B1']=runners['C_B0']
+    for band in (64,128,256):
+        runners[f'E_{band}']=build(candidate,kernels,root/f'band-{band}',driver,
+            definitions=('-DFOTUFILM_AOT_WAVEFRONT_HOST=1',),
+            driver_definitions=('-Dfotufilm_halide_metal_process_linear_float=fotufilm_wavefront_bench_process_linear_float',),
+            adapter=candidate/'tools/wavefront-benchmark-adapter.cpp',
+            adapter_definitions=(f'-DFOTUFILM_WAVEFRONT_BAND={band}',))
     compare=root/'compare'
     subprocess.run(['xcrun','clang++','-std=c++17','-O2',str(candidate/'tools/wavefront-compare.cpp'),'-o',str(compare)],check=True)
-    report={'scope':'full shared film graph, fixed SDR photographs, four main cases; no warm performance acceptance',
+    report={'scope':'full shared film graph, four frozen SDR main cases; non-traced E and legacy, no warm performance acceptance',
             'reference_base':frozen['source_base'],'frozen_cases_sha256':sha(args.frozen_cases),
             'common_driver_sha256':sha(driver),'R_worker_sha256':sha(worker),
             'C_worker_sha256':{k:sha(v) for k,v in runners.items()},
@@ -50,7 +57,7 @@ def main():
                 'Sources/FotufilmHalide/FotufilmHalideIOS.cpp','Sources/FotufilmHalide/Pipeline/Gpu.h',
                 'Sources/FotufilmHalide/FotufilmHalideWavefront.h','Sources/FotufilmHalide/aot-variants.json',
                 'tools/verify-wavefront-candidate.py','tools/wavefront-benchmark-adapter.cpp','tools/wavefront_aot_driver.py')},
-            'results':[],'complete':False,'performance_acceptance':False,'experimental_reuse_coverage':False}
+            'results':[],'complete':False,'performance_acceptance':False,'experimental_reuse_coverage':False,'normal_experimental_kernel_coverage':True}
     def checkpoint():atomic_json(root/'verification.json',report)
     def invoke(label,runner,case):
         out=root/case['id'];out.mkdir(exist_ok=True)
@@ -65,11 +72,23 @@ def main():
         identity=next(e for e in events if e['type']=='identity')
         if identity['input_sha256']!=case['input_sha256'] or identity['encoded_output']:
             raise AssertionError('verification input or linear output contract changed')
-        if len(calls)!=1 or calls[0]['status']!='success' or calls[0]['aot_calls']!=1 or calls[0]['gpu_dispatches']<1:
+        if len(calls)!=1 or calls[0]['status']!='success' or calls[0]['gpu_dispatches']<1:
             raise AssertionError('missing successful actual AOT/GPU execution')
         actual=calls[0]['actual_variant']
-        if ('windowed' in actual)!=(label=='C_B1') or '_wavefront_' in actual:
-            raise AssertionError('legacy selection changed')
+        if label.startswith('E_'):
+            band=int(label.split('_')[1]);w,h=map(int,case['size'].split('x'))
+            stderr=errors.read_text()
+            counts=re.search(r'WAVEFRONT_COUNTS rows=(\d+) source_calls=(\d+) consumer_calls=(\d+) ring_rows=(\d+)',stderr)
+            if '_wavefront_' not in actual or not actual.endswith('_'+str(band)):
+                raise AssertionError('fallback cannot count as E coverage')
+            if not re.search(rf'WAVEFRONT_POLICY requested=1 actual=1 rows={band} reason=admitted',stderr):
+                raise AssertionError('actual private E admission missing')
+            if not counts or int(counts[1])!=h or int(counts[2])<1 or int(counts[3])!=(h+band-1)//band or int(counts[4])!=1024:
+                raise AssertionError('invalid normal source/consumer accounting')
+            if calls[0]['aot_calls']!=int(counts[2])+int(counts[3]):
+                raise AssertionError('normal E actual AOT count mismatch')
+        elif calls[0]['aot_calls']!=1 or ('windowed' in actual)!=(label=='C_B1') or '_wavefront_' in actual:
+            raise AssertionError('legacy selection/count changed')
         return dump,actual
     try:
         for case in frozen['cases']:
