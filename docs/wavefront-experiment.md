@@ -517,3 +517,96 @@ contribution to earlier measurements.
 [Stage-six results](wavefront-stage6-results.json) preserve input/worker identity, every raw-round
 hash and service-query evidence. A Docker-fully-off control remains unmeasured. No formal B_ref,
 E score or PR was produced.
+
+## Count-based resource attribution and rotation
+
+The resource campaign is independent of the unstable timing baseline. It ran with Docker
+left running and reused the normal R-63/C-75 AOT sets. The production shim, schedules,
+physics, stock data and default entry points were unchanged in this stage. Optional external
+builder hooks create a diagnostic shim copy; default builder calls retain their prior wrappers.
+
+Four primary cases each ran six fresh processes per original arm and three per E band
+(64/128/256): 84 light processes, six calls each. Calls 1–3 cover cold/warmup, calls 4–6
+supply the warm device peak, while process-lifetime peaks include cold initialization.
+Separate detailed workers ran three calls for each of 20 profiles. This count-based protocol
+is **not** the formal five-second warmup / thirty-second timing protocol and produces no E
+latency or FPS score. Old timing reports supply only frozen pixel hashes; all memory epsilon
+values were measured anew from three R/R pairs with unchanged caps.
+
+Light workers supply Metal device totals and process physical footprint. Detailed workers
+record unique physical buffer objects, logical rentals/views, AOT argument roles, GPU fence
+completion and read-only pool snapshots. They supply attribution and lifecycle validation;
+their observer memory is excluded from R/C footprint comparisons. Interval sweeps compute
+coincident working peaks. Category maxima must not be added. GPU-safe intervals are
+conservative bounds ending at CPU observations of completion, not GPU-clock allocation
+lifetimes. The logical working domain includes per-call AOT intermediates plus the frontier
+and configuration, including downsampled intermediates; it is not a named-edge spatial-local
+breakdown and does not establish the formal 25% local-memory benefit gate.
+
+| Case | R-B0 device MiB | R-B1 device MiB | E64 / E128 / E256 device MiB | R-B1 logical working MiB | E64 / E128 / E256 logical working MiB |
+| --- | --- | --- | --- | --- | --- |
+| Portra 1080p | 462.25 | 334.28 | 144.83 / 168.56 / 197.78 | 142.44 | 31.52 / 39.96 / 56.84 |
+| Portra 4K | 1734.25 | 1183.72 | 685.59 / 702.77 / 809.50 | 250.02 | 106.77 / 117.08 / 137.70 |
+| HP5 1080p | 482.78 | 274.81 | 131.88 / 156.11 / 176.66 | 102.88 | 29.17 / 35.26 / 47.45 |
+| HP5 4K | 1574.38 | 667.72 | 411.25 / 435.14 / 471.73 | 170.89 | 65.01 / 70.90 / 86.89 |
+
+Device columns are the maximum observed light-worker warm peak for each arm; the raw summary
+retains every round, cold peaks, process-lifetime peaks and both original comparators.
+Relative to the named R-B1 arm, E device peaks fall approximately 29–57% and logical working
+peaks 45–78%. R-B1 is not a frozen B_ref. Portra 4K process-lifetime R/R epsilon exceeds 4 MiB
+for both B0 (11.58 MiB) and B1 (95.39 MiB); their lower observed C process peaks cannot pass
+an uncalibrated gate. Device-total calibration is stable in every primary profile.
+
+The frozen eight-step rotation changes Coffee/Grass, stock, resolution, RGB/luma class and
+band; it includes legacy, unsupported-band fallback and A again. Each process runs two
+contexts, each with two cycles (32 frames; C has 20 actual E frames). R-B0/R-B1 run their own
+legacy sequence; C runs its legacy/E mixture. Eight full clean-R/C oracle comparisons pass
+(max linear error 2.802e-6, finite output and exact alpha); resource frames additionally match
+frozen own-arm output hashes. All 23 detailed processes classify their Halide rentals,
+return frame intermediates/frontier after API/drain, and respect the original idle-pool budget.
+
+Natural idle waits five seconds without releasing the pool. Explicit cleanup separately
+destroys the context, releases the pool and waits five seconds. All detailed rotation cleanup
+pool snapshots are empty; light-worker device residual is 1,785,856 bytes for R and C, so this
+does not imply zero total device allocation. Natural idle can retain close to the original
+1 GiB pool budget and single-case savings do not fully carry through mixed cache histories.
+
+A separate repeat of the unchanged light rotation (six R-B1 processes, three C processes)
+calibrates every phase. Natural-idle R/R device/footprint epsilon is 8–31 MiB, above the 4 MiB
+cap: these comparisons remain **unassessed**, rather than demonstrating a C regression.
+After explicit cleanup, R footprint calibration is stable, but maximum C minus minimum R is
+6.438 MiB after frame 16 (epsilon 0.234 MiB) and 6.063 MiB after frame 32 (epsilon 2.562 MiB).
+Both exceed measured epsilon. Cleanup device totals match exactly. The remaining process
+footprint has not been attributed; these observations do not identify a leak or a specific
+host/Metal cache. Full retained-memory nonregression has **not passed**.
+
+Dispatch cost also needs work: Portra 1080p steady frames issue 41 dispatches in R-B1 versus
+693/367/204 in E64/E128/E256; at 4K the counts are 77 versus 1629/816/433. This is a resource
+tradeoff, not measured speedup or slowdown. No E timing was collected. The next engineering
+investigation can attribute post-cleanup footprint and reduce repeated band dispatches;
+formal baseline, separate tuning/holdouts and PR gates remain open.
+
+Reproduce from `candidate/`, after generating the prior normal AOT, public corpus and
+verification inputs described above (paths below identify this preserved cohort):
+
+```sh
+python3 tools/test-wavefront-resources.py
+python3 tools/verify-wavefront-resources.py --reference ../reference \
+  --reference-kernels ../reference/build/wavefront-macos --kernels build/wavefront-macos \
+  --frozen-cases build/wavefront-corpus/frozen-verification-v2.json \
+  --normal-verification build/wavefront-candidate/9baf1b6d6b30/verification.json \
+  --baseline-report build/wavefront-benchmark-v2/awake/0c2977588b8c/report.json \
+  --prepared build/wavefront-corpus/prepared.json --converter build/wavefront-corpus/prepare-image \
+  --output build/wavefront-resource-campaign
+# RESOURCE_REPORT and RESOURCE_WORKERS identify the newly printed report and workers.json.
+python3 tools/summarize-wavefront-resources.py --report "$RESOURCE_REPORT" \
+  --output build/wavefront-resource-summary/new-summary
+python3 tools/calibrate-wavefront-resource-rotation.py --source-report "$RESOURCE_REPORT" \
+  --workers "$RESOURCE_WORKERS" --output build/wavefront-resource-rotation-calibration
+```
+
+Thirteen synthetic tests pass, including interval/fence/alias checks, caps, cold-peak inclusion
+and default-builder isolation. The campaign preserves source snapshots, four worker hashes,
+raw traces, process records and unfavorable results. [Stage-seven results](wavefront-stage7-results.json)
+contains the source/worker identities and artifact hashes for 119 recorded resource processes.
+No production AOT was regenerated in this stage; no branch was pushed or upstream PR created.
