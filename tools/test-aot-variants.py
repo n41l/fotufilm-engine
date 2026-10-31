@@ -23,10 +23,10 @@ class VariantTableTests(unittest.TestCase):
         self.assertEqual(old.variants,new.variants)
         self.assertEqual(old.windowed,new.windowed)
         self.assertEqual(old.exact_windowed,new.exact_windowed)
-        self.assertEqual(len(new.wavefront),9)
+        self.assertEqual(len(new.wavefront),12)
 
     def test_experiment_requires_supported_band_and_existing_exact_stages(self):
-        schema=copy.deepcopy(SCHEMA);schema['wavefront_experiment']['bands'].append(512)
+        schema=copy.deepcopy(SCHEMA);schema['wavefront_experiment']['bands'].append(1024)
         with self.assertRaises(ValueError):aot.Table(schema)
         schema=copy.deepcopy(SCHEMA);schema['wavefront_experiment']['variants'][0]['stages']='SLIDE'
         with self.assertRaises(ValueError):aot.Table(schema)

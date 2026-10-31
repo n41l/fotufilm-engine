@@ -44,7 +44,7 @@ def analyze(lines):
             'scope':'diagnostic traced kernels only; requires all earlier consumer-scope GPU buffers complete before each next producer; no performance claim'}
 
 
-def analyze_explicit(lines, width, height, band_rows, aot_calls):
+def analyze_explicit(lines, width, height, band_rows, aot_calls, *, expected_ring_rows=1024):
     plans=[];actual=[];consumers=[];done=[];buffers=[];counts=None
     for line in lines:
         p=line.split()
@@ -62,12 +62,12 @@ def analyze_explicit(lines, width, height, band_rows, aot_calls):
     regions=bool(plans) and len(actual)==len(plans)
     head=0
     for (band,y,n,slot,capacity),observed in zip(plans,actual):
-        regions=regions and y==head and n>0 and capacity==1024 and slot==y%capacity and slot+n<=capacity
+        regions=regions and y==head and n>0 and capacity==expected_ring_rows and slot==y%capacity and slot+n<=capacity
         regions=regions and observed[:2]==(y,n) and observed[2:5]==(0,width,0) and observed[5] in (3,4)
         head=y+n
     regions=regions and head==height
     complete=consumers==expected and done==list(range(bands))
-    complete=complete and counts=={'rows':height,'source_calls':len(plans),'consumer_calls':bands,'ring_rows':1024}
+    complete=complete and counts=={'rows':height,'source_calls':len(plans),'consumer_calls':bands,'ring_rows':expected_ring_rows}
     complete=complete and aot_calls==len(plans)+bands
     timing=bool(buffers) and len({b['id'] for b in buffers})==len(buffers) and len({b['queue'] for b in buffers})==1
     timing=timing and all(b['status']==4 and b['end']>=b['start']>0 for b in buffers)

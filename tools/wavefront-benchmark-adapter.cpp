@@ -2,6 +2,7 @@
 #include "../Sources/FotufilmHalide/FotufilmHalideWavefront.h"
 #include "HalideRuntime.h"
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 
 #ifndef FOTUFILM_WAVEFRONT_BAND
@@ -81,6 +82,18 @@ extern "C" int32_t fotufilm_wavefront_bench_process_linear_float(
 #endif
     FotufilmWavefrontOptions options;
     options.rows = FOTUFILM_WAVEFRONT_BAND;
+#if FOTUFILM_WAVEFRONT_RUNTIME_BAND
+    // Diagnostic-only profile selection, fixed once before any measurement window.
+    static const int selected_rows = [] {
+        const char *value = std::getenv("FOTUFILM_WAVEFRONT_BENCH_ROWS");
+        if (!value) return int(FOTUFILM_WAVEFRONT_BAND);
+        char *end = nullptr;
+        const long rows = std::strtol(value,&end,10);
+        return end && !*end && (rows==64 || rows==128 || rows==256 || rows==512) ? int(rows) : 0;
+    }();
+    if (!selected_rows) return -94;
+    options.rows = selected_rows;
+#endif
     FotufilmWavefrontResult result;
 #if FOTUFILM_WAVEFRONT_TRACE
     options.trace=rows_trace;

@@ -45,6 +45,10 @@ class ExplicitTraceTests(unittest.TestCase):
                 'GPU_COMPLETION 3 2 2 q 3 4 4',
                 'WAVEFRONT_COUNTS rows=100 source_calls=1 consumer_calls=2 ring_rows=1024']
     def test_actual_regions_counts_and_completions(self):self.assertTrue(analyze_explicit(self.lines(),32,100,64,3)['passed'])
+    def test_large_ring_requires_matching_expected_capacity(self):
+        lines=[s.replace('1024','2048') for s in self.lines()]
+        self.assertFalse(analyze_explicit(lines,32,100,64,3)['passed'])
+        self.assertTrue(analyze_explicit(lines,32,100,64,3,expected_ring_rows=2048)['passed'])
     def test_wrong_slot_rejected(self):
         lines=self.lines();lines[0]='ROW_PLAN 0 0 100 1 1024';self.assertFalse(analyze_explicit(lines,32,100,64,3)['passed'])
     def test_wrong_actual_producer_extent_rejected(self):

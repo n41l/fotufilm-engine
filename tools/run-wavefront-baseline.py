@@ -106,9 +106,9 @@ def sha(path):
     return digest.hexdigest()
 
 
-def run_round(worker, pack, image, mode, root, *, expected_band=None):
+def run_round(worker, pack, image, mode, root, *, expected_band=None, expected_ring_rows=1024):
     # The CLI remains clean-R only. The comparison controller explicitly admits E here.
-    experimental = mode == "E" and expected_band in (64,128,256)
+    experimental = mode == "E" and expected_band in (64,128,256,512)
     if not experimental and (mode not in ("B0", "B1") or expected_band is not None):
         raise ValueError("R B0/B1 or explicit E with a supported band is required")
     root.mkdir(parents=True)
@@ -117,7 +117,8 @@ def run_round(worker, pack, image, mode, root, *, expected_band=None):
     with (root/'stderr.log').open('wb') as errors, (root/'events.jsonl').open('wb') as raw:
         process=subprocess.Popen([str(worker),str(pack),str(image)],stdout=subprocess.PIPE,stderr=errors,
             env={**os.environ,'FOTUFILM_AOT_WINDOWED':'1' if mode=='B1' else '0',
-                 'FOTUFILM_METAL_POOL':'1024','FOTUFILM_TRACE_VARIANT':'0'})
+                 'FOTUFILM_METAL_POOL':'1024','FOTUFILM_TRACE_VARIANT':'0',
+                 **({'FOTUFILM_WAVEFRONT_BENCH_ROWS':str(expected_band)} if experimental else {})})
         selector=selectors.DefaultSelector();selector.register(process.stdout,selectors.EVENT_READ)
         buffer=b''
         try:
@@ -180,7 +181,7 @@ def run_round(worker, pack, image, mode, root, *, expected_band=None):
             issues.append('private E row accounting missing')
         else:
             rows,source,consumers,capacity=map(int,counts[0])
-            if rows!=height or source<1 or consumers!=(height+expected_band-1)//expected_band or capacity!=1024:
+            if rows!=height or source<1 or consumers!=(height+expected_band-1)//expected_band or capacity!=expected_ring_rows:
                 issues.append('invalid E row accounting')
             if any(r.get('aot_calls')!=source+consumers for r in records):issues.append('per-call E source/consumer count changed')
     retained=next((e for e in events if e['type']=='retained'),None)

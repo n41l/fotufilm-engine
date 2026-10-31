@@ -46,6 +46,7 @@ class ProtocolTests(unittest.TestCase):
     def test_new_boot(self):self.rejects(lambda B,V,F,K:K.update(environment={'boot':'two'}))
     def test_changed_worker(self):self.rejects(lambda B,V,F,K:K.update(E_sha='different'))
     def test_traced_verifier(self):self.rejects(lambda B,V,F,K:V.update(normal_experimental_kernel_coverage=False))
+    def test_isolated_mixed_revisions_cannot_enter_formal_comparison(self):self.rejects(lambda B,V,F,K:V.update(mixed_candidate_revisions=True))
     def test_changed_input(self):self.rejects(lambda B,V,F,K:F['cases'][0].update(input_sha256='changed'))
     def test_missing_normal_case(self):self.rejects(lambda B,V,F,K:V['results'].pop())
     def test_changed_math(self):self.rejects(lambda B,V,F,K:K.update(stats_sha='changed'))

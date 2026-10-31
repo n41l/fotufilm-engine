@@ -3,6 +3,7 @@
 import argparse
 import json
 import os
+import re
 from pathlib import Path
 import subprocess
 import uuid
@@ -24,6 +25,7 @@ def main():
     p.add_argument('--trace-kernels',type=Path)
     args=p.parse_args();repo=Path(__file__).resolve().parents[1]
     frozen=json.loads(args.frozen_cases.read_text());reference=args.reference_worker.resolve()
+    ring_rows=int(re.search(r'kWavefrontLightRows = (\d+)',(repo/'Sources/FotufilmHalide/Pipeline/WavefrontLightLayout.h').read_text())[1])
     if b.sha(reference)!=frozen['worker_sha256'] or (not args.diagnostic_control and b.sha(repo/'tools/wavefront-benchmark.mm')!=frozen['tool_sources']['wavefront-benchmark.mm']):
         raise ValueError('frozen R/common worker changed')
     root=repo/'build/wavefront-managed'/uuid.uuid4().hex[:12];root.mkdir(parents=True)
@@ -71,7 +73,7 @@ def main():
                 result=subprocess.run([str(compare),str(left),str(right),'linear'],capture_output=True,text=True)
                 pixels=json.loads(result.stdout);w,h=map(int,case['size'].split('x'))
                 numeric=pixels['passed'] and pixels['samples']==w*h*4 and result.returncode==0
-                evidence=analyze_explicit(errors.read_text().splitlines(),w,h,rows,calls[0]['aot_calls'])
+                evidence=analyze_explicit(errors.read_text().splitlines(),w,h,rows,calls[0]['aot_calls'],expected_ring_rows=ring_rows)
                 report['results'].append({'case':case['id'],'band':rows,'actual':calls[0]['actual_variant'],
                     'aot_calls':calls[0]['aot_calls'],'comparison':pixels,'trace':evidence,'passed':numeric and evidence['passed'],
                     'R_output_sha256':b.sha(left),'E_output_sha256':b.sha(right)})

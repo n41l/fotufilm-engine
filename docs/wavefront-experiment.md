@@ -662,3 +662,87 @@ Five diagnostic aggregation tests, 16 existing metric-accounting tests and 27 ex
 comparison/gating tests pass. [Stage-eight results](wavefront-stage8-results.json) preserve
 the exact workers/sources, all 24 raw-round hashes, environment and observed comparisons.
 No production code or AOT was changed, no branch pushed and no upstream PR created.
+
+
+## Isolated 512-row diagnostic
+
+The original windowed path uses 1080-row windows. The research path now admits 512 rows;
+512 plus both conservative 360-row margins needs 1232 live rows, so its prior 1024-row
+cache is insufficient. The experimental cache is 2048 rows, protected by a compile-time
+capacity assertion and the existing live-label/GPU-drain checks. Both fresh E256 and E512
+controls use this same cache. Historical 1024-row scores are a separate cohort.
+
+A broad 78-archive rebuild and selected Swift Metal JIT tests were interrupted by the
+controller after excessive unmodified-legacy compilation; CPU samples and partial outputs
+remain. They are not counted as numerical failures or passes. CPU/Metal stage tests each
+passed 11 checks and the release Swift build passed. Full current-source release AOT,
+release parity and completion of the selected Swift suite remain required before release.
+
+The measured composite reuses 63 frozen, verified legacy archives and builds all 15 current
+wavefront archives (plus six independent trace overrides). Shared stage/graph sources match
+the frozen control. Default builder source-fingerprint checks remain strict; this explicit
+diagnostic route records both component identities. Formal comparison rejects mixed-revision
+diagnostics even if a future reference is stable. No release/PR acceptance is implied.
+
+Twenty-four normal pixel comparisons, four traced 512 cases and fourteen lifecycle frames
+pass. Invalid-option checks and injected source submission failure/drain/recovery pass too.
+The current band uses real 512 consumers, including the RGB+luma lifecycle case; full-frame
+comparison includes strip seams. A separate timing campaign uses R/E256, E512/R for each
+primary case, 5/30/2/5-second warm/window/tail/idle, fresh processes and one in-flight frame.
+
+**The original Portra 1080p E256 row below overlaps controller cache deletion. See the explicit clean follow-up below; this original case is retained, not used as the primary displayed comparison.**
+
+| Case | R median range ms | E256 median / p95 ms | E512 median / p95 ms | E512 median reduction vs E256 |
+| --- | --- | --- | --- | --- |
+| Portra 1080p | 7.50–9.69 | 11.45 / 12.18 | 10.12 / 10.97 | 11.6% |
+| Portra 4K | 38.85–50.68 | 56.14 / 73.19 | 52.76 / 73.32 | 6.0% |
+| HP5 1080p | 6.61–6.71 | 9.09 / 9.99 | 7.99 / 8.88 | 12.1% |
+| HP5 4K | 21.68–27.03 | 31.83 / 37.31 | 28.77 / 40.02 | 9.6% |
+
+| Case | E256 / E512 dispatches | E256 / E512 device peak MiB | E512 new buffers / measured call |
+| --- | --- | --- | --- |
+| Portra 1080p | [203] / [122] | 221.8 / 302.4 | [0] |
+| Portra 4K | [432] / [240] | 873.5 / 1181.2 | [6, 7] |
+| HP5 1080p | [163] / [98] | 200.7 / 265.9 | [0] |
+| HP5 4K | [306] / [170] | 519.7 / 611.7 | [0] |
+
+These are per-request median/p95 observations; FPS is independently counted. Every E band
+has one window, R has two controls per case, and R still drifts. Device peaks include cold
+initialization and are not calibrated total-memory acceptance. Lower observed E512 medians
+do not establish a stable speedup or authorize band selection on these primary inputs.
+
+Rebuild the isolated components with the previously preserved 75-archive control and its
+normal proof (the old source ref is explicit):
+
+```sh
+python3 tools/prepare-wavefront-wide-diagnostic.py --control-kernels build/wavefront-macos \
+  --control-proof build/wavefront-candidate/9baf1b6d6b30/verification.json \
+  --control-ref deacc05 --halide-root build/halide-install --output build/wavefront-wide-reproduction
+```
+
+Use its `control/kernels`, `kernels` and `trace-kernels` in the existing verifiers with
+`--diagnostic-control`, `--diagnostic-kernels`, and (for traced checks) `--trace-kernels`.
+The lifecycle verifier takes `--band 512`; the latency diagnostic takes `--bands 256,512`
+and the newly produced normal verification report. It cannot enter the formal collector.
+[Stage-nine results](wavefront-stage9-results.json) preserve every component/worker/source
+identity, all 16 timing rounds, interruptions, cleanup manifests and validation reports.
+No branch was pushed and no upstream PR created.
+
+
+### Known controller interference and explicit reverse-order follow-up
+
+Own cache deletion overlapped the first Portra 1080p E256 measurement, about 16.8 seconds
+after its environment observation and 23.3 seconds before the worker finished. That original
+case is retained and marked environmentally contaminated; protocol accounting remains valid.
+A separately recorded R/E512, E256/R follow-up repeats only the affected case with the same
+frozen workers, input and 5/30/2/5 protocol, with no concurrent compilation or cache cleanup.
+It does not replace a source round. The table below labels each row's source; it is a display
+of separate diagnostic observations, not pooled formal acceptance. All 20 protocol-valid rounds
+remain preserved. The single-window and R-drift limitations still apply.
+
+| Case / source | R median range ms | E256 median / p95 ms | E512 median / p95 ms | E512 median reduction vs E256 |
+| --- | --- | --- | --- | --- |
+| Portra 1080p（clean reverse-order follow-up） | 7.67–11.56 | 11.51 / 13.21 | 10.09 / 11.05 | 12.4% |
+| Portra 4K（original） | 38.85–50.68 | 56.14 / 73.19 | 52.76 / 73.32 | 6.0% |
+| HP5 1080p（original） | 6.61–6.71 | 9.09 / 9.99 | 7.99 / 8.88 | 12.1% |
+| HP5 4K（original） | 21.68–27.03 | 31.83 / 37.31 | 28.77 / 40.02 | 9.6% |

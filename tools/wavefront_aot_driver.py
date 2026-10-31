@@ -34,7 +34,7 @@ def build(repo, kernels, out, driver, *, definitions=(), driver_definitions=(),
         expected=subprocess.check_output([sys.executable,str(repo/'tools/aot-release.py'),'key','macos'],text=True).strip()
         if (diagnostic_kernels/'source-key.txt').read_text().strip()!=expected:raise ValueError('diagnostic kernel source changed')
         diagnostic_archives=sorted(diagnostic_kernels.glob('fotufilm_halide_ios_*_wavefront_*.a'))
-        if len(diagnostic_archives)!=12:raise ValueError('twelve explicit producer/consumer kernels required')
+        if len(diagnostic_archives)!=manifest.get('experimental_archive_count',12):raise ValueError('complete explicit producer/consumer kernel set required')
         (out/'diagnostic-build.json').write_text(json.dumps({'mixed_candidate_revisions':True,'performance_acceptance':False,
             'control_manifest_sha256':digest(control/'control.json'),'experimental_source_key':expected,
             'experimental_archives':{a.name:digest(a) for a in diagnostic_archives}},indent=2)+'\n')
@@ -49,13 +49,14 @@ def build(repo, kernels, out, driver, *, definitions=(), driver_definitions=(),
             text=True,env={**os.environ,'FOTUFILM_AOT_WAVEFRONT_TRACE':'1'}).strip()
         if len({p.name for p in trace_overrides})!=len(trace_overrides):raise ValueError('duplicate trace override')
         for archive in trace_overrides:
-            if not (kernels/archive.name).is_file() or '_wavefront_' not in archive.name:
+            normal=next((p for p in diagnostic_archives if p.name==archive.name),kernels/archive.name)
+            if not normal.is_file() or '_wavefront_' not in archive.name:
                 raise ValueError('trace override must replace an existing research kernel')
             if (archive.parent/'source-key.txt').read_text().strip()!=trace_key:
                 raise ValueError('trace override source/configuration identity changed')
             pattern=r'\bint\s+'+re.escape(archive.stem)+r'\((.*?)\);'
             signatures=[re.search(pattern,p.read_text(),re.S).group(1) for p in (
-                archive.with_suffix('.h'),kernels/archive.with_suffix('.h').name)]
+                archive.with_suffix('.h'),normal.with_suffix('.h'))]
             if signatures[0]!=signatures[1]:raise ValueError('trace override ABI changed')
     wrappers = ['#include <cstdio>',
                 'extern "C" { extern const char *fotufilm_bench_actual_variant; '
@@ -131,7 +132,7 @@ def build(repo, kernels, out, driver, *, definitions=(), driver_definitions=(),
                            check=True,stdout=log,stderr=log)
             objects.append(out/'adapter.o')
         subprocess.run([*common, *map(str,objects),
-                        *map(str,trace_overrides), *map(str,diagnostic_archives),
+                        *map(str,trace_overrides), *map(str,(a for a in diagnostic_archives if a.name not in {p.name for p in trace_overrides})),
                         *map(str, sorted(p for p in kernels.glob("*.a") if p.name not in {a.name for a in [*trace_overrides,*diagnostic_archives]})), "-framework", "Metal",
                         "-framework", "Foundation", "-o", str(out / "runner")],
                        check=True, stdout=log, stderr=log)

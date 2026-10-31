@@ -2,6 +2,10 @@
 #include "FotufilmHalide.h"
 #if FOTUFILM_WAVEFRONT_OPTIONS_TESTS
 #include "../Sources/FotufilmHalide/FotufilmHalideWavefront.h"
+#include "../Sources/FotufilmHalide/Pipeline/WavefrontLightLayout.h"
+#ifndef FOTUFILM_LIFECYCLE_BAND
+#define FOTUFILM_LIFECYCLE_BAND 256
+#endif
 #endif
 #include <algorithm>
 #include <cmath>
@@ -105,7 +109,7 @@ int main(int argc,char **argv) {
         int status=0,actual_mode=0,expected_calls=1;
         const char *reason="original API";
 #if FOTUFILM_WAVEFRONT_OPTIONS_TESTS
-        FotufilmWavefrontOptions options;options.rows=frame==7 ? 17 : 256;options.mode=frame==8 ? 0 : 1;
+        FotufilmWavefrontOptions options;options.rows=frame==7 ? 17 : FOTUFILM_LIFECYCLE_BAND;options.mode=frame==8 ? 0 : 1;
         if (frame==11) options.test_fail_after_source_call=1;
         FotufilmWavefrontResult result;
         status=fotufilm_halide_metal_process_linear_float_wavefront(input.data(),output.data(),
@@ -121,7 +125,7 @@ int main(int argc,char **argv) {
         }
         if (actual_mode!=((frame<4 || frame==9 || frame==12 || frame==13) ? 1 : 0)) return 1;
         if (actual_mode==1) {
-            if (result.producer_rows!=height || result.consumer_calls!=(height+255)/256 || result.ring_rows!=1024) return 1;
+            if (result.producer_rows!=height || result.consumer_calls!=(height+options.rows-1)/options.rows || result.ring_rows!=fotufilm::gpu::kWavefrontLightRows) return 1;
             expected_calls=result.producer_calls+result.consumer_calls;
         }
 #else

@@ -164,12 +164,15 @@
     X(color_float_realtime, negative, 134462, 64) \
     X(color_float_realtime, negative, 134462, 128) \
     X(color_float_realtime, negative, 134462, 256) \
+    X(color_float_realtime, negative, 134462, 512) \
     X(color_float_realtime, negative_luma, 134974, 64) \
     X(color_float_realtime, negative_luma, 134974, 128) \
     X(color_float_realtime, negative_luma, 134974, 256) \
+    X(color_float_realtime, negative_luma, 134974, 512) \
     X(monochrome_float_realtime, printed_slide, 133558, 64) \
     X(monochrome_float_realtime, printed_slide, 133558, 128) \
-    X(monochrome_float_realtime, printed_slide, 133558, 256)
+    X(monochrome_float_realtime, printed_slide, 133558, 256) \
+    X(monochrome_float_realtime, printed_slide, 133558, 512)
 
 #define FOTUFILM_AOT_WAVEFRONT_LIGHT_VARIANTS(X) \
     X(color_float_realtime, negative, 134462) \

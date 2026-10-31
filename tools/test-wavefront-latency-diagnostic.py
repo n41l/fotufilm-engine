@@ -37,6 +37,12 @@ class LatencyDiagnosticTests(unittest.TestCase):
         self.assertFalse(r['all_rounds_valid'])
         self.assertIsNone(r['R_median_range_ratio'])
         self.assertTrue(r['R_timing_review_required'])
+    def test_wide_band_cohort_is_explicit_and_cannot_hide_missing_band(self):
+        p=self.pairs()[:2];p[0]['band']=256;p[1]['band']=512
+        self.assertFalse(m.summarize_pairs(p)['all_rounds_valid'])
+        self.assertTrue(m.summarize_pairs(p,expected_bands=(256,512))['all_rounds_valid'])
+        p[1]['band']=256
+        self.assertFalse(m.summarize_pairs(p,expected_bands=(256,512))['all_rounds_valid'])
     def test_complete_valid_diagnostic_never_freezes_reference(self):
         r=m.summarize_pairs(self.pairs())
         self.assertTrue(r['all_rounds_valid'])

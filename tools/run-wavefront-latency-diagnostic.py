@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Measure diagnostic R-B1/E latency using unchanged verified normal workers.
 
-One E round per band/case and three adjacent R controls. Never freezes B_ref,
+One E round per band/case with adjacent R controls. Never freezes B_ref,
 selects a band, or satisfies formal comparison/PR gates. Preserve every round.
 """
 import argparse
@@ -18,7 +18,7 @@ b = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(b)
 
 
-def summarize_pairs(pairs):
+def summarize_pairs(pairs, expected_bands=(64,128,256)):
     rows = []
     references = []
     for pair in pairs:
@@ -34,10 +34,11 @@ def summarize_pairs(pairs):
             'E_over_adjacent_R_median_ratio': E['median_seconds'] / R['median_seconds'] if valid else None,
             'R_FPS': R.get('throughput_fps'), 'E_FPS': E.get('throughput_fps'),
             'R_requests': R.get('request_count'), 'E_requests': E.get('request_count')})
-    drift = max(references) / min(references) - 1 if len(references) == 3 else None
+    complete = sorted(pair['band'] for pair in pairs) == sorted(expected_bands)
+    drift = max(references) / min(references) - 1 if complete and len(references) == len(expected_bands) and len(references)>1 else None
     return {'pairs': rows, 'R_median_range_ratio': drift,
         'R_timing_review_required': drift is None or drift > .05,
-        'all_rounds_valid': len(pairs) == 3 and all(row['rounds_valid'] for row in rows),
+        'all_rounds_valid': complete and all(row['rounds_valid'] for row in rows),
         'B_ref_frozen': False, 'performance_acceptance': False}
 
 
@@ -45,7 +46,11 @@ def main(helper):
     p = argparse.ArgumentParser(description=__doc__)
     for n in ('reference', 'fixtures', 'verification', 'baseline-report', 'output'):
         p.add_argument('--' + n, type=Path, required=True)
+    p.add_argument('--bands',default='64,128,256')
     a = p.parse_args()
+    bands=tuple(map(int,a.bands.split(',')))
+    if not bands or len(set(bands))!=len(bands) or any(x not in (64,128,256,512) for x in bands):
+        raise ValueError('unique supported diagnostic bands required')
     c = Path(__file__).resolve().parents[1]
     r = a.reference.resolve()
     f = json.loads(a.fixtures.read_text())
@@ -62,7 +67,7 @@ def main(helper):
     if v['common_driver_sha256'] != b.sha(c/'tools/wavefront-benchmark.mm') or f['tool_sources']['wavefront_metrics.py'] != b.sha(c/'tools/wavefront_metrics.py'):
         raise ValueError('measurement worker source or statistics changed')
     workers = {'R': r/'build/wavefront-benchmark-v2/instrumented/runner',
-        **{f'E{band}': a.verification.resolve().parent/f'band-{band}/runner' for band in (64, 128, 256)}}
+        **{f'E{band}': Path(v.get('C_worker_paths',{}).get(f'E_{band}',str(a.verification.resolve().parent/f'band-{band}/runner'))) for band in bands}}
     for name, worker in workers.items():
         expected = f['worker_sha256'] if name == 'R' else v['C_worker_sha256']['E_' + name[1:]]
         if b.sha(worker) != expected:
@@ -80,7 +85,8 @@ def main(helper):
         'protocol': {'warmup_seconds': 5, 'measurement_seconds': 30, 'tail_seconds': 2,
             'retained_idle_seconds': 5, 'inflight_frames': 1, 'pool_MiB': 1024,
             'fresh_process_each_round': True, 'R_mode': 'B1', 'E_rounds_per_band_case': 1,
-            'pair_order': {'64': ['R', 'E'], '128': ['E', 'R'], '256': ['R', 'E']}},
+            'ring_rows':v.get('ring_rows',1024),'R_controls_per_case':len(bands),
+            'pair_order': {str(band):(['R','E'] if i%2==0 else ['E','R']) for i,band in enumerate(bands)}},
         'source_base': f['source_base'], 'candidate_commit': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=c, text=True).strip(),
         'environment': b.environment_snapshot(), 'workers': {n:{'path':str(w), 'sha256':b.sha(w)} for n,w in workers.items()},
         'sources': {n:b.sha(c/'tools'/n) for n in ('run-wavefront-latency-diagnostic.py','run-wavefront-baseline.py','wavefront-benchmark.mm','wavefront_metrics.py')},
@@ -101,10 +107,10 @@ def main(helper):
         for case in f['cases']:
             entry = {'pairs': []}
             report['cases'][case['id']] = entry
-            for band in (64,128,256):
+            for band_index,band in enumerate(bands):
                 pair = {'band':band}
                 entry['pairs'].append(pair)
-                for arm in (('R','E') if band != 128 else ('E','R')):
+                for arm in (('R','E') if band_index%2==0 else ('E','R')):
                     b.require_awake(helper)
                     if shutil.disk_usage(root).free < 2*1024**3:
                         raise RuntimeError('less than 2 GiB free; evidence saved')
@@ -112,7 +118,8 @@ def main(helper):
                     out.parent.mkdir(parents=True,exist_ok=True)
                     b.atomic_json(out.with_name(out.name+'-environment.json'),b.environment_observation(root))
                     result = b.run_round(workers['R' if arm=='R' else f'E{band}'],Path(case['pack']),Path(case['input']),
-                        'B1' if arm=='R' else 'E',out,expected_band=band if arm=='E' else None)
+                        'B1' if arm=='R' else 'E',out,expected_band=band if arm=='E' else None,
+                        expected_ring_rows=v.get('ring_rows',1024))
                     phases = [e for e in result['phase_events'] if e['type'] in ('warmup_complete','measurement_complete')]
                     if arm == 'R':
                         expected = next(e['output_sha256'] for e in old['cases'][case['id']]['arms']['B1'][0]['phase_events'] if e['type']=='measurement_complete')
@@ -128,7 +135,7 @@ def main(helper):
                     print(json.dumps({'case':case['id'],'band':band,'arm':arm,'scores':result['scores']},ensure_ascii=False),flush=True)
                     if not result['scores']['valid']:
                         raise RuntimeError('invalid round preserved; no replacement')
-                entry['assessment'] = summarize_pairs([x for x in entry['pairs'] if 'R' in x and 'E' in x])
+                entry['assessment'] = summarize_pairs([x for x in entry['pairs'] if 'R' in x and 'E' in x],expected_bands=bands)
                 save()
         report['complete']=True
     except BaseException as error:

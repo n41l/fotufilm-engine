@@ -21,6 +21,8 @@ METRICS=('device_total_peak_bytes','process_lifetime_peak_bytes','retained_devic
 def validate_protocol(baseline, verification, fixtures, *, band, R_sha, E_sha, fixture_sha, common_sha, stats_sha, environment):
     if not baseline.get('complete') or not baseline.get('B_ref_frozen'):
         raise ValueError('stable frozen clean-R B_ref is required before collecting E scores')
+    if verification.get('mixed_candidate_revisions'):
+        raise ValueError('isolated mixed-revision diagnosis cannot enter formal comparison')
     frozen=baseline['frozen_cases']
     if frozen.get('idle_sleep_prevention')!='controller-scoped caffeinate -i':raise ValueError('fresh awake-controlled baseline required')
     if frozen.get('environment')!=environment:raise ValueError('Mac, OS, boot or toolchain changed; freeze a fresh R baseline')

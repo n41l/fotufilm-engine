@@ -18,6 +18,9 @@ def main():
     p.add_argument('--reference-kernels',required=True,type=Path)
     p.add_argument('--kernels',required=True,type=Path)
     p.add_argument('--catalog',required=True,type=Path)
+    p.add_argument('--band',type=int,choices=(64,128,256,512),default=256)
+    p.add_argument('--diagnostic-control',type=Path)
+    p.add_argument('--diagnostic-kernels',type=Path)
     args=p.parse_args();candidate=Path(__file__).resolve().parents[1];reference=args.reference.resolve()
     if candidate==reference or subprocess.check_output(['git','-C',str(reference),'status','--porcelain'],text=True):
         raise ValueError('R must remain a separate clean checkout')
@@ -35,10 +38,12 @@ def main():
     runners={'R':build(reference,args.reference_kernels,root/'R-build',driver),
              'C':build(candidate,args.kernels,root/'C-build',driver,
                  definitions=('-DFOTUFILM_AOT_WAVEFRONT_HOST=1','-DFOTUFILM_WAVEFRONT_TESTING=1'),
-                 driver_definitions=('-DFOTUFILM_WAVEFRONT_OPTIONS_TESTS=1',))}
+                 driver_definitions=('-DFOTUFILM_WAVEFRONT_OPTIONS_TESTS=1',f'-DFOTUFILM_LIFECYCLE_BAND={args.band}',),
+                 **(dict(diagnostic_control=args.diagnostic_control,diagnostic_kernels=args.diagnostic_kernels) if args.diagnostic_control else {}))}
     compare=root/'compare'
     subprocess.run(['xcrun','clang++','-std=c++17','-O2',str(candidate/'tools/wavefront-compare.cpp'),'-o',str(compare)],check=True)
     report={'scope':'fourteen compared synchronous calls plus a C-only injected submission failure per engine in one process; A/B/A, geometry, stock, input, seed, alpha, camera gate, stage/still/exact/band fallback',
+            'mixed_candidate_revisions':bool(args.diagnostic_control),'final_candidate_accepted':False,
             'reference_base':catalog['base_sha'],'driver_sha256':b.sha(driver),
             'runner_sha256':{k:b.sha(v) for k,v in runners.items()},
             'pack_sha256':{p.name:b.sha(p) for p in packs},'results':[],'complete':False,'performance_acceptance':False}

@@ -71,7 +71,7 @@ class Table:
             if len(matching) != 1 or matching[0][3] != twin["stages"]:
                 raise ValueError("Wavefront research variant must match an exact windowed twin")
             for rows in experiment.get("bands", []):
-                if rows not in (64, 128, 256):
+                if rows not in (64, 128, 256, 512):
                     raise ValueError("Unsupported wavefront band")
                 self.wavefront.append((*matching[0], rows))
         if len(set((v, n, rows) for v, n, _, _, rows in self.wavefront)) != len(self.wavefront):
