@@ -431,3 +431,71 @@ hashes, every original arm's rates, epsilon, thermal and environment observation
 do not identify the cause of the remaining timing variation. A reliable clean-R baseline,
 separate band tuning, paired E/holdout measurements, local intermediate attribution and
 same-process resource rotation remain required before the PR benefit gate.
+
+## Stability diagnosis after the awake campaign
+
+The preserved 36-round analysis recomputes the original scores from every request and
+partitions each 30-second window into synchronous API envelopes and their complement.
+Outside-API time accounts for at most 0.250% of a window. Actual variants and dispatch counts
+are constant within each arm. All 1080p measurement calls allocate zero new observed Metal
+buffers; some original 4K arms still allocate each call. These observations narrow the scope,
+but neither allocation counts nor pre-round load establish the cause of timing variation.
+
+Two six-round fixed Portra 1080p B1 campaigns used the exact original R worker and unchanged
+5/30/2-second protocol, single in-flight frame and 1 GiB pool:
+
+| Control | Six-round FPS range drift | B/B memory noise | Frozen B_ref |
+| --- | --- | --- | --- |
+| Before closing the system storage page | 8.33% | pass | no |
+| After the user closed the page | 12.23% | pass | no |
+
+The storage helper processes exited after the page closed. Spotlight processes remained;
+process snapshots are context, not proof of a GPU interference cause. The sixth post-close
+sample was 119.93 FPS and remains in the result. Neither campaign passes the unchanged 5%
+range gate. A small diagnostic cannot freeze the four-case reference even when it passes.
+
+A **separate instrumented R worker** was built from the original R AOT and the unchanged
+common driver, with `wavefront-timing-adapter.mm` substituted only at the driver's API call.
+Its cold verification output matches the original R byte for byte. Six warm diagnostic rounds
+joined all 24,967 observed request IDs, including 21,179 measurement requests, to CPU/wait/GPU
+records. Each measured call has 44 observed completed/timestamped command buffers, three
+`waitUntilCompleted` calls and one observed queue. Raw GPU intervals are preserved and their
+union is independently checked; overlapping command-buffer intervals are not simply added.
+
+| Diagnostic component | Range of round means | Range drift |
+| --- | --- | --- |
+| Real R API wall time inside the adapter | 7.48–9.59 ms | 28.23% |
+| Main-thread CPU time | 1.64–1.73 ms | 5.12% |
+| Process CPU time | 2.79–2.99 ms | 7.27% |
+| Observed Metal wait wall time | 1.68–2.32 ms | 37.83% |
+| GPU command-buffer interval union | 5.52–7.61 ms | 37.94% |
+
+These times **overlap** and must not be summed as disjoint costs. GPU envelopes include
+scheduling/preemption effects and are not hardware utilization or a clock-frequency reading.
+Callbacks and raw diagnostic logging perturb scheduling; their FPS and variation cannot
+replace unmodified-worker scores. The evidence points toward GPU-timeline variability in
+the diagnostic reproduction, without proving GPU frequency, another GPU client or shared
+memory pressure as the cause. Coarse thermal state 0 alone does not guarantee stable timing.
+A bounded `sudo -n powermetrics` availability check required local administrator authentication;
+no GPU power/frequency samples were obtained and no system settings were changed.
+
+Reproduce the offline analysis and fixed-arm diagnosis from `candidate/`:
+
+```sh
+python3 tools/test-wavefront-stability.py
+python3 tools/analyze-wavefront-stability.py --report "$WAVEFRONT_BASELINE_REPORT" \
+  --output build/wavefront-stability-analysis/new-analysis
+python3 tools/run-wavefront-stability.py --source-report "$WAVEFRONT_BASELINE_REPORT" \
+  --reference ../reference --worker "$WAVEFRONT_R_WORKER" \
+  --case portra400-coffee-1920x1080 --mode B1 --output build/wavefront-stability-fixed
+# FIXED_REPORT is the resulting complete fixed-arm diagnostic report.
+python3 tools/run-wavefront-timing.py --reference ../reference \
+  --kernels ../reference/build/wavefront-macos --source-report "$FIXED_REPORT" \
+  --output build/wavefront-stability-timing
+```
+
+The 20 synthetic tests validate interval clipping/union, score integrity, request coverage,
+completion status and gating. See [stage-five results](wavefront-stage5-results.json) for
+source/worker/report hashes and every preserved campaign. No E performance round or upstream
+PR was started. A quiet reference environment and/or authorized GPU telemetry is needed to
+continue the stability investigation before the formal four-case baseline.

@@ -324,5 +324,11 @@
     "actual_E_performance_rounds": 0,
     "timing_review_required": true,
     "thermal_review_required": false
+  },
+  "stability_diagnostics": {
+    "summary": "candidate/docs/wavefront-stage5-results.json",
+    "sha256": "596033a22aa0970f1de11cadbd61897fea745b9801d11412df9ffa64106df213",
+    "formal_B_ref_frozen": false,
+    "actual_E_performance_rounds": 0
   }
 }
