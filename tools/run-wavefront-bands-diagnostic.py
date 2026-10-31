@@ -6,6 +6,11 @@ One round per case/arm; no causal, stable-B_ref or performance acceptance claim.
 import argparse,importlib.util,json,shutil,subprocess,uuid
 from pathlib import Path
 
+def expected_output(proof, case_id, band):
+ rows=[x for x in proof['results'] if x['case']==case_id and x['worker']=='bundle' and x['band']==(band or 1080)]
+ if len(rows)!=1:raise ValueError('unique normal-worker pixel proof required')
+ return rows[0]['C_output_sha256'] if band else rows[0]['R_B1_output_sha256']
+
 def main():
  c=Path(__file__).resolve().parents[1];spec=importlib.util.spec_from_file_location('baseline',c/'tools/run-wavefront-baseline.py');b=importlib.util.module_from_spec(spec);spec.loader.exec_module(b)
  p=argparse.ArgumentParser(description=__doc__)
@@ -43,7 +48,7 @@ def main():
      result=b.run_round(worker,Path(case['pack']),Path(case['input']),'E' if band else 'B1',out,
       **({'expected_band':band,'expected_ring_rows':2048,'expected_cut':'bundle','expected_field_rows':heights} if band else {}))
      row['arms'][arm]=b.compact(result,out/'round.json');save()
-     expected=r['C_output_sha256'] if band else r['R_B1_output_sha256'];phases=[x for x in result['phase_events'] if x['type'] in ('warmup_complete','measurement_complete')]
+     expected=expected_output(proof,case['id'],band);phases=[x for x in result['phase_events'] if x['type'] in ('warmup_complete','measurement_complete')]
      if len(phases)!=2 or any(x['output_sha256']!=expected for x in phases):raise RuntimeError('own-arm verified phase hash mismatch')
      print(json.dumps({'case':case['id'],'arm':arm,'scores':result['scores'],'memory':result['memory']}),flush=True)
      if not result['scores']['valid']:raise RuntimeError('invalid round retained')
