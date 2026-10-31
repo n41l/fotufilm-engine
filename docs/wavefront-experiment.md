@@ -746,3 +746,44 @@ remain preserved. The single-window and R-drift limitations still apply.
 | Portra 4K（original） | 38.85–50.68 | 56.14 / 73.19 | 52.76 / 73.32 | 6.0% |
 | HP5 1080p（original） | 6.61–6.71 | 9.09 / 9.99 | 7.99 / 8.88 | 12.1% |
 | HP5 4K（original） | 21.68–27.03 | 31.83 / 37.31 | 28.77 / 40.02 | 9.6% |
+
+
+## Post-MTF frontier diagnostic (stage ten)
+
+The private frontier now captures the original final MTF-selected RGB float value.
+Region blur policy preserves the applicable Metal optimizations without adding a
+producer window loop. Consumer bands remain 512 and the row cache remains 2048
+for this comparison. The default legacy selector is unchanged.
+
+The new private AOTs pass 24 normal pixel comparisons, four actual kernel/reuse
+traces and 14 lifecycle frames. Portra UHD MTF result coverage drops from 3056 to
+2160 rows. Six active pre-cut 512 archives were rebuilt from 339e78e and match
+the original bytes. Root traces also establish repeated per-band curve/weight/CDF
+table construction. A realization event is not necessarily an executed kernel;
+kernel binding names/counts confirm the radius-one fused path remains active.
+
+Eight pre/post diagnostic rounds contain 15,396 measurement calls, one pair per
+case, 5/30/2/5 protocol, same API/pool/waits. Median ms pre → post:
+Portra HD 9.26 → 9.37, Portra UHD 51.07 → 36.74, HP5 HD 10.25 → 10.01,
+HP5 UHD 26.41 → 26.78. Device peak MiB pre → post: 302.4 → 322.9,
+1181.2 → 1084.2, 265.9 → 286.1, 611.7 → 627.7. Only the Portra UHD pair is
+favorable on both measures; all adverse results are retained. Single pairs,
+thermal states 0/1 and unfrozen R preclude a stable causal or PR benefit claim.
+
+Retain this as research, not a release promotion. The initial producer batch is
+872 rows despite the 512-row consumer band. Isolate a producer batch cap next,
+counting additional source/table dispatches and complete memory; no such cap is
+implemented yet. Do that before table or halation extraction. Formal reference,
+retention, full same-source 78 AOT/release parity and broader Swift checks remain
+pending. The release build passes; the focused Swift test bundle builds but the
+test was interrupted during Halide IR JIT, with logs/sample retained.
+
+[Stage-ten results](wavefront-stage10-results.md), [machine-readable evidence](wavefront-stage10-results.json)
+and [edge contract](wavefront-post-mtf-contract.md) record all identities and
+limitations. Disk pressure stopped the first timing attempt before any score.
+Historical C workers and inactive temporary Metal sources were losslessly
+archived, hash-verified and journaled; raw reports, AOT and current workers remain.
+Restore an old worker with
+`python3 build/wavefront-post-mtf/archived-workers/restore.py <path-substring>`.
+Cleanup ended before measurement; no concurrent compiler or cleanup ran in the
+successful campaign. The assistant did not quit Docker, push or create a PR.
