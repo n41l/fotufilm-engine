@@ -330,5 +330,10 @@
     "sha256": "596033a22aa0970f1de11cadbd61897fea745b9801d11412df9ffa64106df213",
     "formal_B_ref_frozen": false,
     "actual_E_performance_rounds": 0
+  },
+  "simulator_off_diagnostic": {
+    "summary": "candidate/docs/wavefront-stage6-results.json",
+    "sha256": "77e9090244c0cff9527cc22d94c0e958bd50a5ba559ca2d0ff48331f2a954ce1",
+    "B_ref_frozen": false
   }
 }

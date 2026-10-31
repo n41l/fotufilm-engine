@@ -499,3 +499,21 @@ completion status and gating. See [stage-five results](wavefront-stage5-results.
 source/worker/report hashes and every preserved campaign. No E performance round or upstream
 PR was started. A quiet reference environment and/or authorized GPU telemetry is needed to
 continue the stability investigation before the formal four-case baseline.
+
+## Simulator-off control
+
+Runtime checks confirmed no booted simulator. Docker Desktop and a virtual-machine process
+remained; Docker version/container/stats queries each timed out after 12 seconds, and a direct
+local-socket ping timed out after three seconds before and after collection. These observations
+do not quantify Docker's GPU or container workload.
+
+Six fixed Portra 1080p B1 rounds using the original R worker returned 90.33, 85.03, 136.07,
+130.60, 98.20 and 104.00 FPS. All rounds were valid and B/B memory noise passed, but the range
+was 60.02%, above the unchanged 5% gate. Simulator was off at the before/after checks and its
+launchd was absent in the middle snapshot. Docker was not shut down. Closing Simulator did
+not stabilize this campaign; it neither proves Docker is the cause nor rules out a simulator
+contribution to earlier measurements.
+
+[Stage-six results](wavefront-stage6-results.json) preserve input/worker identity, every raw-round
+hash and service-query evidence. A Docker-fully-off control remains unmeasured. No formal B_ref,
+E score or PR was produced.
