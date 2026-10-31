@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Independent R/C same-process frame history and private-admission regressions."""
 import argparse
+import gzip
+import shutil
 import json
 import os
 from pathlib import Path
@@ -19,6 +21,7 @@ def main():
     p.add_argument('--kernels',required=True,type=Path)
     p.add_argument('--catalog',required=True,type=Path)
     p.add_argument('--band',type=int,choices=(64,128,256,512),default=256)
+    p.add_argument('--compress-reference',action='store_true',help='losslessly compress R dumps before running C to limit temporary disk use')
     p.add_argument('--diagnostic-control',type=Path)
     p.add_argument('--diagnostic-kernels',type=Path)
     args=p.parse_args();candidate=Path(__file__).resolve().parents[1];reference=args.reference.resolve()
@@ -58,6 +61,16 @@ def main():
             events=[json.loads(line) for line in (out/'events.jsonl').read_text().splitlines()]
             frames[label]=[e for e in events if e['type']=='frame']
             if len(frames[label])!=14:raise AssertionError('missing lifecycle frames')
+            if label=='R' and args.compress_reference:
+                report['reference_dump_compression']={}
+                for event in frames[label]:
+                    path=out/(str(event['frame'])+'.rgba32f');compressed=path.with_suffix(path.suffix+'.gz')
+                    checksum=b.sha(path)
+                    with path.open('rb') as src,gzip.open(compressed,'wb',compresslevel=1) as dst:
+                        shutil.copyfileobj(src,dst,1024*1024)
+                    report['reference_dump_compression'][str(event['frame'])]={'raw_sha256':checksum,'gzip_sha256':b.sha(compressed)}
+                    path.unlink()
+                checkpoint()
             if label=='C' and not any(e['type']=='invalid_options' and e['passed'] and e['checks']==4 for e in events):
                 raise AssertionError('invalid-option rejection checks missing')
             if label=='C' and not any(e['type']=='injected_failure' and e['passed'] and e['drained'] for e in events):
@@ -69,6 +82,13 @@ def main():
             if right['actual_mode']!=int(expected) or ('_wavefront_' in right['actual_variant'])!=expected:
                 raise AssertionError('fallback/legacy was counted as E')
             lp=root/'R'/f'{frame}.rgba32f';rp=root/'C'/f'{frame}.rgba32f'
+            compressed=lp.with_suffix(lp.suffix+'.gz')
+            if args.compress_reference:
+                proof=report['reference_dump_compression'][str(frame)]
+                if b.sha(compressed)!=proof['gzip_sha256']:raise AssertionError('compressed R evidence changed')
+                with gzip.open(compressed,'rb') as src,lp.open('wb') as dst:
+                    shutil.copyfileobj(src,dst,1024*1024)
+                if b.sha(lp)!=proof['raw_sha256']:raise AssertionError('R decompression changed pixels')
             result=subprocess.run([str(compare),str(lp),str(rp),left['encoding']],capture_output=True,text=True)
             comparison=json.loads(result.stdout)
             passed=comparison['passed'] and result.returncode==0 and comparison['samples']==left['width']*left['height']*4
@@ -76,7 +96,9 @@ def main():
                                       'comparison':comparison,'passed':passed})
             checkpoint()
             if not passed:raise AssertionError('lifecycle pixel disagreement; failed outputs preserved')
-            lp.unlink();rp.unlink();print('PASS frame',frame,right['actual_variant'],flush=True)
+            lp.unlink();rp.unlink()
+            if args.compress_reference:compressed.unlink()
+            print('PASS frame',frame,right['actual_variant'],flush=True)
         report['complete']=True
     except BaseException as error:
         report['failure']=str(error);raise

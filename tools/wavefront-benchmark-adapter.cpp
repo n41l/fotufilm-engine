@@ -16,11 +16,33 @@
 #include <chrono>
 #include <condition_variable>
 #include <mutex>
+#include <string>
+#include <unordered_map>
 static int generation=0,phase=0;
 static std::atomic<int> committed{0},completed{0};
 static std::mutex drain_mutex;
 static std::condition_variable drained;
 static void (*original_commit)(id,SEL);
+static id (*original_pipeline)(id,SEL,id,NSError **);
+static void (*original_set_pipeline)(id,SEL,id);
+static std::mutex kernel_mutex;
+static std::unordered_map<const void *,std::string> kernel_names;
+static id observed_pipeline(id object,SEL selector,id<MTLFunction> function,NSError **error) {
+    id result=original_pipeline(object,selector,function,error);
+    if (result && function.name) {
+        std::lock_guard<std::mutex> lock(kernel_mutex);
+        kernel_names[(__bridge const void *)result]=function.name.UTF8String;
+    }
+    return result;
+}
+static void observed_set_pipeline(id object,SEL selector,id state) {
+    if (phase) {
+        std::lock_guard<std::mutex> lock(kernel_mutex);
+        auto found=kernel_names.find((__bridge const void *)state);
+        if (found!=kernel_names.end()) std::fprintf(stderr,"GPU_KERNEL %d %d %s\n",generation,phase,found->second.c_str());
+    }
+    original_set_pipeline(object,selector,state);
+}
 static void observed_commit(id object,SEL selector) {
     if (phase) {
         const int ordinal=++committed,tag_generation=generation,tag_phase=phase;
@@ -40,8 +62,16 @@ static bool install_observer() {
         id<MTLDevice> device=MTLCreateSystemDefaultDevice();
         id<MTLCommandQueue> queue=[device newCommandQueue];
         id<MTLCommandBuffer> buffer=[queue commandBuffer];
+        id<MTLComputeCommandEncoder> encoder=[buffer computeCommandEncoder];
+        Method pipeline=class_getInstanceMethod(object_getClass(device),@selector(newComputePipelineStateWithFunction:error:));
+        Method bind=class_getInstanceMethod(object_getClass(encoder),@selector(setComputePipelineState:));
         Method method=class_getInstanceMethod(object_getClass(buffer),@selector(commit));
-        if (!method) return false;
+        if (!method || !pipeline || !bind) return false;
+        original_pipeline=reinterpret_cast<decltype(original_pipeline)>(method_setImplementation(pipeline,
+            reinterpret_cast<IMP>(observed_pipeline)));
+        original_set_pipeline=reinterpret_cast<decltype(original_set_pipeline)>(method_setImplementation(bind,
+            reinterpret_cast<IMP>(observed_set_pipeline)));
+        [encoder endEncoding];
         original_commit=reinterpret_cast<decltype(original_commit)>(method_setImplementation(method,
             reinterpret_cast<IMP>(observed_commit)));
         [queue release];
@@ -67,6 +97,11 @@ static int32_t trace(void *, const halide_trace_event_t *event) {
         std::fprintf(stderr,"PRODUCE %s %d %d %d %d %d %d\n",event->func,
             event->coordinates[0],event->coordinates[1],event->coordinates[2],
             event->coordinates[3],event->coordinates[4],event->coordinates[5]);
+    else if (event->event==halide_trace_produce) {
+        std::fprintf(stderr,"PRODUCE_ND %s %d",event->func,event->dimensions);
+        for (int i=0;i<event->dimensions;++i) std::fprintf(stderr," %d",event->coordinates[i]);
+        std::fputc('\n',stderr);
+    }
     return ++identity;
 }
 #endif

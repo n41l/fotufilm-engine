@@ -338,7 +338,7 @@
     ]
   },
   "wavefront_experiment": {
-    "doc": "Opt-in macOS research producer/consumer kernels. The source exports the original pre-MTF light expression into a private Float32 row cache; consumers read that cache and keep existing per-window intermediates. Explicit call-scoped scheduling owns row labels and GPU completion. No automatic legacy selection.",
+    "doc": "Opt-in macOS research producer/consumer kernels. The source exports the original final post-MTF selected light expression into a private Float32 row cache; consumers read that cache and keep existing per-window intermediates. Explicit call-scoped scheduling owns row labels and GPU completion. No automatic legacy selection.",
     "bands": [
       64,
       128,

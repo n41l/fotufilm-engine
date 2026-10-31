@@ -13,6 +13,8 @@ int main(int argc,char **argv) {
         if (std::fread(configuration.data(),sizeof(float),h[6],file)!=h[6]) return 2;
         std::fclose(file);
         fotufilm::ResolvedFrameParams frame(configuration.data(),h[2],h[3],h[5],0,0,0);
-        std::printf("%s source_reach=%lld\n",argv[i],(long long)fotufilm::wavefront_source_reach(frame,configuration.data(),h[4]));
+        std::printf("%s source_reach=%lld post_mtf_reach=%lld\n",argv[i],
+            (long long)fotufilm::wavefront_source_reach(frame,configuration.data(),h[4]),
+            (long long)fotufilm::wavefront_post_mtf_reach(frame,h[4]));
     }
 }

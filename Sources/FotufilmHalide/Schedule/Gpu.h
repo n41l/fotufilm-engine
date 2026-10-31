@@ -34,8 +34,9 @@ inline Expr typed_zero(const Func &function) {
 class GpuSchedule {
 public:
     explicit GpuSchedule(GpuConfiguration configuration = default_gpu_configuration(),
-                         bool windowed = false)
-        : configuration_(std::move(configuration)), windowed_(windowed) {}
+                         bool windowed = false, bool region_blur = false)
+        : configuration_(std::move(configuration)), windowed_(windowed),
+          region_blur_(windowed || region_blur) {}
     const GpuConfiguration &configuration() const { return configuration_; }
     bool windowed() const { return windowed_; }
     Target gpu_target() const { return configuration_.target(); }
@@ -92,6 +93,9 @@ public:
 private:
     const GpuConfiguration configuration_;
     const bool windowed_;
+    // A crop producer can use the windowed Metal blur arithmetic without introducing a
+    // window loop or placing all of its stores in that loop. Legacy defaults are unchanged.
+    const bool region_blur_;
     std::vector<Func> window_stores_;
     /// Every kernel the graph stores, with the thread loop its body runs in.
     struct RootKernel {
@@ -242,7 +246,7 @@ public:
     void normalized_taps(Func f, Var x, Var y, Var channel, Expr data, Expr weight,
                          bool stored, const std::string &name) {
         const bool fused = gpu_device_api() == DeviceAPI::WebGPU
-            || (gpu_device_api() == DeviceAPI::Metal && windowed_);
+            || (gpu_device_api() == DeviceAPI::Metal && region_blur_);
         if (!fused || !stored) {
             f(x, y, channel) = Halide::sum(data, name + "_sum")
                 / Halide::max(Halide::sum(weight, name + "_weight"), 1.0e-12f);
@@ -266,7 +270,7 @@ public:
     Expr cell_count(Expr valid, Expr start_x, Expr start_y, Expr cells, Expr width, Expr height,
                     const std::string &name) {
         const bool counted = gpu_device_api() == DeviceAPI::WebGPU
-            || (gpu_device_api() == DeviceAPI::Metal && windowed_);
+            || (gpu_device_api() == DeviceAPI::Metal && region_blur_);
         if (!counted) return Halide::sum(valid, name);
         return Halide::cast<float>(cells_inside(start_x, cells, width)
                                    * cells_inside(start_y, cells, height));
@@ -343,7 +347,7 @@ public:
                                                   && y + vertical_taps.x < height,
                                               Halide::cast<float>(kernel(vertical_taps.x, channel)),
                                               0.0f);
-        if (windowed_ && gpu_device_api() == DeviceAPI::Metal && store_result && !half
+        if (region_blur_ && gpu_device_api() == DeviceAPI::Metal && store_result && !half
             && !merged) {
             return gpu_gaussian_three(bounded, kernel, vertical_data, vertical_weight, extent,
                                       width, height, channels, name);

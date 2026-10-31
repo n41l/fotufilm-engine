@@ -63,9 +63,8 @@ struct GpuPolicy {
     int paper_lut_base = 0;
 };
 
-// A cut at the original pre-MTF light expression, never a replacement formula.
+// A cut at the original final MTF-selected light expression, never a replacement formula.
 struct LightFrontier {
-    std::string name;
     Func external;
     Func captured;
     int matches = 0;
@@ -92,7 +91,7 @@ public:
     using graph::Backend::store;
     Func store(Func values, graph::Store point, int channels, Expr branch) override {
         using graph::Store;
-        if (frontier_ && point == Store::Light && values.name() == frontier_->name) {
+        if (frontier_ && point == Store::MtfSelected) {
             ++frontier_->matches;
             frontier_->captured = values;
             return remember(values, frontier_->external.defined() ? frontier_->external : values);

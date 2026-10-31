@@ -217,7 +217,7 @@ int main(int argc, char **argv) {
                                                                    : WavefrontSchedule::Light::None});
             pipeline.compile_aot((output / variant.name).string(), variant.name,
                                  variant.runtime, target);
-        } catch (const Halide::CompileError &error) {
+        } catch (const Halide::Error &error) {
             // Name the variant: eighty compile in a row, and a bare terminate() says only that
             // one of them did not.
             std::cerr << "compiling " << variant.name << " (mask 0x" << std::hex

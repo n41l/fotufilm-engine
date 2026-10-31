@@ -480,13 +480,14 @@ int run_aot(ExecutionState &state, halide_buffer_t *in, halide_buffer_t *out,
     if (wavefront && wavefront->mode == 1) {
         const char *reason = "experimental kernels not built";
 #if FOTUFILM_AOT_WAVEFRONT_HOST
-        // A performance-oriented maximum in the legacy selector is not a bound on
-        // this producer's complete serial demand. Sum all supported spatial arms,
-        // including parallel ones conservatively, before admitting a bounded cache.
+        // Keep the original conservative admission for a controlled cut-only experiment.
+        // Separately bound the actual post-MTF graph's parallel branches; neither bound
+        // relaxes the legacy geometry, transport, class or exact-stage requirements.
         const int64_t source_reach = fotufilm::wavefront_source_reach(frame,configuration,feature_mask);
-        reason = source_reach > fotufilm::gpu::kWavefrontLightMargin ? "source demand exceeds private row-cache bound"
+        const int64_t post_mtf_reach = fotufilm::wavefront_post_mtf_reach(frame,feature_mask);
+        reason = std::max(source_reach,post_mtf_reach) > fotufilm::gpu::kWavefrontLightMargin ? "source demand exceeds private row-cache bound"
             : "unsupported geometry, transport or spatial reach";
-        if (window_eligible && source_reach <= fotufilm::gpu::kWavefrontLightMargin) {
+        if (window_eligible && std::max(source_reach,post_mtf_reach) <= fotufilm::gpu::kWavefrontLightMargin) {
             bool carries_warp = false;
             for (int i = 0; i < 3 * FOTUFILM_COUPLER_WARP_SAMPLES; ++i)
                 carries_warp |= configuration[FOTUFILM_CONFIG_COUPLER_WARP + i] != 0.0f;
@@ -498,7 +499,7 @@ int run_aot(ExecutionState &state, halide_buffer_t *in, halide_buffer_t *out,
                 && (((variant_mask) & (FOTUFILM_FRAME_COUPLERS | FOTUFILM_FRAME_DONOR_LAYER)) != 0 || !carries_warp)) \
                 experimental = {fotufilm_halide_ios_##variant_name##_wavefront_light_##stages_name, \
                     fotufilm_halide_ios_##variant_name##_wavefront_##stages_name##_##band_rows,band_rows, \
-                    ((variant_mask) & FOTUFILM_FRAME_MTF_LUMA) ? 4 : 3};
+                    3}; // The post-MTF frontier has three channels for every admitted graph.
             FOTUFILM_AOT_WAVEFRONT_VARIANTS(FOTUFILM_PICK_WAVEFRONT)
 #undef FOTUFILM_PICK_WAVEFRONT
             reason = "unsupported exact stages, class, band or coupler warp";

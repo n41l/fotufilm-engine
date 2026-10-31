@@ -156,10 +156,10 @@
     X(monochrome_float_realtime, printed_slide, (((FOTUFILM_AOT_WINDOWED_STAGES | FOTUFILM_FRAME_MONOCHROME) & ~FOTUFILM_VARIANT_STAGE_BITS) | FOTUFILM_AOT_PRINTED_SLIDE)) \
     X(color_float_realtime_negative, negative, (((FOTUFILM_AOT_WINDOWED_STAGES | FOTUFILM_FRAME_DENSITY_OUT) & ~FOTUFILM_VARIANT_STAGE_BITS) | FOTUFILM_AOT_NEGATIVE))
 
-/// Opt-in macOS research producer/consumer kernels. The source exports the original pre-MTF light
-/// expression into a private Float32 row cache; consumers read that cache and keep existing per-
-/// window intermediates. Explicit call-scoped scheduling owns row labels and GPU completion. No
-/// automatic legacy selection.
+/// Opt-in macOS research producer/consumer kernels. The source exports the original final post-MTF
+/// selected light expression into a private Float32 row cache; consumers read that cache and keep
+/// existing per-window intermediates. Explicit call-scoped scheduling owns row labels and GPU
+/// completion. No automatic legacy selection.
 #define FOTUFILM_AOT_WAVEFRONT_VARIANTS(X) \
     X(color_float_realtime, negative, 134462, 64) \
     X(color_float_realtime, negative, 134462, 128) \

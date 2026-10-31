@@ -414,7 +414,8 @@ public:
                        GpuConfiguration configuration = default_gpu_configuration(),
                        bool exact_stages = false,
                        WavefrontSchedule wavefront = {})
-        : GpuSchedule(configuration, windowed), FrameParams("frame_", suffix),
+        : GpuSchedule(configuration, windowed, wavefront.light == WavefrontSchedule::Light::Export),
+          FrameParams("frame_", suffix),
           float_io_((feature_mask & FOTUFILM_FRAME_FLOAT_IO) != 0),
           realtime_(!float_io_
                     || (feature_mask & FOTUFILM_FRAME_REALTIME) != 0),
@@ -562,10 +563,10 @@ public:
         policy.paper_lut_base = paper_lut_base;
         GpuBackend backend(*this, policy, *this, configuration_, film_lut_, paper_lut_);
         std::unique_ptr<LightFrontier> frontier;
-        const int frontier_channels = use_mtf_luma ? 4 : 3;
+        const int frontier_channels = 3; // The final MTF selection is RGB, including luma variants.
         if (wavefront.light != WavefrontSchedule::Light::None) {
             frontier = std::make_unique<LightFrontier>();
-            frontier->name = std::string("frame_") + (use_mtf_luma ? "light_gate" : "through_gate") + suffix;
+            // Store::MtfSelected occurs exactly once; exact-stage graphs may elide its named select.
             configuration_.dim(0).set_bounds(0, kWavefrontLightBase + width_ * kWavefrontLightRows * frontier_channels);
             if (wavefront.light == WavefrontSchedule::Light::Consume) {
                 Func view("frame_wavefront_light" + suffix);
@@ -629,7 +630,7 @@ public:
         inputs.film_on = film_grain_ != 0;
         graph::Developed developed_frame = graph::build_develop(backend, inputs, x, y, channel);
         if (frontier && (frontier->matches != 1 || !frontier->captured.defined()))
-            throw std::invalid_argument("missing or ambiguous pre-MTF light cut");
+            throw std::invalid_argument("missing or ambiguous post-MTF light cut");
         Func light = developed_frame.light;
         Func developed = developed_frame.developed;
         Func flat_density = developed_frame.flat_density;
@@ -861,6 +862,18 @@ public:
             output.specialize((byte_basis_ & 2) != 0);
         }
         place_register_stages();
+        if (wavefront.trace) {
+            // Trace concrete root stores only. The global TraceRealizations target also
+            // instruments register reductions and is not supported by this pinned compiler.
+            for (const auto &entry : Halide::Internal::find_transitive_calls(output.function())) {
+                Halide::LoopLevel level;
+                level.set(entry.second.schedule().compute_level());
+                if (level.lock().is_root()) {
+                    Func stage(entry.second);
+                    stage.trace_realizations();
+                }
+            }
+        }
         pipeline_ = Pipeline(output);
 #if !defined(FOTUFILM_HALIDE_AOT_GENERATOR)
         if (!cached_.prepare(pipeline_,
