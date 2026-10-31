@@ -336,5 +336,30 @@
       "decode_realtime",
       "halation_fields"
     ]
+  },
+  "wavefront_experiment": {
+    "doc": "Opt-in macOS research producer/consumer kernels. The source exports the original pre-MTF light expression into a private Float32 row cache; consumers read that cache and keep existing per-window intermediates. Explicit call-scoped scheduling owns row labels and GPU completion. No automatic legacy selection.",
+    "bands": [
+      64,
+      128,
+      256
+    ],
+    "variants": [
+      {
+        "variant": "color_float_realtime",
+        "name": "negative",
+        "stages": "PRINTED_NEGATIVE"
+      },
+      {
+        "variant": "color_float_realtime",
+        "name": "negative_luma",
+        "stages": "PRINTED_NEGATIVE_LUMA"
+      },
+      {
+        "variant": "monochrome_float_realtime",
+        "name": "printed_slide",
+        "stages": "PRINTED_SLIDE"
+      }
+    ]
   }
 }

@@ -16,6 +16,21 @@ SCHEMA = json.loads(aot.SCHEMA.read_text())
 
 
 class VariantTableTests(unittest.TestCase):
+    def test_experiment_preserves_all_legacy_registration_and_archive_names(self):
+        old=copy.deepcopy(SCHEMA);old.pop('wavefront_experiment',None)
+        old=aot.Table(old);new=aot.Table(SCHEMA)
+        self.assertEqual(old.archives(),new.archives())
+        self.assertEqual(old.variants,new.variants)
+        self.assertEqual(old.windowed,new.windowed)
+        self.assertEqual(old.exact_windowed,new.exact_windowed)
+        self.assertEqual(len(new.wavefront),9)
+
+    def test_experiment_requires_supported_band_and_existing_exact_stages(self):
+        schema=copy.deepcopy(SCHEMA);schema['wavefront_experiment']['bands'].append(512)
+        with self.assertRaises(ValueError):aot.Table(schema)
+        schema=copy.deepcopy(SCHEMA);schema['wavefront_experiment']['variants'][0]['stages']='SLIDE'
+        with self.assertRaises(ValueError):aot.Table(schema)
+
     def setUp(self):
         self.table = aot.Table(SCHEMA)
 

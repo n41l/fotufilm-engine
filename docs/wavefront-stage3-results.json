@@ -1,0 +1,238 @@
+{
+  "scope": "macOS ARM64 private pre-MTF light reuse; final same-source AOT correctness and compatibility; no accepted performance result",
+  "source_base": "96623ba0831a52dbddcda35727a206d4123a8b5f",
+  "halide_revision": "58868f0c7106f8e1214c8ae14f55e3157659b8e0",
+  "core_correctness_complete": true,
+  "complete": false,
+  "B_ref_frozen": false,
+  "performance_acceptance": false,
+  "aot": {
+    "frame_variants": 58,
+    "archives": 75,
+    "legacy_archives": 63,
+    "research_archives": 12,
+    "mixed_candidate_revisions": false,
+    "identity": "beb43518790da3e93bd23ba044e502d89d5b1d0b655ba5a92a05dc32eb3b89f4 e9d9fb7dfafbc861806f6ee6acc54c3fa489818c427772d36aeeafa4de6fde18 arm64-apple-macos14.0 {\"FOTUFILM_AOT_WAVEFRONT\": \"1\"} Xcode 27.1\nBuild version 27A9269\n",
+    "trace_source_key": "beb43518790da3e93bd23ba044e502d89d5b1d0b655ba5a92a05dc32eb3b89f4"
+  },
+  "source_sha256": {
+    "Sources/FotufilmHalide/FotufilmHalideWavefront.h": "ed7213a49f329bad78e4a6de7acf4ed04b63f13dcbc2e02ae232d1226e0124d2",
+    "Sources/FotufilmHalide/FotufilmWavefrontAdmission.h": "16120c03f3db8b96de72ffadd1b36949cdea5b43b3a2929a1900669708813d3c",
+    "Sources/FotufilmHalide/FotufilmHalideIOS.cpp": "15f2321fde81e5b6b961990846ca3e95d2ae589429966b59a04c40e51ab2f62a",
+    "Sources/FotufilmHalide/Pipeline/Gpu.h": "d17f61d0456636464bfb4f360f581f4582cd4877fdaed765626bb66d2aee8640",
+    "Sources/FotufilmHalide/Pipeline/GpuBackend.h": "30248d1c27ae84e6a3e83573e03b8a7da0e693552e3de562a6e4fa967fd86a9a",
+    "Sources/FotufilmHalide/Pipeline/WavefrontLightLayout.h": "0d30ff3972521d651d985b68bcbb15a0576471afa29b4f8fe03245e6689b7b2b",
+    "Sources/FotufilmHalide/aot-variants.json": "30c3a74914fe22c344402b6ac68cd34c494a9c89f95643a95cf62825b99073c0"
+  },
+  "reuse": {
+    "report": "candidate/build/wavefront-managed/96ef35a0f3a2/verification.json",
+    "sha256": "4d629c606eaf6d0b405f8926998bb11409f2ef5cf1afd464ea1369c088f106af",
+    "passed": true,
+    "comparisons": 12,
+    "max_linear_error": 2.562999725341797e-06,
+    "cases": [
+      {
+        "case": "portra400-coffee-1920x1080",
+        "band": 64,
+        "actual_variant": "fotufilm_halide_ios_color_float_realtime_wavefront_negative_64",
+        "source_rows": 1080,
+        "source_calls": 13,
+        "consumer_bands": 17,
+        "aot_calls": 30,
+        "passed": true
+      },
+      {
+        "case": "portra400-coffee-1920x1080",
+        "band": 128,
+        "actual_variant": "fotufilm_halide_ios_color_float_realtime_wavefront_negative_128",
+        "source_rows": 1080,
+        "source_calls": 7,
+        "consumer_bands": 9,
+        "aot_calls": 16,
+        "passed": true
+      },
+      {
+        "case": "portra400-coffee-1920x1080",
+        "band": 256,
+        "actual_variant": "fotufilm_halide_ios_color_float_realtime_wavefront_negative_256",
+        "source_rows": 1080,
+        "source_calls": 4,
+        "consumer_bands": 5,
+        "aot_calls": 9,
+        "passed": true
+      },
+      {
+        "case": "portra400-coffee-3840x2160",
+        "band": 64,
+        "actual_variant": "fotufilm_halide_ios_color_float_realtime_wavefront_negative_luma_64",
+        "source_rows": 2160,
+        "source_calls": 31,
+        "consumer_bands": 34,
+        "aot_calls": 65,
+        "passed": true
+      },
+      {
+        "case": "portra400-coffee-3840x2160",
+        "band": 128,
+        "actual_variant": "fotufilm_halide_ios_color_float_realtime_wavefront_negative_luma_128",
+        "source_rows": 2160,
+        "source_calls": 17,
+        "consumer_bands": 17,
+        "aot_calls": 34,
+        "passed": true
+      },
+      {
+        "case": "portra400-coffee-3840x2160",
+        "band": 256,
+        "actual_variant": "fotufilm_halide_ios_color_float_realtime_wavefront_negative_luma_256",
+        "source_rows": 2160,
+        "source_calls": 10,
+        "consumer_bands": 9,
+        "aot_calls": 19,
+        "passed": true
+      },
+      {
+        "case": "hp5plus400-coffee-1920x1080",
+        "band": 64,
+        "actual_variant": "fotufilm_halide_ios_monochrome_float_realtime_wavefront_printed_slide_64",
+        "source_rows": 1080,
+        "source_calls": 13,
+        "consumer_bands": 17,
+        "aot_calls": 30,
+        "passed": true
+      },
+      {
+        "case": "hp5plus400-coffee-1920x1080",
+        "band": 128,
+        "actual_variant": "fotufilm_halide_ios_monochrome_float_realtime_wavefront_printed_slide_128",
+        "source_rows": 1080,
+        "source_calls": 7,
+        "consumer_bands": 9,
+        "aot_calls": 16,
+        "passed": true
+      },
+      {
+        "case": "hp5plus400-coffee-1920x1080",
+        "band": 256,
+        "actual_variant": "fotufilm_halide_ios_monochrome_float_realtime_wavefront_printed_slide_256",
+        "source_rows": 1080,
+        "source_calls": 4,
+        "consumer_bands": 5,
+        "aot_calls": 9,
+        "passed": true
+      },
+      {
+        "case": "hp5plus400-coffee-3840x2160",
+        "band": 64,
+        "actual_variant": "fotufilm_halide_ios_monochrome_float_realtime_wavefront_printed_slide_64",
+        "source_rows": 2160,
+        "source_calls": 31,
+        "consumer_bands": 34,
+        "aot_calls": 65,
+        "passed": true
+      },
+      {
+        "case": "hp5plus400-coffee-3840x2160",
+        "band": 128,
+        "actual_variant": "fotufilm_halide_ios_monochrome_float_realtime_wavefront_printed_slide_128",
+        "source_rows": 2160,
+        "source_calls": 17,
+        "consumer_bands": 17,
+        "aot_calls": 34,
+        "passed": true
+      },
+      {
+        "case": "hp5plus400-coffee-3840x2160",
+        "band": 256,
+        "actual_variant": "fotufilm_halide_ios_monochrome_float_realtime_wavefront_printed_slide_256",
+        "source_rows": 2160,
+        "source_calls": 10,
+        "consumer_bands": 9,
+        "aot_calls": 19,
+        "passed": true
+      }
+    ]
+  },
+  "legacy_all_classes": {
+    "report": "candidate/build/wavefront-legacy-aot/44898bcf094f/verification.json",
+    "sha256": "cd412e6e531a35fe5e1f22825dff1a1b85cca7ae8be900528052496656c5f8ba",
+    "passed": true,
+    "classes": 36,
+    "byte_identical_records": true,
+    "comparison": "36 variants, 0 failing, 0 developing a constant; worst agreeing difference 0 (none), tolerance 0, categorical budget 0"
+  },
+  "legacy_main_general_windowed": {
+    "report": "candidate/build/wavefront-candidate/2872916746bb/verification.json",
+    "sha256": "450a708e1c4b8391b9210ca7376890435b61bc01660209fad6f5677ec1f38705",
+    "passed": true,
+    "comparisons": 8,
+    "max_linear_error": 2.562999725341797e-06
+  },
+  "lifecycle": {
+    "report": "candidate/build/wavefront-lifecycle/9d7d8974c0d0/verification.json",
+    "sha256": "de9f66af9a7c8a35b4fabb4a8195bae7f12c52e17519bd59a824c1045faca211",
+    "passed": true,
+    "compared_frames": 14,
+    "invalid_option_checks": 4,
+    "injected_submission_failures": 1,
+    "valid_admission_controls": 1,
+    "max_linear_error": 2.7915591155336372e-06
+  },
+  "catalog": {
+    "report": "candidate/build/wavefront-candidate-stock-probe/0684c6c1f21d/capabilities.json",
+    "sha256": "7ee70682d7f3b99fcc4d2d98e873309f90e5ca85974f75c1e7cc35ff942fce98",
+    "complete": true,
+    "all_calls_valid": true,
+    "requests": 94,
+    "actual_E": 33,
+    "by_size": {
+      "1920x1080": {
+        "requests": 47,
+        "actual_E": 16
+      },
+      "3840x2160": {
+        "requests": 47,
+        "actual_E": 17
+      }
+    },
+    "fallback_reasons": {
+      "unsupported exact stages, class, band or coupler warp": 54,
+      "unsupported geometry, transport or spatial reach": 2,
+      "source demand exceeds private row-cache bound": 5
+    },
+    "scope": "actual E/fallback discovery and finite/alpha checks; not full-pixel R/C parity for every stock"
+  },
+  "tests": {
+    "stage_cpu": 11,
+    "stage_metal": 11,
+    "metrics": 16,
+    "comparator": 9,
+    "image_input": 4,
+    "variant_manifest": 14,
+    "trace_validator": 13,
+    "baseline_controller": 13,
+    "release_build": "passed; current release tests built, then incrementally refreshed after AOT-only host log fix",
+    "swift_metal_tests": "running",
+    "aot_jit_parity": "pending"
+  },
+  "verification_reproduction": {
+    "tool": "tools/prepare-wavefront-verification.py",
+    "R_worker_byte_identical_to_existing_v2": true,
+    "four_frozen_cases_identical": true,
+    "R_worker_sha256": "eff89993d9b138ea0197c5bb2c08c7d157d8facfea596a413805b9f4ddc3339b"
+  },
+  "preserved_nonpassing_attempts": [
+    "Automatic full-film folding produced 1535 rows for a 1080-row image; rejected, control sources/binaries/traces preserved.",
+    "Early explicit iteration mixed frozen C legacy and new E kernels; diagnostic only.",
+    "An AOT-only host log referenced a removed variable; compile failed before execution, corrected and final suite rerun.",
+    "swift build --build-tests did not provide a compatible @testable module; swift test build succeeded, no zero-test run counted as four tests passed.",
+    "Earlier full Swift Metal attempt was interrupted under memory pressure; not counted as pass."
+  ],
+  "limitations": [
+    "Only the pre-MTF light frontier is reused; other stages retain per-window intermediates and recompute their aprons.",
+    "Per-band GPU synchronization is deliberately conservative and must remain in timed E calls.",
+    "The original 36-round warm baseline is unstable; a new common v2 measurement baseline is required before E performance acceptance.",
+    "Tuning/holdout performance gates remain pending. The SDR primary is upscaled, not native 4K, RAW or HDR evidence.",
+    "No Taggii, iOS, simulator or Intel Mac integration or performance claim. No upstream PR or push."
+  ]
+}

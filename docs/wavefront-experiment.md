@@ -1,10 +1,10 @@
 # macOS Metal wavefront experiment
 
-This is an opt-in research harness. It does not change the engine, the variant registry,
-legacy dispatch, shared film expressions, stocks, or application integration. The first
-milestone establishes a clean upstream reference and tests a reusable predecessor in two
-existing Gaussian stages. There is no complete-film wavefront implementation or performance
-acceptance yet.
+This is an opt-in macOS research branch. The first milestone establishes a clean upstream
+reference and tests a reusable predecessor in two existing Gaussian stages. The next milestone
+adds frozen SDR photographs, independent-process baseline accounting and a private full-film
+schedule experiment. The experiment preserves shared film expressions, float precision, stock
+data and the original default selector. There is no final performance acceptance or upstream PR.
 
 ## Frozen research environment
 
@@ -45,10 +45,9 @@ Agfachrome 100 (203), Astia 100F (259), Double-X 5222 (244), F-64D (237), PRO 16
 PRO 400H (203), and Provia 100F (233). The diagnostic reach calculation is extracted verbatim
 from R's shim; it does not choose or replace the actual runtime variant.
 
-These are correctness and feasibility results. One-call cold times in the capability report
-are diagnostics, not warm benchmarks. No B_ref has been selected from them. Device allocation
-peaks, process footprint, retained pools, throughput, latency and the PR benefit gate remain
-unmeasured.
+These first-milestone results establish correctness and feasibility. One-call cold times in
+the capability report are diagnostics, not warm benchmarks. The later warm baseline is described
+below; it does not yet establish a stable B_ref or a passing PR benefit gate.
 
 ## What the prototype proves
 
@@ -148,3 +147,205 @@ A later verification attempt encountered a full disk while dumping a 4K frame. I
 record, partial lengths and hashes are retained under `reference/build/wavefront-baseline/`
 as `disk-full-attempt.*` and `disk-full-artifacts.json`. The lower-occupancy collector was
 then validated over the full fixture set; the failed attempt is not a passing measurement.
+
+## Photographic corpus and baseline accounting
+
+`tools/wavefront-corpus.json` pins eight official scikit-image sample files at commit
+`e8a42ba85aaf5fd9322ef9ca51bc21063b22fcae`, including their registry SHA-256 values,
+public-domain/CC0 provenance and source URLs. Coffee is the frozen primary photograph, grass
+is the tuning image, and the remaining six are holdouts. These are SDR samples; the coffee
+1080p/4K workloads are explicitly upscaled, not native-resolution, RAW or HDR evidence.
+
+`fetch-wavefront-corpus.py` verifies each download. `prepare-wavefront-corpus.py` applies EXIF
+orientation, converts embedded profiles to sRGB (or explicitly assumes sRGB when absent), and
+writes deterministic canonical PNGs. `wavefront-image-input.swift` decodes those to opaque,
+top-left, extended-linear Rec.2020 RGBA Float32 before timing. The manifest records all source,
+canonical and float-input hashes. CoreGraphics' internal conversion precision is part of this
+common input preparation; both engines receive identical stored floats. Preparation does not
+claim to recover HDR content.
+
+The common external `wavefront-benchmark.mm` worker measures synchronous host-buffer calls,
+observes actual AOT symbols, counts Metal dispatches and allocations, records device allocation
+totals and kernel-maintained current/lifetime-peak process footprint, and checks finite output
+and exact alpha. It warms for at least five seconds, uses the fixed 30-second window plus
+two-second tail, then observes upstream's unchanged 1 GiB pool after five idle seconds. Fixed
+input/seed output hashes must match between warmup and measurement. No decode or file write is
+timed. This measures whole-process/resource totals, not yet exact live intermediate bytes.
+
+`run-wavefront-baseline.py` uses fresh processes for Portra 400 / HP5 Plus at 1080p / 4K,
+alternates B0/B1, and selects the faster median warm-throughput arm before E performance.
+Three further selected-arm runs form three independent B/B pairs. The memory tolerance cap
+remains min(4 MiB, 2% of baseline). Invalid rounds, timeouts and failures are retained. Large
+throughput drift additionally requires review; it cannot be accepted as a reliable 5% regression
+comparison just because thermal state is below serious.
+
+A disk-full interruption left 15 complete rounds and one unfinished attempt. The controller
+now saves compact atomic checkpoints after each arm, preserves raw per-request records in
+`round.json`/JSONL, checks for at least 2 GiB free before a new process and resumes completed
+rounds only when frozen worker, input, pack and statistical-module identities match. A changed
+persistence controller is recorded separately. Incomplete attempts are preserved under their
+original names, and retry directories are distinct. This does not discard unfavorable rounds or
+change the statistical formulas. Disk cleanup was limited to user-approved, regenerable Taggii
+Gauntlet build/module/index caches; SourcePackages and test evidence were preserved.
+
+## Warm baseline outcome
+
+All 36 valid R rounds were collected for the four frozen primary cases, including three B/B
+pairs per selected arm. Faster provisional medians selected B1 in all four cases, but **B_ref is
+not frozen**. Selected-arm warm throughput spans were 41.6%, 41.7%, 112.2% and 32.3% (Portra
+1080p/4K, HP5 1080p/4K). Portra 4K's paired process-peak variation was 50,593,792 bytes, exceeding
+the unchanged 4 MiB tolerance cap. These data cannot establish a 5% performance nonregression.
+Thermal state 0–1 did not make this memory-pressure environment stable. Adverse and interrupted
+attempts remain preserved. No E warm score or upstream PR is claimed.
+
+The complete report is `build/wavefront-benchmark/formal/ddea1b871480/report.json`; the compact
+committed record is `wavefront-stage2-results.json`. Its measurement worker and source hashes
+remain the original v1 identities. Supporting multipass E required the common worker to allow
+more than one AOT call. The R controller still requires exactly one. A separately rebuilt clean
+R v2 worker and `build/wavefront-corpus/frozen-verification-v2.json` are used for correctness.
+They do not retroactively change the old warm results. A future performance run must rebuild
+both workers from the same current measurement source and collect a new baseline.
+
+## Private complete-film experiment
+
+The first full-film attempt used Halide `fold_storage` on the ungated pre-MTF light producer.
+Pixels passed, but actual production of a 1080-row image totalled 1535 rows, with repeated
+intervals `[0,313)`, `[199,569)`, `[455,825)`, `[711,1080)` and `[967,1080)`. Fixed full-frame
+bounds did not resolve the overlap. The pinned Halide compiler could not prove monotonic
+movement through float resampling and dynamic stride expressions. This route was rejected.
+The frozen C control, source snapshot, binaries and failure traces remain under
+`build/wavefront-schedule-control/`, `build/wavefront-candidate/a01ca4b42f2a/` and
+`build/wavefront-schedule-probe/f4b42a43745e/`. They are diagnostics, not final candidate gates.
+
+The selected implementation makes the producer/consumer order explicit. It captures the
+**original shared graph expression** at pre-MTF light and compiles it as a private source
+kernel. Nine consumers use 64/128/256-row bands for exact color PRINTED_NEGATIVE /
+PRINTED_NEGATIVE_LUMA and monochrome PRINTED_SLIDE. Three source kernels share those classes.
+Other stages keep their original per-window intermediates and still recompute their aprons.
+Film mathematics, LUTs, stock data and Float32 precision remain unchanged.
+
+Each synchronous call owns a 1024-row planar Float32 light cache, logical row labels and a
+completion marker. The cache lives behind an aligned private configuration prefix in one
+shared Metal allocation; it has no duplicate full-size host field. A consumer band uses a
+conservative ±360-row source envelope. Its source interval is produced monotonically exactly
+once, split only at physical cache wrap. Before overwriting a slot, the shim requires its last
+possible consumer band to have completed. It synchronizes the GPU after every consumer and
+drains submitted commands on success or error before releasing any buffer views. These
+conservative synchronization costs must be included in future performance results. There is
+no new cancellation control or band cancellation promise: the public contract remains a
+synchronous whole-frame call, with no state retained for the next frame.
+
+Admission also bounds the full serial source demand, rather than borrowing the upstream
+performance selector's maximum-of-arms estimate. The conservative sum includes MTF, resampled
+halation boxes, coupler/adjacency/fringe, grain and print reach. It must fit 360 rows in addition
+to the existing 180-pixel window eligibility contract. The frozen Portra 1080p/4K source bounds
+are 125/247; HP5 bounds are 147/294. Unsupported classes, exact stages, geometry, transport,
+measurement modes, reach or band select the original legacy pipeline before output writes.
+An admitted submission failure is returned after draining, with no legacy retry over partial
+output.
+
+`WavefrontSchedule` defaults to no experimental route. Build-time `FOTUFILM_AOT_WAVEFRONT=1`
+adds twelve private kernels after every legacy tag, for 58 frame variants and 75 archives total.
+The flag and generator inputs enter the source identity, preventing public-cache/release
+substitution. Default generation and legacy selector order remain unchanged. The private
+`FotufilmHalideWavefront.h` entry point takes explicit per-call options and reports actual mode,
+fallback reason, production/consumption counts and drain status. Existing public entry points
+pass no options. No global or thread-local runtime wavefront mode is introduced.
+
+`wavefront-benchmark-adapter.cpp` routes only C's external worker to this entry point. The
+common R/C measurement source stays identical. Trace kernels, enabled separately by
+`FOTUFILM_AOT_WAVEFRONT_TRACE=1`, log actual source realization regions. A test-only Metal
+observer records command-buffer GPU start/end times and completion status. `wavefront_trace.py`
+requires contiguous source production `[0,H)` once, physical wrap consistency, all consumer
+completion markers and prior-consumer GPU completion before subsequent source submission.
+A smaller allocation or a fallback never counts as E reuse evidence.
+
+The diagnostic four-case × three-band matrix passed pixels, source intervals and GPU completion
+checks (`build/wavefront-managed/96815c42f25c/verification.json`). That iteration combined a
+frozen C legacy control with new experimental kernels and explicitly records mixed candidate
+revisions. It is not final-build or performance acceptance. Final verification requires the
+complete candidate archive set to be rebuilt from one current source/configuration identity.
+
+## Final AOT correctness results
+
+The complete current-source macOS set finished with 58 frame variants and 75 archives. Its
+source/configuration identity and helper/archive count passed; traced overrides share the
+current generator inputs. The final matrix links one C revision, without the frozen old C
+control. The compact record is `wavefront-stage3-results.json`.
+
+| Check | Result |
+| --- | --- |
+| Four primary cases × three bands | 12 pixel/reuse/GPU-completion comparisons passed; maximum linear error `2.562999725341797e-6` |
+| Every legacy AOT class against clean R | 36 classes passed at zero tolerance; all complete output records byte-identical and nonconstant |
+| C general/windowed against clean R primary cases | 8 comparisons passed, maximum linear error `2.562999725341797e-6` |
+| Same-process lifecycle against clean R | 14 frames passed, maximum linear error `2.7915591155336372e-6`; includes cache-channel changes, encoded output, fallback, four invalid-option checks, injected submission failure and recovery |
+| All frozen stock/size probes | 94 successful calls; E selected for 16/47 at 1080p and 17/47 at 4K; 61 explicit original-path fallbacks |
+| Current stage tests | 11 CPU and 11 Metal passed |
+| Release test build | Passed; skipped execution is not counted as a passing runtime test |
+| Swift Metal runtime / AOT-JIT parity | In progress / pending |
+
+Fallback reasons comprise 54 unsupported exact-stage/class/warp combinations, two original
+geometry/transport/spatial exclusions and five private serial-demand bound exclusions. Catalog
+probes check actual symbols, counts, finite pixels and alpha; only the named primary/lifecycle
+matrices establish full-pixel R/C agreement. These results do not establish memory or throughput
+acceptance. No final B_ref or upstream PR is implied.
+
+## Candidate verification commands
+
+From `candidate/`, after the reference and frozen fixture steps above:
+
+```sh
+export HALIDE_ROOT="$PWD/build/halide-install"
+export FOTUFILM_AOT_WAVEFRONT=1
+python3 tools/fetch-wavefront-corpus.py --output build/wavefront-corpus/sources
+mkdir -p build/wavefront-corpus
+swiftc -O tools/wavefront-image-input.swift -o build/wavefront-corpus/prepare-image
+python3 tools/prepare-wavefront-corpus.py --sources build/wavefront-corpus/sources \
+  --output build/wavefront-corpus --converter build/wavefront-corpus/prepare-image
+# These flags freeze correctness inputs without warm timing.
+python3 tools/prepare-wavefront-verification.py --reference ../reference \
+  --reference-kernels ../reference/build/wavefront-macos \
+  --worker-output ../reference/build/wavefront-verification-v2/instrumented \
+  --catalog ../reference/build/wavefront-fixtures/catalog/catalog.json \
+  --prepared build/wavefront-corpus/prepared.json \
+  --output build/wavefront-verification/frozen-cases.json
+export WAVEFRONT_CASES="$PWD/build/wavefront-verification/frozen-cases.json"
+export WAVEFRONT_R_WORKER="$PWD/../reference/build/wavefront-verification-v2/instrumented/runner"
+FOTUFILM_AOT_NO_FETCH=1 FOTUFILM_AOT_JOBS=2 \
+  bash tools/generate-halide-aot.sh macos build/wavefront-macos
+FOTUFILM_AOT_JOBS=2 bash tools/generate-wavefront-trace.sh
+python3 tools/verify-wavefront-managed.py --kernels build/wavefront-macos \
+  --trace-kernels build/wavefront-explicit-kernels \
+  --frozen-cases "$WAVEFRONT_CASES" \
+  --reference-worker "$WAVEFRONT_R_WORKER"
+python3 tools/verify-wavefront-candidate.py --reference ../reference \
+  --kernels build/wavefront-macos \
+  --frozen-cases "$WAVEFRONT_CASES" \
+  --reference-worker "$WAVEFRONT_R_WORKER"
+mkdir -p build/wavefront-compatibility-fixture
+../reference/.build/release/fotufilm --dump-wasm-pack \
+  build/wavefront-compatibility-fixture/example-negative-400-384x216.fswp \
+  --stock example-negative-400 --pack-size 384x216
+python3 tools/verify-wavefront-legacy-aot.py --reference ../reference \
+  --reference-kernels ../reference/build/wavefront-macos --kernels build/wavefront-macos \
+  --pack build/wavefront-compatibility-fixture/example-negative-400-384x216.fswp
+python3 tools/verify-wavefront-lifecycle.py --reference ../reference \
+  --reference-kernels ../reference/build/wavefront-macos --kernels build/wavefront-macos \
+  --catalog ../reference/build/wavefront-fixtures/catalog/catalog.json
+python3 tools/probe-wavefront-catalog.py --candidate-experiment --reference . \
+  --kernels build/wavefront-macos \
+  --catalog ../reference/build/wavefront-fixtures/catalog/catalog.json
+```
+
+The managed verifier checks all four main cases and three bands against clean R. The candidate
+verifier independently checks C general/windowed against R. The lifecycle verifier keeps each
+engine in one process across changed stocks, odd geometry, input, seed, alpha, gate, stage mask,
+still/exact, band and legacy requests. It also checks invalid private options, negative/HDR
+floats, encoded output, conservative reach fallback, and a test-only source-submission failure
+followed by successful recovery. Injection is compiled only into its test shim. Catalog probes
+report actual E or fallback for every frozen stock/size, not a numerical or performance score.
+
+Release Swift build/tests and `tools/verify-aot-parity.sh` remain required. The parity harness
+can use `FOTUFILM_PARITY_STREAM_WINDOWS=1` to compare and release each window output instead of
+retaining all frame dumps. Final artifacts and reports stay generated-only. Do not mix traced
+kernels into timed workers or treat the rejected auto-fold control as the current candidate.

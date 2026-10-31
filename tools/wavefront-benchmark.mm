@@ -138,7 +138,7 @@ int main(int argc, char **argv) { @autoreleasepool {
                 0,0,configuration.data(),exposure.data(),film.data(),paper.data(),33,1,mask,h[5]);
         }
         const double completed = now();
-        bool valid = !error && fotufilm_bench_aot_calls == 1 && dispatches.load() > beforeDispatch;
+        bool valid = !error && fotufilm_bench_aot_calls > 0 && dispatches.load() > beforeDispatch;
         // Constant-cost samples outside the timed API; complete hashes are taken at phase boundaries.
         const size_t step = std::max(size_t(4),(output.size()/64/4)*4);
         for (size_t i=0; i<output.size(); i+=step) {

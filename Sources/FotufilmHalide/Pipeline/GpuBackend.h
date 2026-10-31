@@ -63,12 +63,22 @@ struct GpuPolicy {
     int paper_lut_base = 0;
 };
 
+// A cut at the original pre-MTF light expression, never a replacement formula.
+struct LightFrontier {
+    std::string name;
+    Func external;
+    Func captured;
+    int matches = 0;
+};
+
 class GpuBackend : public graph::Backend {
 public:
     GpuBackend(GpuSchedule &schedule, GpuPolicy policy, FrameParams &p, ImageParam &configuration,
                ImageParam &film_lut, ImageParam &paper_lut)
         : schedule_(schedule), policy_(policy), p_(p), configuration_(configuration), film_lut_(film_lut),
           paper_lut_(paper_lut) {}
+
+    void light_frontier(LightFrontier *frontier) { frontier_ = frontier; }
 
     bool approximate() const override { return policy_.approximate; }
     bool half_lut_math() const override { return policy_.half_tetra; }
@@ -82,6 +92,11 @@ public:
     using graph::Backend::store;
     Func store(Func values, graph::Store point, int channels, Expr branch) override {
         using graph::Store;
+        if (frontier_ && point == Store::Light && values.name() == frontier_->name) {
+            ++frontier_->matches;
+            frontier_->captured = values;
+            return remember(values, frontier_->external.defined() ? frontier_->external : values);
+        }
         if (!values.defined() || stored_.count(values.name())) return values;
         const bool half = policy_.half_store;
         switch (point) {
@@ -519,6 +534,7 @@ private:
         return view;
     }
 
+    LightFrontier *frontier_ = nullptr;
     GpuSchedule &schedule_;
     GpuPolicy policy_;
     FrameParams &p_;

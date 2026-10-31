@@ -61,6 +61,8 @@ class ControllerTests(unittest.TestCase):
         self.assertFalse(self.check(lambda e:e[-1]['memory'].update(process_lifetime_peak_bytes=None))['scores']['valid'])
     def test_cancelled_request_rejected(self):
         self.assertFalse(self.check(lambda e:e[5].update(status='cancelled'))['scores']['valid'])
+    def test_missing_aot_rejected(self):self.assertFalse(self.check(lambda e:e[5].update(aot_calls=0))['scores']['valid'])
+    def test_R_multiple_aot_rejected(self):self.assertFalse(self.check(lambda e:e[5].update(aot_calls=2))['scores']['valid'])
     def test_missing_gpu_dispatch_rejected(self):
         self.assertFalse(self.check(lambda e:e[5].update(gpu_dispatches=0))['scores']['valid'])
     def test_experiment_cannot_be_B0(self):

@@ -29,10 +29,14 @@ def main():
     parser.add_argument("--reference", type=Path, required=True)
     parser.add_argument("--kernels", type=Path, required=True)
     parser.add_argument("--pack", type=Path, required=True)
+    parser.add_argument("--candidate-regression", action="store_true",
+                        help="local C B0/B1 regression only; never an independent reference")
     args = parser.parse_args()
     candidate = Path(__file__).resolve().parents[1]
     reference, kernels, pack = (p.resolve() for p in (args.reference, args.kernels, args.pack))
-    if subprocess.check_output(["git", "-C", str(reference), "status", "--porcelain"], text=True):
+    if args.candidate_regression != (reference == candidate):
+        raise ValueError("local C requires --candidate-regression; R must be a separate checkout")
+    if not args.candidate_regression and subprocess.check_output(["git", "-C", str(reference), "status", "--porcelain"], text=True):
         raise ValueError("reference must be clean")
     summary_root = reference / "build/wavefront-baseline"
     out = summary_root / "runs" / uuid.uuid4().hex[:12]
@@ -137,7 +141,9 @@ def main():
                 directories.append(directory)
             print(f"PASS {name}", flush=True)
     finally:
-        summary = {"reference_sha": subprocess.check_output(
+        summary = {"engine_role": "C local B0/B1 regression" if args.candidate_regression else "clean R reference",
+                   "independent_reference": not args.candidate_regression,
+                   "reference_sha": subprocess.check_output(
                        ["git", "-C", str(reference), "rev-parse", "HEAD"], text=True).strip(),
                    "fixture_sha256": sha(pack), "runner_sha256": sha(runner),
                    "comparator_sha256": sha(compare), "adapted_fixture_sha256": sha(driver),

@@ -112,7 +112,7 @@ env -u SDKROOT -u IPHONEOS_DEPLOYMENT_TARGET -u MACOSX_DEPLOYMENT_TARGET \
 # overrides it for a smaller machine, or one already busy with something else.
 JOBS="${FOTUFILM_AOT_JOBS:-$(sysctl -n hw.perflevel0.logicalcpu 2>/dev/null \
   || sysctl -n hw.ncpu 2>/dev/null || echo 4)}"
-VARIANTS="$("$OUTPUT/generate-halide-aot" "$OUTPUT" --count)"
+VARIANTS="$("$OUTPUT/generate-halide-aot" "$OUTPUT" ${GENERATOR_ARGS[@]+"${GENERATOR_ARGS[@]}"} --count)"
 echo "Generating $PLATFORM kernels: $VARIANTS variants, $JOBS at a time…"
 
 # xargs returns non-zero if any child did, and -P keeps the pool full rather than waiting on the

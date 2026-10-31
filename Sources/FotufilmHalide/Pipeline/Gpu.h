@@ -1,8 +1,19 @@
 #pragma once
 
 #include "GpuBackend.h"
+#include "WavefrontLightLayout.h"
+#include <stdexcept>
 
 namespace fotufilm::pipelines {
+
+/// Internal research schedule. Zero rows preserves the original pipeline and cache key.
+/// Admission at execution must additionally bound full-frame reach to kWindowMaximumReach.
+struct WavefrontSchedule {
+    enum class Light { None, Export, Consume };
+    int rows = 0;
+    bool trace = false;
+    Light light = Light::None;
+};
 
 /// Per-row tone and veiling-glare measurements for linear Rec.2020 float frames.
 /// Row reductions make staged and striped totals independent of banding. Tone is measured and
@@ -401,7 +412,8 @@ public:
     GpuFramePipeline(int32_t feature_mask, const std::string &suffix,
                        bool windowed = false,
                        GpuConfiguration configuration = default_gpu_configuration(),
-                       bool exact_stages = false)
+                       bool exact_stages = false,
+                       WavefrontSchedule wavefront = {})
         : GpuSchedule(configuration, windowed), FrameParams("frame_", suffix),
           float_io_((feature_mask & FOTUFILM_FRAME_FLOAT_IO) != 0),
           realtime_(!float_io_
@@ -440,6 +452,18 @@ public:
           byte_basis_("frame_byte_basis" + suffix) {
         feature_mask &= ~ablated_features();
         features_ = feature_mask;
+        if (wavefront.light != WavefrontSchedule::Light::None) {
+            const int classes = FOTUFILM_FRAME_FLOAT_IO | FOTUFILM_FRAME_REALTIME;
+            const int stages = feature_mask & FOTUFILM_VARIANT_STAGE_BITS;
+            const int exact = feature_mask & FOTUFILM_VARIANT_EXACT_BITS;
+            const bool supported = exact == classes
+                ? (stages == FOTUFILM_AOT_PRINTED_NEGATIVE || stages == FOTUFILM_AOT_PRINTED_NEGATIVE_LUMA)
+                : (exact == (classes | FOTUFILM_FRAME_MONOCHROME) && stages == FOTUFILM_AOT_PRINTED_SLIDE);
+            if (windowed != (wavefront.light == WavefrontSchedule::Light::Consume)
+                || !exact_stages || !supported || gpu_device_api() != DeviceAPI::Metal
+                || (wavefront.rows != 64 && wavefront.rows != 128 && wavefront.rows != 256))
+                throw std::invalid_argument("unsupported experimental wavefront graph");
+        }
         const bool use_mtf = feature_mask & FOTUFILM_FRAME_MTF;
         const bool use_mtf_luma = feature_mask & FOTUFILM_FRAME_MTF_LUMA;
         const bool use_grain = feature_mask & FOTUFILM_FRAME_GRAIN;
@@ -448,6 +472,14 @@ public:
         const bool print_detail = feature_mask & FOTUFILM_FRAME_PRINT_DETAIL;
 
         Var x("x"), y("y"), channel("channel");
+        if (wavefront.light != WavefrontSchedule::Light::None) {
+            // These are already required by the private whole-frame admission.
+            // Make them visible to bounds inference as well as the host.
+            width_.set_min_value(32);
+            height_.set_min_value(kWindowMinimumHeight);
+            input_.dim(0).set_bounds(0, width_);
+            input_.dim(1).set_bounds(0, height_);
+        }
         input_.dim(0).set_stride(4);
         input_.dim(2).set_stride(1);
         input_.dim(2).set_bounds(0, 4);
@@ -529,6 +561,21 @@ public:
         policy.film_lut_base = film_lut_base;
         policy.paper_lut_base = paper_lut_base;
         GpuBackend backend(*this, policy, *this, configuration_, film_lut_, paper_lut_);
+        std::unique_ptr<LightFrontier> frontier;
+        const int frontier_channels = use_mtf_luma ? 4 : 3;
+        if (wavefront.light != WavefrontSchedule::Light::None) {
+            frontier = std::make_unique<LightFrontier>();
+            frontier->name = std::string("frame_") + (use_mtf_luma ? "light_gate" : "through_gate") + suffix;
+            configuration_.dim(0).set_bounds(0, kWavefrontLightBase + width_ * kWavefrontLightRows * frontier_channels);
+            if (wavefront.light == WavefrontSchedule::Light::Consume) {
+                Func view("frame_wavefront_light" + suffix);
+                view(x, y, channel) = configuration_(kWavefrontLightBase + x
+                    + (y % kWavefrontLightRows) * width_ + channel * width_ * kWavefrontLightRows);
+                frontier->external = view;
+            }
+            backend.light_frontier(frontier.get());
+        }
+
 
         auto input_density = [&](Expr plane_index) {
             Expr in_w = input_.dim(0).extent();
@@ -581,6 +628,8 @@ public:
         inputs.film_tiles = &film_tiles_;
         inputs.film_on = film_grain_ != 0;
         graph::Developed developed_frame = graph::build_develop(backend, inputs, x, y, channel);
+        if (frontier && (frontier->matches != 1 || !frontier->captured.defined()))
+            throw std::invalid_argument("missing or ambiguous pre-MTF light cut");
         Func light = developed_frame.light;
         Func developed = developed_frame.developed;
         Func flat_density = developed_frame.flat_density;
@@ -660,9 +709,12 @@ public:
         }
         Func linear_delivery = windowed ? delivered : final_linear;
 
-        Func output("frame_output" + suffix);
+        const bool exports_light = wavefront.light == WavefrontSchedule::Light::Export;
+        Func output(std::string(exports_light ? "frame_wavefront_light_output" : "frame_output") + suffix);
         Expr safe_channel = Halide::min(channel, 2);
-        if (density_out_) {
+        if (exports_light) {
+            output(x, y, channel) = frontier->captured(x, y, channel);
+        } else if (density_out_) {
             output(x, y, channel) = Halide::cast(
                 float_io_ ? Float(32) : Float(16),
                 Halide::select(channel == 3,
@@ -766,10 +818,11 @@ public:
                 0.0f, coverage));
             output(x, y, channel) = Halide::select(channel == 3, alpha, color);
         }
-        const int output_channels = light_out_ ? 3 : 4;
-        output.output_buffer().dim(0).set_stride(output_channels);
-        output.output_buffer().dim(2).set_stride(1);
+        const int output_channels = exports_light ? frontier_channels : light_out_ ? 3 : 4;
+        output.output_buffer().dim(0).set_stride(exports_light ? 1 : output_channels);
+        output.output_buffer().dim(2).set_stride(exports_light ? width_ * kWavefrontLightRows : Expr(1));
         output.output_buffer().dim(2).set_bounds(0, output_channels);
+        if (wavefront.trace && exports_light) output.trace_realizations();
         if (windowed) {
             // The AOT shim checks the complete spatial reach before selecting this
             // graph. Global coordinates and the original boundary rules remain in
@@ -784,11 +837,12 @@ public:
             note_root(output, thread_x);
             output.compute_root().bound(channel, 0, 4)
                 .reorder(channel, x, y).unroll(channel)
-                .split(y, window, row, kWindowRows, Halide::TailStrategy::GuardWithIf)
+                .split(y, window, row, wavefront.rows ? wavefront.rows : kWindowRows, Halide::TailStrategy::GuardWithIf)
                 .gpu_tile(x, row, block_x, block_y, thread_x, thread_y,
                           gpu_tile_x(), gpu_tile_y(),
                           Halide::TailStrategy::GuardWithIf, gpu_device_api());
             for (Func stage : window_stores()) {
+                if (wavefront.trace) stage.trace_realizations();
                 stage.store_at(output, window).compute_at(output, window);
             }
         } else {
@@ -797,7 +851,7 @@ public:
         // Specialize only full-frame graphs. Windowed graphs keep one consumer loop;
         // host_output_encode's uniform configuration select still skips fitting when it
         // is disabled.
-        if (encodes && !windowed) {
+        if (!exports_light && encodes && !windowed) {
             for (Expr shape : {on_encode && shape_linear, on_encode && shape_power,
                                on_encode && shape_log, on_encode}) {
                 output.specialize(shape)
@@ -810,7 +864,8 @@ public:
         pipeline_ = Pipeline(output);
 #if !defined(FOTUFILM_HALIDE_AOT_GENERATOR)
         if (!cached_.prepare(pipeline_,
-            "frame:" + std::to_string(feature_mask) + ":" + std::to_string(windowed) + ":" + this->configuration().cache_key(),
+            "frame:" + std::to_string(feature_mask) + ":" + std::to_string(windowed) + ":" + this->configuration().cache_key()
+                + ((wavefront.rows || wavefront.trace) ? ":wavefront:" + std::to_string(wavefront.rows) + ":" + std::to_string(wavefront.trace) + ":" + std::to_string(int(wavefront.light)) : ""),
             {input_, configuration_, exposure_lut_, film_lut_, paper_lut_,
             width_, height_,
             mtf_sigma_0_, mtf_sigma_1_, mtf_sigma_2_, mtf_luma_sigma_,

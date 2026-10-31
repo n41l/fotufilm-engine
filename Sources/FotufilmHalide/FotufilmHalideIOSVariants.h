@@ -59,4 +59,19 @@
 #include "fotufilm_halide_ios_color_float_realtime_negative_windowed_negative.h"
 #endif
 
+#if FOTUFILM_AOT_WAVEFRONT_HOST
+#include "fotufilm_halide_ios_color_float_realtime_wavefront_negative_64.h"
+#include "fotufilm_halide_ios_color_float_realtime_wavefront_negative_128.h"
+#include "fotufilm_halide_ios_color_float_realtime_wavefront_negative_256.h"
+#include "fotufilm_halide_ios_color_float_realtime_wavefront_negative_luma_64.h"
+#include "fotufilm_halide_ios_color_float_realtime_wavefront_negative_luma_128.h"
+#include "fotufilm_halide_ios_color_float_realtime_wavefront_negative_luma_256.h"
+#include "fotufilm_halide_ios_monochrome_float_realtime_wavefront_printed_slide_64.h"
+#include "fotufilm_halide_ios_monochrome_float_realtime_wavefront_printed_slide_128.h"
+#include "fotufilm_halide_ios_monochrome_float_realtime_wavefront_printed_slide_256.h"
+#include "fotufilm_halide_ios_color_float_realtime_wavefront_light_negative.h"
+#include "fotufilm_halide_ios_color_float_realtime_wavefront_light_negative_luma.h"
+#include "fotufilm_halide_ios_monochrome_float_realtime_wavefront_light_printed_slide.h"
+#endif
+
 #endif

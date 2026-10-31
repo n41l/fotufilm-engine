@@ -30,6 +30,11 @@ int main(int argc, char **argv) {
     Work work = Work::Everything;
     int wanted = 0;
     bool count_only = false;
+    // Build policy only; runtime requests use explicit per-call options.
+    const char *wavefront_setting = std::getenv("FOTUFILM_AOT_WAVEFRONT");
+    const bool wavefront = wavefront_setting && std::string(wavefront_setting) == "1";
+    const char *trace_setting = std::getenv("FOTUFILM_AOT_WAVEFRONT_TRACE");
+    const bool trace_wavefront = trace_setting && std::string(trace_setting) == "1";
     // What the generated functions are called: `<prefix><variant>`. Linux links a CUDA and a
     // Vulkan set side by side, so each set needs a prefix of its own.
     std::string prefix = "fotufilm_halide_ios_";
@@ -53,6 +58,10 @@ int main(int argc, char **argv) {
             return 2;
         }
     }
+    if (wavefront && platform != "--macos") {
+        std::cerr << "experimental wavefront generation requires --macos\n";
+        return 2;
+    }
     const bool simulator = platform == "--simulator";
     const bool macos = platform == "--macos" || platform == "--macos-intel";
     const bool intel = platform == "--macos-intel";
@@ -72,6 +81,8 @@ int main(int argc, char **argv) {
         bool windowed;
         // Compiled for exactly its stages, none of them gated at run time.
         bool exact_stages;
+        int wavefront_rows = 0;
+        bool exports_light = false;
     };
 #define FOTUFILM_AOT_GENERATOR_ENTRY(variant_name, variant_mask) \
     {prefix + #variant_name, (variant_mask), false, false, false},
@@ -80,7 +91,7 @@ int main(int argc, char **argv) {
 #define FOTUFILM_AOT_EXACT_WINDOWED_ENTRY(variant_name, stages_name, variant_mask) \
     {prefix + #variant_name "_windowed_" #stages_name, (variant_mask), false, true, true},
     // The exact twins come last, so adding one leaves every earlier variant's tag where it was.
-    Variant variants[] = {
+    std::vector<Variant> variants = {
         FOTUFILM_AOT_VARIANTS(FOTUFILM_AOT_GENERATOR_ENTRY)
         FOTUFILM_AOT_WINDOWED_VARIANTS(FOTUFILM_AOT_WINDOWED_ENTRY)
         FOTUFILM_AOT_EXACT_WINDOWED_VARIANTS(FOTUFILM_AOT_EXACT_WINDOWED_ENTRY)
@@ -88,6 +99,18 @@ int main(int argc, char **argv) {
 #undef FOTUFILM_AOT_EXACT_WINDOWED_ENTRY
 #undef FOTUFILM_AOT_WINDOWED_ENTRY
 #undef FOTUFILM_AOT_GENERATOR_ENTRY
+    if (wavefront) {
+#define FOTUFILM_WAVEFRONT_ENTRY(variant_name, stages_name, variant_mask, rows) \
+        variants.push_back({prefix + #variant_name "_wavefront_" #stages_name "_" #rows, \
+                            variant_mask, false, true, true, rows});
+        FOTUFILM_AOT_WAVEFRONT_VARIANTS(FOTUFILM_WAVEFRONT_ENTRY)
+#undef FOTUFILM_WAVEFRONT_ENTRY
+#define FOTUFILM_WAVEFRONT_LIGHT_ENTRY(variant_name, stages_name, variant_mask) \
+        variants.push_back({prefix + #variant_name "_wavefront_light_" #stages_name, \
+                            variant_mask, false, false, true, 256, true});
+        FOTUFILM_AOT_WAVEFRONT_LIGHT_VARIANTS(FOTUFILM_WAVEFRONT_LIGHT_ENTRY)
+#undef FOTUFILM_WAVEFRONT_LIGHT_ENTRY
+    }
     // Linux's two sets share one runtime, compiled with --extras.
     variants[0].runtime = !linux;
     const int variant_count = static_cast<int>(std::size(variants));
@@ -188,7 +211,10 @@ int main(int argc, char **argv) {
         try {
             GpuFramePipeline pipeline(variant.features,
                                         "_v" + std::to_string(index), variant.windowed, configuration,
-                                        variant.exact_stages);
+                                        variant.exact_stages, {variant.wavefront_rows, trace_wavefront,
+                                            variant.wavefront_rows ? (variant.exports_light ? WavefrontSchedule::Light::Export
+                                                                                           : WavefrontSchedule::Light::Consume)
+                                                                   : WavefrontSchedule::Light::None});
             pipeline.compile_aot((output / variant.name).string(), variant.name,
                                  variant.runtime, target);
         } catch (const Halide::CompileError &error) {
@@ -196,6 +222,9 @@ int main(int argc, char **argv) {
             // one of them did not.
             std::cerr << "compiling " << variant.name << " (mask 0x" << std::hex
                       << variant.features << std::dec << "): " << error.what() << "\n";
+            return 1;
+        } catch (const std::exception &error) {
+            std::cerr << "constructing " << variant.name << ": " << error.what() << "\n";
             return 1;
         }
     }
