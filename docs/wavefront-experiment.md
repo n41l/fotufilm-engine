@@ -846,3 +846,20 @@ default promotion or speedup PR. No engine/AOT change was made in this stage.
 Producer-lead tightening remains unimplemented. See
 [stage-thirteen results](wavefront-stage13-results.md) and
 [full provenance](wavefront-stage13-results.json).
+
+
+## Stage fourteen:1080-row band control
+
+The opt-in bundled two-stage cut now also supports1080-row bands with the same
+A2048, margin360, fields, precision, pool and per-band sync. The same current
+normal worker serves512/1080; original default B1 uses1080-row windows.
+Eight normal pixel comparisons are bitwise equal to original B1/prior512; eight
+trace checks pass the unchanged numeric contract and real A/F/GPU checks.
+4K trace outputs have tiny differences from normal, retained in the report.
+Fourteen streamed frame-history comparisons and failure recovery pass.
+
+The complete restarted twelve-round pilot retains the earlier interrupted
+controller-check attempt and all unfavorable outcomes. One round per arm/case
+cannot freeze B_ref or pass performance/release/retention gates; no default
+promotion or upstream PR. See [stage-fourteen results](wavefront-stage14-results.md)
+and [full provenance](wavefront-stage14-results.json).
