@@ -169,8 +169,10 @@ public:
             // diffusion-on graph has no pointwise bypass or broad-fringe reader of this field.
             if (policy_.coupler_down_fusion && schedule_.configuration().windowed_coupler_fusion
                 && schedule_.gpu_device_api() == DeviceAPI::Metal && schedule_.windowed()
-                && policy_.windowed && policy_.realtime && !half)
+                && policy_.windowed && policy_.realtime && !half) {
+                fused_coupler_source_ = values.name();
                 return remember(values, values);
+            }
             return remember(values, schedule_.store_frame(values, half, channels, branch));
         case Store::LogExposure:
         case Store::FlatLog:
@@ -231,8 +233,10 @@ public:
     Func gaussian_decimated(Func source, Expr sigma, Expr radius, Expr origin_x,
                             Expr origin_y, Expr width, Expr height,
                             const std::string &name, int) override {
+        const bool unit_stride = schedule_.configuration().windowed_coupler_unit_stride
+            && !fused_coupler_source_.empty() && source.name() == fused_coupler_source_;
         return schedule_.gpu_gaussian_decimated(source, sigma, radius, origin_x, origin_y, width,
-                                      height, policy_.half_store, name);
+                                      height, policy_.half_store, name, unit_stride);
     }
 
     std::array<Expr, 3> scattered(Func light, std::array<Expr, 3> strides,
@@ -595,6 +599,7 @@ private:
     ImageParam &film_lut_;
     ImageParam &paper_lut_;
     std::set<std::string> stored_;
+    std::string fused_coupler_source_;
 };
 
 

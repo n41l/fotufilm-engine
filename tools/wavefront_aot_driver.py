@@ -41,6 +41,8 @@ def build(repo, kernels, out, driver, *, definitions=(), driver_definitions=(),
             diagnostic_archives=sorted(diagnostic_kernels.glob('*.a'))
             if identity.get('kind')!='windowed-coupler' or type(identity.get('fusion')) is not bool:
                 raise ValueError('explicit windowed Coupler identity required')
+            if type(identity.get('unit_stride',False)) is not bool or (identity.get('unit_stride') and not identity.get('fusion')):
+                raise ValueError('unit stride requires an enabled Coupler fusion identity')
             if identity.get('windowed') is not True or identity.get('wavefront') is not False or identity.get('mtf_fusion') is not False:
                 raise ValueError('isolated original windowed Coupler graph required')
             if {p.name for p in diagnostic_archives}!=expected_names:

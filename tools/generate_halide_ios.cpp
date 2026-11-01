@@ -34,6 +34,7 @@ int main(int argc, char **argv) {
     int general_optimizations=0;bool general_research=false;
     bool mtf_research=false, windowed_mtf_fusion=false;
     bool coupler_research=false, windowed_coupler_fusion=false;
+    bool coupler_unit_requested=false, coupler_unit_stride=false;
     // Build policy only; runtime requests use explicit per-call options.
     const char *wavefront_setting = std::getenv("FOTUFILM_AOT_WAVEFRONT");
     const bool wavefront = wavefront_setting && std::string(wavefront_setting) == "1";
@@ -44,7 +45,13 @@ int main(int argc, char **argv) {
     std::string prefix = "fotufilm_halide_ios_";
     for (int i = 2; i < argc; ++i) {
         const std::string argument = argv[i];
-        if (argument.rfind("--windowed-coupler-fusion=",0)==0) {
+        if (argument.rfind("--windowed-coupler-unit-stride=",0)==0) {
+            const auto value=argument.substr(std::string("--windowed-coupler-unit-stride=").size());
+            if (value!="0" && value!="1") {
+                std::cerr<<"Coupler unit stride must be 0 or 1\n";return 2;
+            }
+            coupler_unit_requested=true;coupler_unit_stride=value=="1";
+        } else if (argument.rfind("--windowed-coupler-fusion=",0)==0) {
             const auto value=argument.substr(std::string("--windowed-coupler-fusion=").size());
             if (value!="0" && value!="1") {
                 std::cerr<<"windowed Coupler fusion must be 0 or 1\n";return 2;
@@ -106,6 +113,9 @@ int main(int argc, char **argv) {
     if (coupler_research && (platform!="--macos" || wavefront || trace_wavefront || three_stage
         || bundle || general_research || mtf_research || count_only || work!=Work::OneVariant)) {
         std::cerr<<"windowed Coupler research requires one exclusive macOS exact negative variant\n";return 2;
+    }
+    if (coupler_unit_requested && (!coupler_research || !windowed_coupler_fusion)) {
+        std::cerr<<"Coupler unit stride requires explicit Coupler fusion=1\n";return 2;
     }
     const bool simulator = platform == "--simulator";
     const bool macos = platform == "--macos" || platform == "--macos-intel";
@@ -196,6 +206,7 @@ int main(int argc, char **argv) {
     defaults.general_optimizations=general_optimizations;
     defaults.windowed_mtf_fusion=windowed_mtf_fusion;
     defaults.windowed_coupler_fusion=windowed_coupler_fusion;
+    defaults.windowed_coupler_unit_stride=coupler_unit_stride;
     defaults.half_blur = !macos && !linux;
     defaults.half_lut = !macos && !linux;
     if (linux) {

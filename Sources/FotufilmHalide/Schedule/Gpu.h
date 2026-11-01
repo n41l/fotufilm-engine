@@ -524,7 +524,7 @@ public:
 
     DecimatedGrid decimated_grid(Func source, Expr stride, Expr origin_x,
                                  Expr origin_y, Expr width, Expr height, bool half,
-                                 const std::string &name) {
+                                 const std::string &name, bool specialize_unit_stride = false) {
         using Halide::cast;
         Var x("x"), y("y"), channel("channel");
         Expr phase_x = origin_x % stride;
@@ -533,7 +533,7 @@ public:
         Expr down_height = (height + phase_y + stride - 1) / stride;
         Func bounded_source = constant_exterior(
             source, typed_zero(source), {{0, width}, {0, height}, {0, 3}});
-        Func down(name + "_down");
+        Func down(name + (specialize_unit_stride ? "_generic_down" : "_down"));
         if (split_down_compute()) {
             RDom row_cell(0, stride, name + "_row_cell");
             Func down_rows(name + "_down_rows");
@@ -569,6 +569,17 @@ public:
                 bounded_source(x * stride - phase_x + cell.x,
                                y * stride - phase_y + cell.y, channel),
                 name + "_down_sum") / Halide::max(count, 1.0f);
+        }
+        if (specialize_unit_stride) {
+            // A one-cell box at stride one is the bounded source itself: origin modulo one
+            // is zero and the sole valid sample has weight one. Keep a separate specialization
+            // so lowering discards the reduction and normalization on this path alone.
+            Func selected(name + "_down");
+            selected(x, y, channel) = Halide::select(stride == 1,
+                bounded_source(x, y, channel), down(x, y, channel));
+            Func view = store_frame(selected, half);
+            selected.specialize(stride == 1);
+            return {view, stride, phase_x, phase_y, down_width, down_height};
         }
         return {store_frame(down, half), stride, phase_x, phase_y,
                 down_width, down_height};
@@ -636,10 +647,10 @@ public:
     Func gpu_gaussian_decimated(Func source, Expr sigma, Expr radius,
                                 Expr origin_x, Expr origin_y,
                                 Expr width, Expr height, bool half,
-                                const std::string &name) {
+                                const std::string &name, bool specialize_unit_stride = false) {
         DecimatedGrid grid = decimated_grid(
             source, decimated_gaussian_stride(sigma), origin_x, origin_y,
-            width, height, half, name);
+            width, height, half, name, specialize_unit_stride);
         return gpu_gaussian_on_grid(grid, sigma, radius, half, name);
     }
 }; // GpuSchedule
