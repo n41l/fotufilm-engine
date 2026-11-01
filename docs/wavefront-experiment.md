@@ -893,3 +893,8 @@ Two exact windowed twins remove one Released pass per window. Twelve direct and2
 ## Post-experiment comparison: MTF vs Coupler fusion
 
 Inspection of the original generated Metal and saved timing events finds a practical distinction: MTF UHD steady fresh-buffer calls fall from about4/frame to1/frame, whereas Coupler stays near4/frame. MTF remains loop-free pointwise arithmetic with thread-local mixed records; Coupler retains generic reduction loops containing the curve/release expressions even for stride1 requests. No new build or GPU run was performed; register/DRAM/allocation-time attribution is not established. [Comparison](windowed-fusion-comparison.md), [counts and source fingerprints](windowed-fusion-comparison.json).
+
+
+## Stage18: Coupler unit-stride specialization
+
+[Contract](windowed-unit-stride-contract.md), [results](windowed-unit-stage18-results.md), [metrics/evidence](windowed-unit-stage18-results.json). Actual stride1 kernels lose reduction loops and preserve pixels, but18 balanced diagnostic rounds do not demonstrate a gain over Generic; repeated device peaks and UHD allocation churn remain unchanged. Defaults stay off; full release, stable baseline and formal gates remain pending.

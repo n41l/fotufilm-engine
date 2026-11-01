@@ -1,0 +1,1027 @@
+{
+  "complete": true,
+  "stage": 18,
+  "date": "2026-11-01",
+  "scope": "isolated Coupler stride1 specialization; Generic and Unit fuse release, MTF off; W0 correctness only",
+  "implementation_commit": "8df5f7c",
+  "source_key": "1a3b9570961e56d8f00a0f892aabc6f9fe4f0f8ce80cde3aaa3fc7eb036471a0",
+  "reference_base": "96623ba0831a52dbddcda35727a206d4123a8b5f",
+  "performance_acceptance": false,
+  "B_ref_frozen": false,
+  "current_source_release_set": false,
+  "fresh_archives_per_arm": 2,
+  "frozen_archives_per_arm": 61,
+  "unchanged_graph_and_stage_math": true,
+  "window_rows": 1080,
+  "aot_calls_per_frame": 1,
+  "protocol": {
+    "orders": [
+      [
+        "R-B1",
+        "Generic",
+        "Unit"
+      ],
+      [
+        "Generic",
+        "Unit",
+        "R-B1"
+      ],
+      [
+        "Unit",
+        "R-B1",
+        "Generic"
+      ]
+    ],
+    "rounds_per_arm_case": 3,
+    "warmup_seconds": 5,
+    "window_seconds": 30,
+    "tail_seconds": 2,
+    "idle_seconds": 5,
+    "inflight_frames": 1,
+    "pool_mib": 1024,
+    "minimum_free_bytes": 1073741824,
+    "evidence_budget_bytes": 268435456,
+    "image_dumps": false
+  },
+  "summary": {
+    "portra400-coffee-1920x1080": {
+      "R-B1": {
+        "round_medians_ms": [
+          7.112646009773016,
+          13.372853922192007,
+          9.096812456846237
+        ],
+        "median_of_round_medians_ms": 9.096812456846237,
+        "worst_round_p95_ms": 26.12654201220721,
+        "median_throughput_fps": 106.23333333333333,
+        "device_peaks_mib": [
+          334.28125,
+          334.28125,
+          334.28125
+        ],
+        "max_device_peak_mib": 334.28125,
+        "max_process_peak_mib": 488.8445510864258,
+        "retained_process_footprint_mib": [
+          418.9851989746094,
+          419.6414260864258,
+          419.06334686279297
+        ],
+        "retained_device_mib": [
+          334.28125,
+          334.28125,
+          334.28125
+        ],
+        "max_thermal_state": 1,
+        "measurement_requests": 9020,
+        "measurement_new_metal_buffer_allocations_histogram": {
+          "0": 9020
+        },
+        "per_round_allocation_and_dispatch": [
+          {
+            "allocations": {
+              "0": 3926
+            },
+            "dispatches": {
+              "41": 3926
+            }
+          },
+          {
+            "allocations": {
+              "0": 1906
+            },
+            "dispatches": {
+              "41": 1906
+            }
+          },
+          {
+            "allocations": {
+              "0": 3188
+            },
+            "dispatches": {
+              "41": 3188
+            }
+          }
+        ]
+      },
+      "Generic": {
+        "round_medians_ms": [
+          6.854332983493805,
+          7.889167056418955,
+          9.006958454847336
+        ],
+        "median_of_round_medians_ms": 7.889167056418955,
+        "worst_round_p95_ms": 13.599999947473407,
+        "median_throughput_fps": 113.86666666666666,
+        "device_peaks_mib": [
+          334.28125,
+          334.28125,
+          334.28125
+        ],
+        "max_device_peak_mib": 334.28125,
+        "max_process_peak_mib": 488.4070510864258,
+        "retained_process_footprint_mib": [
+          419.1726760864258,
+          418.9070510864258,
+          418.98522186279297
+        ],
+        "retained_device_mib": [
+          334.28125,
+          334.28125,
+          334.28125
+        ],
+        "max_thermal_state": 1,
+        "measurement_requests": 10818,
+        "measurement_new_metal_buffer_allocations_histogram": {
+          "0": 10818
+        },
+        "per_round_allocation_and_dispatch": [
+          {
+            "allocations": {
+              "0": 4183
+            },
+            "dispatches": {
+              "40": 4183
+            }
+          },
+          {
+            "allocations": {
+              "0": 3417
+            },
+            "dispatches": {
+              "40": 3417
+            }
+          },
+          {
+            "allocations": {
+              "0": 3218
+            },
+            "dispatches": {
+              "40": 3218
+            }
+          }
+        ]
+      },
+      "Unit": {
+        "round_medians_ms": [
+          7.390332990325987,
+          11.821541003882885,
+          12.47952104313299
+        ],
+        "median_of_round_medians_ms": 11.821541003882885,
+        "worst_round_p95_ms": 19.76766693405807,
+        "median_throughput_fps": 80.06666666666666,
+        "device_peaks_mib": [
+          334.28125,
+          334.28125,
+          334.28125
+        ],
+        "max_device_peak_mib": 334.28125,
+        "max_process_peak_mib": 488.2820281982422,
+        "retained_process_footprint_mib": [
+          418.8914489746094,
+          418.9539489746094,
+          419.0476531982422
+        ],
+        "retained_device_mib": [
+          334.28125,
+          334.28125,
+          334.28125
+        ],
+        "max_thermal_state": 1,
+        "measurement_requests": 8580,
+        "measurement_new_metal_buffer_allocations_histogram": {
+          "0": 8580
+        },
+        "per_round_allocation_and_dispatch": [
+          {
+            "allocations": {
+              "0": 3857
+            },
+            "dispatches": {
+              "40": 3857
+            }
+          },
+          {
+            "allocations": {
+              "0": 2403
+            },
+            "dispatches": {
+              "40": 2403
+            }
+          },
+          {
+            "allocations": {
+              "0": 2320
+            },
+            "dispatches": {
+              "40": 2320
+            }
+          }
+        ]
+      }
+    },
+    "portra400-coffee-3840x2160": {
+      "R-B1": {
+        "round_medians_ms": [
+          42.82620857702568,
+          42.91558300610632,
+          41.44579102285206
+        ],
+        "median_of_round_medians_ms": 42.82620857702568,
+        "worst_round_p95_ms": 56.27249996177852,
+        "median_throughput_fps": 22.833333333333332,
+        "device_peaks_mib": [
+          1183.71875,
+          1183.71875,
+          1183.71875
+        ],
+        "max_device_peak_mib": 1183.71875,
+        "max_process_peak_mib": 1720.1885528564453,
+        "retained_process_footprint_mib": [
+          1459.047950744629,
+          1459.0010528564453,
+          1458.9385986328125
+        ],
+        "retained_device_mib": [
+          1183.71875,
+          1183.71875,
+          1183.71875
+        ],
+        "max_thermal_state": 1,
+        "measurement_requests": 2071,
+        "measurement_new_metal_buffer_allocations_histogram": {
+          "4": 2071
+        },
+        "per_round_allocation_and_dispatch": [
+          {
+            "allocations": {
+              "4": 686
+            },
+            "dispatches": {
+              "77": 686
+            }
+          },
+          {
+            "allocations": {
+              "4": 681
+            },
+            "dispatches": {
+              "77": 681
+            }
+          },
+          {
+            "allocations": {
+              "4": 704
+            },
+            "dispatches": {
+              "77": 704
+            }
+          }
+        ]
+      },
+      "Generic": {
+        "round_medians_ms": [
+          43.22370799491182,
+          41.35202098404989,
+          40.68960400763899
+        ],
+        "median_of_round_medians_ms": 41.35202098404989,
+        "worst_round_p95_ms": 51.24908301513642,
+        "median_throughput_fps": 23.433333333333334,
+        "device_peaks_mib": [
+          1183.71875,
+          1183.71875,
+          1183.71875
+        ],
+        "max_device_peak_mib": 1183.71875,
+        "max_process_peak_mib": 1720.2667694091797,
+        "retained_process_footprint_mib": [
+          1458.5948486328125,
+          1458.8916778564453,
+          1459.0948944091797
+        ],
+        "retained_device_mib": [
+          1183.71875,
+          1183.71875,
+          1183.71875
+        ],
+        "max_thermal_state": 1,
+        "measurement_requests": 2084,
+        "measurement_new_metal_buffer_allocations_histogram": {
+          "4": 2084
+        },
+        "per_round_allocation_and_dispatch": [
+          {
+            "allocations": {
+              "4": 672
+            },
+            "dispatches": {
+              "75": 672
+            }
+          },
+          {
+            "allocations": {
+              "4": 704
+            },
+            "dispatches": {
+              "75": 704
+            }
+          },
+          {
+            "allocations": {
+              "4": 708
+            },
+            "dispatches": {
+              "75": 708
+            }
+          }
+        ]
+      },
+      "Unit": {
+        "round_medians_ms": [
+          41.996416985057294,
+          42.222625110298395,
+          41.545854532159865
+        ],
+        "median_of_round_medians_ms": 41.996416985057294,
+        "worst_round_p95_ms": 52.53224994521588,
+        "median_throughput_fps": 23.4,
+        "device_peaks_mib": [
+          1183.71875,
+          1183.71875,
+          1183.71875
+        ],
+        "max_device_peak_mib": 1183.71875,
+        "max_process_peak_mib": 1720.172950744629,
+        "retained_process_footprint_mib": [
+          1458.9698486328125,
+          1458.9229736328125,
+          1458.938575744629
+        ],
+        "retained_device_mib": [
+          1183.71875,
+          1183.71875,
+          1183.71875
+        ],
+        "max_thermal_state": 1,
+        "measurement_requests": 2118,
+        "measurement_new_metal_buffer_allocations_histogram": {
+          "4": 2118
+        },
+        "per_round_allocation_and_dispatch": [
+          {
+            "allocations": {
+              "4": 703
+            },
+            "dispatches": {
+              "75": 703
+            }
+          },
+          {
+            "allocations": {
+              "4": 701
+            },
+            "dispatches": {
+              "75": 701
+            }
+          },
+          {
+            "allocations": {
+              "4": 714
+            },
+            "dispatches": {
+              "75": 714
+            }
+          }
+        ]
+      }
+    }
+  },
+  "comparisons": {
+    "portra400-coffee-1920x1080": {
+      "R-B1": {
+        "unit_time_change_percent": 29.952563713523904,
+        "unit_device_peak_change_mib": 0.0
+      },
+      "Generic": {
+        "unit_time_change_percent": 49.845236123684145,
+        "unit_device_peak_change_mib": 0.0
+      }
+    },
+    "portra400-coffee-3840x2160": {
+      "R-B1": {
+        "unit_time_change_percent": -1.9375789254749365,
+        "unit_device_peak_change_mib": 0.0
+      },
+      "Generic": {
+        "unit_time_change_percent": 1.5583180354255433,
+        "unit_device_peak_change_mib": 0.0
+      }
+    }
+  },
+  "measurement_requests": 34691,
+  "valid_rounds": 18,
+  "pixel_proof_rows": 24,
+  "independent_pixel_comparisons": 18,
+  "all_direct_rows_bitwise_R": true,
+  "history_comparisons": 42,
+  "active_fresh_history_comparisons": 24,
+  "all_history_bitwise_R": true,
+  "jit_comparisons": 6,
+  "jit_worst_linear_error": 2.6226043701171875e-06,
+  "bound_kernel_checks": [
+    {
+      "arm": "Generic",
+      "frame": 0,
+      "sigma": 0.809999943,
+      "unit_branch": false,
+      "actual_kernels": [
+        "_kernel_frame_coupler_diffused_v40_down_s0_y_v98_block_id_y__6"
+      ],
+      "generated_properties": [
+        {
+          "for_statements": 6,
+          "has_box_sum": true,
+          "source": "/tmp/metalE0D32L.metal"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "arm": "Generic",
+      "frame": 2,
+      "sigma": 0.809999943,
+      "unit_branch": false,
+      "actual_kernels": [
+        "_kernel_frame_coupler_diffused_v40_down_s0_y_v98_block_id_y__6"
+      ],
+      "generated_properties": [
+        {
+          "for_statements": 6,
+          "has_box_sum": true,
+          "source": "/tmp/metalE0D32L.metal"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "arm": "Generic",
+      "frame": 3,
+      "sigma": 0.809999943,
+      "unit_branch": false,
+      "actual_kernels": [
+        "_kernel_frame_coupler_diffused_v40_down_s0_y_v98_block_id_y__6"
+      ],
+      "generated_properties": [
+        {
+          "for_statements": 6,
+          "has_box_sum": true,
+          "source": "/tmp/metalE0D32L.metal"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "arm": "Generic",
+      "frame": 7,
+      "sigma": 4.19999981,
+      "unit_branch": false,
+      "actual_kernels": [
+        "_kernel_frame_coupler_diffused_v40_down_s0_y_v98_block_id_y__6"
+      ],
+      "generated_properties": [
+        {
+          "for_statements": 6,
+          "has_box_sum": true,
+          "source": "/tmp/metalE0D32L.metal"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "arm": "Generic",
+      "frame": 8,
+      "sigma": 1.99899995,
+      "unit_branch": false,
+      "actual_kernels": [
+        "_kernel_frame_coupler_diffused_v40_down_s0_y_v98_block_id_y__6"
+      ],
+      "generated_properties": [
+        {
+          "for_statements": 6,
+          "has_box_sum": true,
+          "source": "/tmp/metalE0D32L.metal"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "arm": "Generic",
+      "frame": 9,
+      "sigma": 2.0,
+      "unit_branch": false,
+      "actual_kernels": [
+        "_kernel_frame_coupler_diffused_v40_down_s0_y_v98_block_id_y__6"
+      ],
+      "generated_properties": [
+        {
+          "for_statements": 6,
+          "has_box_sum": true,
+          "source": "/tmp/metalE0D32L.metal"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "arm": "Generic",
+      "frame": 12,
+      "sigma": 0.809999943,
+      "unit_branch": false,
+      "actual_kernels": [
+        "_kernel_frame_coupler_diffused_v39_down_s0_y_v79_block_id_y__4"
+      ],
+      "generated_properties": [
+        {
+          "for_statements": 6,
+          "has_box_sum": true,
+          "source": "/tmp/metaliNkkM2.metal"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "arm": "Generic",
+      "frame": 13,
+      "sigma": 0.809999943,
+      "unit_branch": false,
+      "actual_kernels": [
+        "_kernel_frame_coupler_diffused_v40_down_s0_y_v98_block_id_y__6"
+      ],
+      "generated_properties": [
+        {
+          "for_statements": 6,
+          "has_box_sum": true,
+          "source": "/tmp/metalE0D32L.metal"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "arm": "Unit",
+      "frame": 0,
+      "sigma": 0.809999943,
+      "unit_branch": true,
+      "actual_kernels": [
+        "_kernel_frame_coupler_diffused_v40_down_s0_y_v98_block_id_y__2"
+      ],
+      "generated_properties": [
+        {
+          "for_statements": 0,
+          "has_box_sum": false,
+          "source": "/tmp/metalPtxhco.metal"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "arm": "Unit",
+      "frame": 2,
+      "sigma": 0.809999943,
+      "unit_branch": true,
+      "actual_kernels": [
+        "_kernel_frame_coupler_diffused_v40_down_s0_y_v98_block_id_y__2"
+      ],
+      "generated_properties": [
+        {
+          "for_statements": 0,
+          "has_box_sum": false,
+          "source": "/tmp/metalPtxhco.metal"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "arm": "Unit",
+      "frame": 3,
+      "sigma": 0.809999943,
+      "unit_branch": true,
+      "actual_kernels": [
+        "_kernel_frame_coupler_diffused_v40_down_s0_y_v98_block_id_y__2"
+      ],
+      "generated_properties": [
+        {
+          "for_statements": 0,
+          "has_box_sum": false,
+          "source": "/tmp/metalPtxhco.metal"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "arm": "Unit",
+      "frame": 7,
+      "sigma": 4.19999981,
+      "unit_branch": false,
+      "actual_kernels": [
+        "_kernel_frame_coupler_diffused_v40_down_s0_y_v98_block_id_y__3"
+      ],
+      "generated_properties": [
+        {
+          "for_statements": 6,
+          "has_box_sum": true,
+          "source": "/tmp/metalPtxhco.metal"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "arm": "Unit",
+      "frame": 8,
+      "sigma": 1.99899995,
+      "unit_branch": true,
+      "actual_kernels": [
+        "_kernel_frame_coupler_diffused_v40_down_s0_y_v98_block_id_y__2"
+      ],
+      "generated_properties": [
+        {
+          "for_statements": 0,
+          "has_box_sum": false,
+          "source": "/tmp/metalPtxhco.metal"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "arm": "Unit",
+      "frame": 9,
+      "sigma": 2.0,
+      "unit_branch": false,
+      "actual_kernels": [
+        "_kernel_frame_coupler_diffused_v40_down_s0_y_v98_block_id_y__3"
+      ],
+      "generated_properties": [
+        {
+          "for_statements": 6,
+          "has_box_sum": true,
+          "source": "/tmp/metalPtxhco.metal"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "arm": "Unit",
+      "frame": 12,
+      "sigma": 0.809999943,
+      "unit_branch": true,
+      "actual_kernels": [
+        "_kernel_frame_coupler_diffused_v39_down_s0_y_v79_block_id_y__2"
+      ],
+      "generated_properties": [
+        {
+          "for_statements": 0,
+          "has_box_sum": false,
+          "source": "/tmp/metaln26go3.metal"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "arm": "Unit",
+      "frame": 13,
+      "sigma": 0.809999943,
+      "unit_branch": true,
+      "actual_kernels": [
+        "_kernel_frame_coupler_diffused_v40_down_s0_y_v98_block_id_y__2"
+      ],
+      "generated_properties": [
+        {
+          "for_statements": 0,
+          "has_box_sum": false,
+          "source": "/tmp/metalPtxhco.metal"
+        }
+      ],
+      "passed": true
+    }
+  ],
+  "generated_metal_sha256": {
+    "Generic": {
+      "/tmp/metalE0D32L.metal": "06d4ab565aa244938233fb4e129a233f2f1785b5cf180efae45e4d4a95e939bb",
+      "/tmp/metaliNkkM2.metal": "37eac43889d1dcf83ec5de008560dcf9ad8a0eaf211bb62e620d09f5d3c64f92"
+    },
+    "Unit": {
+      "/tmp/metalPtxhco.metal": "08986095d5035d180e96b75554fe9f29bfb5431e4e34cc71884526ec38a4cd95",
+      "/tmp/metaln26go3.metal": "82ac07142c08930e26fb62f071b88bb95ebaf92b523f09166423505ccc05d870"
+    }
+  },
+  "validation": {
+    "complete": true,
+    "source_key": "1a3b9570961e56d8f00a0f892aabc6f9fe4f0f8ce80cde3aaa3fc7eb036471a0",
+    "cpu_stages": 11,
+    "metal_stages": 11,
+    "python_tests": 281,
+    "python_skipped": 8,
+    "swift_tests": 18,
+    "release_build": true,
+    "generator_rejections": 10,
+    "full_release_aot_jit_parity": false,
+    "logs": {
+      "stage18-jit-build.log": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stage18-jit-proof.log": {
+        "bytes": 1211,
+        "sha256": "23b28df68b3a30cbb743e3677645f9ff77ca3de9f5777859e1ef7e9b8e24b25a"
+      },
+      "stage18-stages.log": {
+        "bytes": 915,
+        "sha256": "1b748c97b11a3b0aa655add2d5e4bc7bf4357ea3a3165ad88e2e59e23db00b55"
+      },
+      "stage18-python-tests.log": {
+        "bytes": 629,
+        "sha256": "3bb7fbd4e4e560b980cb5d80fb86dcf2c9e9e0efd8fbaa573f3b5f478262352c"
+      },
+      "stage18-swift-build.log": {
+        "bytes": 6527,
+        "sha256": "687b7abe60bc9c353fe90680a90cd31f64f7c72c9e85ae4b2b1628cd176f3834"
+      },
+      "stage18-swift-tests.log": {
+        "bytes": 15004,
+        "sha256": "5b7f7ab7d683223b475ad8947859a81b187e4c9344d30454ba93d63a19c01ac8"
+      },
+      "stage18-unit-tests.log": {
+        "bytes": 114,
+        "sha256": "e49c07ae220356172b77eeac911ac6504c334a270ad1245e7651b8b5baa2cb95"
+      },
+      "stage18-history.log": {
+        "bytes": 779,
+        "sha256": "dec6d416ce69ced6affe1e3f1e602392b830f4ae277730a981dc1b1eddaacffb"
+      },
+      "stage18-history-v2.log": {
+        "bytes": 1165,
+        "sha256": "3a579126569e5cd1038accde38300c0d16fd01d855951df191f894d1271ed4b7"
+      },
+      "stage18-proof.log": {
+        "bytes": 1850,
+        "sha256": "effb9cc68938583d2b549a76ebcdc0c2dbf58af7f03d02e9cf370ab4555313e5"
+      }
+    }
+  },
+  "generator_rejections": {
+    "complete": true,
+    "note": "First harness assertion assumed exit2 for wrong variant; existing graph admission rejects it with exit1 before generation. Corrected expected code, no source change.",
+    "results": [
+      {
+        "case": "missing-fusion",
+        "args": [
+          "--macos",
+          "--variant=39",
+          "--windowed-coupler-unit-stride=1"
+        ],
+        "env": {},
+        "expected": 2,
+        "returncode": 2,
+        "stdout": "",
+        "stderr": "Coupler unit stride requires explicit Coupler fusion=1\n",
+        "passed": true
+      },
+      {
+        "case": "fusion-off",
+        "args": [
+          "--macos",
+          "--variant=39",
+          "--windowed-coupler-fusion=0",
+          "--windowed-coupler-unit-stride=1"
+        ],
+        "env": {},
+        "expected": 2,
+        "returncode": 2,
+        "stdout": "",
+        "stderr": "Coupler unit stride requires explicit Coupler fusion=1\n",
+        "passed": true
+      },
+      {
+        "case": "invalid-value",
+        "args": [
+          "--macos",
+          "--variant=39",
+          "--windowed-coupler-fusion=1",
+          "--windowed-coupler-unit-stride=2"
+        ],
+        "env": {},
+        "expected": 2,
+        "returncode": 2,
+        "stdout": "",
+        "stderr": "Coupler unit stride must be 0 or 1\n",
+        "passed": true
+      },
+      {
+        "case": "wrong-variant",
+        "args": [
+          "--macos",
+          "--variant=0",
+          "--windowed-coupler-fusion=1",
+          "--windowed-coupler-unit-stride=1"
+        ],
+        "env": {},
+        "expected": 1,
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "constructing fotufilm_halide_ios_color: windowed Coupler research only admits exact negative/negative_luma twins\n",
+        "passed": true
+      },
+      {
+        "case": "non-mac",
+        "args": [
+          "--simulator",
+          "--variant=39",
+          "--windowed-coupler-fusion=1",
+          "--windowed-coupler-unit-stride=1"
+        ],
+        "env": {},
+        "expected": 2,
+        "returncode": 2,
+        "stdout": "",
+        "stderr": "windowed Coupler research requires one exclusive macOS exact negative variant\n",
+        "passed": true
+      },
+      {
+        "case": "mixed-mtf",
+        "args": [
+          "--macos",
+          "--variant=39",
+          "--windowed-coupler-fusion=1",
+          "--windowed-coupler-unit-stride=1",
+          "--windowed-mtf-fusion=0"
+        ],
+        "env": {},
+        "expected": 2,
+        "returncode": 2,
+        "stdout": "",
+        "stderr": "windowed MTF research requires one exclusive macOS exact luma variant\n",
+        "passed": true
+      },
+      {
+        "case": "mixed-general",
+        "args": [
+          "--macos",
+          "--variant=39",
+          "--windowed-coupler-fusion=1",
+          "--windowed-coupler-unit-stride=1",
+          "--general-optimizations=0"
+        ],
+        "env": {},
+        "expected": 2,
+        "returncode": 2,
+        "stdout": "",
+        "stderr": "windowed Coupler research requires one exclusive macOS exact negative variant\n",
+        "passed": true
+      },
+      {
+        "case": "wavefront",
+        "args": [
+          "--macos",
+          "--variant=39",
+          "--windowed-coupler-fusion=1",
+          "--windowed-coupler-unit-stride=1"
+        ],
+        "env": {
+          "FOTUFILM_AOT_WAVEFRONT": "1"
+        },
+        "expected": 2,
+        "returncode": 2,
+        "stdout": "",
+        "stderr": "windowed Coupler research requires one exclusive macOS exact negative variant\n",
+        "passed": true
+      },
+      {
+        "case": "count",
+        "args": [
+          "--macos",
+          "--variant=39",
+          "--windowed-coupler-fusion=1",
+          "--windowed-coupler-unit-stride=1",
+          "--count"
+        ],
+        "env": {},
+        "expected": 2,
+        "returncode": 2,
+        "stdout": "",
+        "stderr": "windowed Coupler research requires one exclusive macOS exact negative variant\n",
+        "passed": true
+      },
+      {
+        "case": "unit-zero-without-fusion",
+        "args": [
+          "--macos",
+          "--variant=39",
+          "--windowed-coupler-unit-stride=0"
+        ],
+        "env": {},
+        "expected": 2,
+        "returncode": 2,
+        "stdout": "",
+        "stderr": "Coupler unit stride requires explicit Coupler fusion=1\n",
+        "passed": true
+      }
+    ]
+  },
+  "sources": {
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-unit-stage18-timing/ae7f220eb772/report.json": "a8113213fcda9b0c5b6e11fcd7d83eac0bfd7a8fb313a9a30c19f790abfe20d2",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-unit-stage18-proof/report.json": "0238d98acaa5a3ee953c58e5f80fa387e0e4c5629d1e742c3cba363c3e750f37",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-unit-stage18-history-v2/report.json": "58033fe7ae7f50feb421acd1886d1315ec577ea4baf8f68dc4afc22d8bbb1da3",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-unit-stage18-jit-proof/report.json": "ad204a3cf44a2c13f7ad206fb91c1026693d48cfa93875359f12fff9fbe1775c",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-unit-stage18-validation/validation.json": "851bd1a47dc60ce1fbb9370344c36e66aea0251c61c9757a52cefedd384eea0a",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-unit-stage18/generator-rejections.json": "e3759b648a159e09d4c52f9a98c34978597f55428dc369875e567a6908e97899"
+  },
+  "timing_report": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-unit-stage18-timing/ae7f220eb772/report.json",
+  "timing_event_artifacts": {
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-unit-stage18-timing/ae7f220eb772/portra400-coffee-1920x1080-0-R-B1/events.jsonl": {
+      "sha256": "50d52b75cfe6cb2373d0e96050b33f4bda67aa29ebae6a5dc16bf4be8ae88f70",
+      "bytes": 1853529
+    },
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-unit-stage18-timing/ae7f220eb772/portra400-coffee-1920x1080-1-R-B1/events.jsonl": {
+      "sha256": "5461060ac427a7c2ee9175598291de7831f8d9b76ba92d373411bffa08493e5a",
+      "bytes": 916589
+    },
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-unit-stage18-timing/ae7f220eb772/portra400-coffee-1920x1080-2-R-B1/events.jsonl": {
+      "sha256": "3d03a33090e66f7013e50d7b34f88d66f910f473d69475465177240977971c2c",
+      "bytes": 1523206
+    },
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-unit-stage18-timing/ae7f220eb772/portra400-coffee-1920x1080-0-Generic/events.jsonl": {
+      "sha256": "d30d2019da8dbb17b43f5509c56334eb33a5376656cc6da48cc3d20252e38f01",
+      "bytes": 1962689
+    },
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-unit-stage18-timing/ae7f220eb772/portra400-coffee-1920x1080-1-Generic/events.jsonl": {
+      "sha256": "6ed44a1cd973836cbcf98e603bbb2b786f6c8b105e9c93e6ed06549d6f7b6025",
+      "bytes": 1653677
+    },
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-unit-stage18-timing/ae7f220eb772/portra400-coffee-1920x1080-2-Generic/events.jsonl": {
+      "sha256": "78c6906868b492165bad6161c3925b9d5b0a7bb128db93d74d558ccb3ae161dc",
+      "bytes": 1574188
+    },
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-unit-stage18-timing/ae7f220eb772/portra400-coffee-1920x1080-0-Unit/events.jsonl": {
+      "sha256": "899747b341908800e2342070a13ca57c168b18ce78ae69c6cf52f302f6b9d6ac",
+      "bytes": 1782368
+    },
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-unit-stage18-timing/ae7f220eb772/portra400-coffee-1920x1080-1-Unit/events.jsonl": {
+      "sha256": "7f6f29f453a30d3c6a0b5f9813cb6afd24072a63c3a1f64940d1b3ce0ecd173b",
+      "bytes": 1122740
+    },
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-unit-stage18-timing/ae7f220eb772/portra400-coffee-1920x1080-2-Unit/events.jsonl": {
+      "sha256": "1033b51d5ee390d73a24f495b173029e0715d476160ba1515159b8474d86d743",
+      "bytes": 1086095
+    },
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-unit-stage18-timing/ae7f220eb772/portra400-coffee-3840x2160-0-R-B1/events.jsonl": {
+      "sha256": "4c752d75bfd60b924c9b27842396d6b93d5e4862eb2bb8b35a25d6d4f29dec06",
+      "bytes": 336899
+    },
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-unit-stage18-timing/ae7f220eb772/portra400-coffee-3840x2160-1-R-B1/events.jsonl": {
+      "sha256": "848ef9b40b55ffc846bda1efb5f13f5f8fc8ad9d4dcc893a9ef390d11e089d78",
+      "bytes": 336009
+    },
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-unit-stage18-timing/ae7f220eb772/portra400-coffee-3840x2160-2-R-B1/events.jsonl": {
+      "sha256": "b60f955ec1299e66f419e68dbc417e0bc4d53922bab5d2a39aba2c5179d791fc",
+      "bytes": 346144
+    },
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-unit-stage18-timing/ae7f220eb772/portra400-coffee-3840x2160-0-Generic/events.jsonl": {
+      "sha256": "81c0be534a114fef98f155c783300b1d952e9576829c07de32901bf3ca28b8c2",
+      "bytes": 333622
+    },
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-unit-stage18-timing/ae7f220eb772/portra400-coffee-3840x2160-1-Generic/events.jsonl": {
+      "sha256": "ab4b8d058a47e257f084aa207259117d870784a5b208afce27fb74d3aaa0f238",
+      "bytes": 346544
+    },
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-unit-stage18-timing/ae7f220eb772/portra400-coffee-3840x2160-2-Generic/events.jsonl": {
+      "sha256": "ab8e62e42e38ab4777f2ae51a76d70173d88a4fae6c70d551cc58911c911c66c",
+      "bytes": 349095
+    },
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-unit-stage18-timing/ae7f220eb772/portra400-coffee-3840x2160-0-Unit/events.jsonl": {
+      "sha256": "cc684cf329c8703c14546d2e4e4675a2b64f3e9679e575940335829e89f42f61",
+      "bytes": 346658
+    },
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-unit-stage18-timing/ae7f220eb772/portra400-coffee-3840x2160-1-Unit/events.jsonl": {
+      "sha256": "8ab379da1aefc42de5bd00b2a7c236bb2f10ed3e3ad7823c45c85ec4b8c46042",
+      "bytes": 346232
+    },
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-unit-stage18-timing/ae7f220eb772/portra400-coffee-3840x2160-2-Unit/events.jsonl": {
+      "sha256": "7cba5ebad2669386ca5b96559a3339758512ec74f5ff4ae72271c67e5b372733",
+      "bytes": 349455
+    }
+  },
+  "limitations": [
+    "HD original round medians drift from7.11 to13.37ms; balanced ordering does not establish a stable causal effect.",
+    "UHD Unit is1.94% faster than R by median, but1.56% slower than same-source Generic; no demonstrated specialization gain.",
+    "Two upscaled Coffee SDR workloads; no all-stock/holdout or complete current-source release parity.",
+    "No per-kernel GPU time, physical register/spill or DRAM traffic measurements."
+  ],
+  "decision": "Keep fusion and unit specialization default off. Unit removes actual stride1 reduction loops but does not demonstrate an end-to-end performance or memory benefit over Generic.",
+  "chart": {
+    "path": "/Users/kunhuang/.codex/visualizations/2026/10/30/01a18d11-7818-7982-b2f7-71166c1fc048/fotufilm-windowed-unit-stage18/comparison.png",
+    "sha256": "a66f7546ef5db4236b468b5694b51db8c9b4d702d2aad9897e055c9bf1b1f97e"
+  },
+  "analysis_tools_sha256": {
+    "summarize-windowed-unit.py": "a57b10f214c6ff9bafde1c164f8902027ca4646590a06e4451601230e38dd3b2",
+    "windowed-unit-chart.py": "e41e3b8fecc90e275b73a405c3df372e5994dd40dc41e441ef73f38539c4ec0e"
+  }
+}
