@@ -903,3 +903,8 @@ Inspection of the original generated Metal and saved timing events finds a pract
 ## Stage19: bounded best-fit pool reuse
 
 [Contract](windowed-pool-contract.md), [results](windowed-pool-stage19-results.md), [evidence](windowed-pool-stage19-results.json). The isolated frozen-R host suffix reduces UHD repeated device peak192MiB and measured new buffers/frame4→0, while observed HD/UHD latency increases. Production/default sources remain unchanged; keep experimental-only. The interrupted9-round campaign is preserved separately from the complete12-round rerun.
+
+
+## Stage20: CPU/GPU/wait timing probes
+
+[Contract](windowed-speed-contract.md), [results](windowed-speed-stage20-results.md), [metrics/evidence](windowed-speed-stage20-results.json). The final32-process scope-correct cohort reports direct UHD allocation CPU0.213→0.077ms, GPU interval union30.439/31.412ms and explicit wait3.766/3.898ms. Intervals overlap; encoding wall time is not active CPU. Probe/off policy comparisons change direction, so no latency promotion. The earlier autorelease-scope exploratory cohort is retained separately. Defaults stay unchanged.
