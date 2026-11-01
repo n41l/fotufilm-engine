@@ -1,0 +1,1083 @@
+{
+  "complete": true,
+  "stage": 23,
+  "source": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-pool-stage23-timing/report.json",
+  "source_sha256": "4a37910928f1f6df390261dc05d0592eca40f49b49fbe7352aa6b4d4b5bff502",
+  "performance_acceptance": false,
+  "aggregation": "median of three process medians per arm/case; worst process p95 also preserved",
+  "groups": {
+    "portra400-coffee-1920x1080": {
+      "R": {
+        "api_ms": 10.55875001475215,
+        "p95_ms": 15.59716695919633,
+        "throughput_fps": 84.13333333333334,
+        "device_peak_mib": 334.28125,
+        "process_peak_mib": 488.2039489746094,
+        "retained_device_mib": 334.28125,
+        "worst_p95_ms": 24.988832999952137,
+        "frames": 7805,
+        "new_buffers_histogram": {
+          "0": 7805
+        },
+        "thermal_histogram": {
+          "0": 2525,
+          "1": 5280
+        }
+      },
+      "BestFit": {
+        "api_ms": 8.91733297612518,
+        "p95_ms": 11.703124968335032,
+        "throughput_fps": 108.46666666666667,
+        "device_peak_mib": 334.28125,
+        "process_peak_mib": 488.2508239746094,
+        "retained_device_mib": 334.28125,
+        "worst_p95_ms": 17.88141706492752,
+        "frames": 9511,
+        "new_buffers_histogram": {
+          "0": 9511
+        },
+        "thermal_histogram": {
+          "0": 4797,
+          "1": 4714
+        }
+      },
+      "Recent": {
+        "api_ms": 10.183666017837822,
+        "p95_ms": 15.848040929995477,
+        "throughput_fps": 93.4,
+        "device_peak_mib": 334.28125,
+        "process_peak_mib": 488.26647186279297,
+        "retained_device_mib": 334.28125,
+        "worst_p95_ms": 17.36891595646739,
+        "frames": 8389,
+        "new_buffers_histogram": {
+          "0": 8389
+        },
+        "thermal_histogram": {
+          "0": 2803,
+          "1": 5586
+        }
+      }
+    },
+    "portra400-coffee-3840x2160": {
+      "R": {
+        "api_ms": 41.91525001078844,
+        "p95_ms": 57.38537502475083,
+        "throughput_fps": 22.8,
+        "device_peak_mib": 1183.71875,
+        "process_peak_mib": 1720.344871520996,
+        "retained_device_mib": 1183.71875,
+        "worst_p95_ms": 62.807624926790595,
+        "frames": 2077,
+        "new_buffers_histogram": {
+          "4": 2076,
+          "3": 1
+        },
+        "thermal_histogram": {
+          "1": 2077
+        }
+      },
+      "BestFit": {
+        "api_ms": 38.21904200594872,
+        "p95_ms": 48.06941596325487,
+        "throughput_fps": 25.133333333333333,
+        "device_peak_mib": 991.71875,
+        "process_peak_mib": 1336.094825744629,
+        "retained_device_mib": 991.71875,
+        "worst_p95_ms": 54.34079095721245,
+        "frames": 2306,
+        "new_buffers_histogram": {
+          "0": 2306
+        },
+        "thermal_histogram": {
+          "1": 2306
+        }
+      },
+      "Recent": {
+        "api_ms": 50.80166691914201,
+        "p95_ms": 56.62658403161913,
+        "throughput_fps": 19.4,
+        "device_peak_mib": 1183.71875,
+        "process_peak_mib": 1784.2980422973633,
+        "retained_device_mib": 1183.71875,
+        "worst_p95_ms": 65.42174995411187,
+        "frames": 1738,
+        "new_buffers_histogram": {
+          "12": 1738
+        },
+        "thermal_histogram": {
+          "1": 1738
+        }
+      }
+    }
+  },
+  "comparisons": {
+    "portra400-coffee-1920x1080": {
+      "BestFit": {
+        "aggregate_delta_ms": -1.6414170386269689,
+        "aggregate_delta_percent": -15.545562082004638,
+        "pairs": [
+          {
+            "repeat": 0,
+            "delta_ms": -4.117833042982966,
+            "delta_percent": -35.999109546102595
+          },
+          {
+            "repeat": 1,
+            "delta_ms": 1.3426869991235435,
+            "delta_percent": 12.716344238168432
+          },
+          {
+            "repeat": 2,
+            "delta_ms": -0.33350003650411963,
+            "delta_percent": -3.605081142950295
+          }
+        ]
+      },
+      "Recent": {
+        "aggregate_delta_ms": -0.37508399691432714,
+        "aggregate_delta_percent": -3.552352280244142,
+        "pairs": [
+          {
+            "repeat": 0,
+            "delta_ms": -1.2550420360639691,
+            "delta_percent": -10.971886249303031
+          },
+          {
+            "repeat": 1,
+            "delta_ms": 0.15999953029677272,
+            "delta_percent": 1.5153264361144059
+          },
+          {
+            "repeat": 2,
+            "delta_ms": 0.28218748047947884,
+            "delta_percent": 3.0504007595233196
+          }
+        ]
+      }
+    },
+    "portra400-coffee-3840x2160": {
+      "BestFit": {
+        "aggregate_delta_ms": -3.6962080048397183,
+        "aggregate_delta_percent": -8.818289295395743,
+        "pairs": [
+          {
+            "repeat": 0,
+            "delta_ms": -3.6962080048397183,
+            "delta_percent": -8.818289295395743
+          },
+          {
+            "repeat": 1,
+            "delta_ms": 0.17470796592533588,
+            "delta_percent": 0.4441873771624749
+          },
+          {
+            "repeat": 2,
+            "delta_ms": -5.45054191024974,
+            "delta_percent": -12.991955019116352
+          }
+        ]
+      },
+      "Recent": {
+        "aggregate_delta_ms": 8.886416908353567,
+        "aggregate_delta_percent": 21.20091591023867,
+        "pairs": [
+          {
+            "repeat": 0,
+            "delta_ms": 9.87222947878763,
+            "delta_percent": 23.552834532173005
+          },
+          {
+            "repeat": 1,
+            "delta_ms": 10.514665918890387,
+            "delta_percent": 26.733079121576186
+          },
+          {
+            "repeat": 2,
+            "delta_ms": 8.848458935972303,
+            "delta_percent": 21.091257048857926
+          }
+        ]
+      }
+    }
+  },
+  "processes": [
+    {
+      "case": "portra400-coffee-1920x1080",
+      "index": 0,
+      "arm": "R",
+      "api_ms": 11.438708053901792,
+      "p95_ms": 15.59716695919633,
+      "throughput_fps": 84.13333333333334,
+      "device_peak_mib": 334.28125,
+      "process_peak_mib": 488.32897186279297,
+      "retained_device_mib": 334.28125,
+      "frames": 2525,
+      "new_buffers_histogram": {
+        "0": 2525
+      },
+      "thermal_histogram": {
+        "0": 2525
+      },
+      "environment_before": {
+        "free_disk_bytes": 3414118400,
+        "load_average": [
+          5.5107421875,
+          5.0732421875,
+          6.259765625
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12536.50M  free = 775.50M  (encrypted)",
+        "system_memory_free_percent": 46
+      },
+      "environment_after": {
+        "free_disk_bytes": 3409580032,
+        "load_average": [
+          8.03857421875,
+          5.681640625,
+          6.421875
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12528.50M  free = 783.50M  (encrypted)",
+        "system_memory_free_percent": 42
+      },
+      "five_second_bins_ms": [
+        11.72850001603365,
+        11.132042040117085,
+        11.40766590833664,
+        11.347625055350363,
+        11.610249988734722,
+        11.154041974805295
+      ]
+    },
+    {
+      "case": "portra400-coffee-1920x1080",
+      "index": 0,
+      "arm": "BestFit",
+      "api_ms": 7.320875010918826,
+      "p95_ms": 10.7300829840824,
+      "throughput_fps": 128.63333333333333,
+      "device_peak_mib": 334.28125,
+      "process_peak_mib": 488.1726989746094,
+      "retained_device_mib": 334.28125,
+      "frames": 3860,
+      "new_buffers_histogram": {
+        "0": 3860
+      },
+      "thermal_histogram": {
+        "0": 3860
+      },
+      "environment_before": {
+        "free_disk_bytes": 3409580032,
+        "load_average": [
+          8.03857421875,
+          5.681640625,
+          6.421875
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12528.50M  free = 783.50M  (encrypted)",
+        "system_memory_free_percent": 42
+      },
+      "environment_after": {
+        "free_disk_bytes": 3302256640,
+        "load_average": [
+          8.7880859375,
+          6.26025390625,
+          6.603515625
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12528.50M  free = 783.50M  (encrypted)",
+        "system_memory_free_percent": 47
+      },
+      "five_second_bins_ms": [
+        7.821875042282045,
+        7.3336249915882945,
+        7.182667031884193,
+        7.2952089831233025,
+        7.264291984029114,
+        7.324833539314568
+      ]
+    },
+    {
+      "case": "portra400-coffee-1920x1080",
+      "index": 0,
+      "arm": "Recent",
+      "api_ms": 10.183666017837822,
+      "p95_ms": 15.848040929995477,
+      "throughput_fps": 93.4,
+      "device_peak_mib": 334.28125,
+      "process_peak_mib": 487.4070739746094,
+      "retained_device_mib": 334.28125,
+      "frames": 2803,
+      "new_buffers_histogram": {
+        "0": 2803
+      },
+      "thermal_histogram": {
+        "0": 2803
+      },
+      "environment_before": {
+        "free_disk_bytes": 3302236160,
+        "load_average": [
+          8.7880859375,
+          6.26025390625,
+          6.603515625
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12528.50M  free = 783.50M  (encrypted)",
+        "system_memory_free_percent": 47
+      },
+      "environment_after": {
+        "free_disk_bytes": 3296362496,
+        "load_average": [
+          6.26904296875,
+          5.94091796875,
+          6.47021484375
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12520.50M  free = 791.50M  (encrypted)",
+        "system_memory_free_percent": 45
+      },
+      "five_second_bins_ms": [
+        9.7687499364838,
+        11.09595806337893,
+        10.743937513325363,
+        9.805499983485788,
+        9.47883352637291,
+        10.234499990474433
+      ]
+    },
+    {
+      "case": "portra400-coffee-1920x1080",
+      "index": 1,
+      "arm": "BestFit",
+      "api_ms": 11.901437013875693,
+      "p95_ms": 17.88141706492752,
+      "throughput_fps": 79.83333333333333,
+      "device_peak_mib": 334.28125,
+      "process_peak_mib": 488.2508239746094,
+      "retained_device_mib": 334.28125,
+      "frames": 2396,
+      "new_buffers_histogram": {
+        "0": 2396
+      },
+      "thermal_histogram": {
+        "0": 937,
+        "1": 1459
+      },
+      "environment_before": {
+        "free_disk_bytes": 3296350208,
+        "load_average": [
+          6.26904296875,
+          5.94091796875,
+          6.47021484375
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12520.50M  free = 791.50M  (encrypted)",
+        "system_memory_free_percent": 45
+      },
+      "environment_after": {
+        "free_disk_bytes": 3294834688,
+        "load_average": [
+          5.40283203125,
+          5.759765625,
+          6.3779296875
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12512.50M  free = 799.50M  (encrypted)",
+        "system_memory_free_percent": 42
+      },
+      "five_second_bins_ms": [
+        10.568853991571814,
+        10.701645456720144,
+        11.239291983656585,
+        12.376916944049299,
+        13.587436988018453,
+        12.707895482890308
+      ]
+    },
+    {
+      "case": "portra400-coffee-1920x1080",
+      "index": 1,
+      "arm": "Recent",
+      "api_ms": 10.718749545048922,
+      "p95_ms": 17.36891595646739,
+      "throughput_fps": 86.43333333333334,
+      "device_peak_mib": 334.28125,
+      "process_peak_mib": 488.26647186279297,
+      "retained_device_mib": 334.28125,
+      "frames": 2594,
+      "new_buffers_histogram": {
+        "0": 2594
+      },
+      "thermal_histogram": {
+        "1": 2594
+      },
+      "environment_before": {
+        "free_disk_bytes": 3294830592,
+        "load_average": [
+          5.40283203125,
+          5.759765625,
+          6.3779296875
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12512.50M  free = 799.50M  (encrypted)",
+        "system_memory_free_percent": 42
+      },
+      "environment_after": {
+        "free_disk_bytes": 3292733440,
+        "load_average": [
+          4.75927734375,
+          5.564453125,
+          6.27783203125
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12512.50M  free = 799.50M  (encrypted)",
+        "system_memory_free_percent": 47
+      },
+      "five_second_bins_ms": [
+        11.787707917392254,
+        12.481916463002563,
+        11.124249955173582,
+        9.976750006899238,
+        9.748436976224184,
+        9.18449996970594
+      ]
+    },
+    {
+      "case": "portra400-coffee-1920x1080",
+      "index": 1,
+      "arm": "R",
+      "api_ms": 10.55875001475215,
+      "p95_ms": 24.988832999952137,
+      "throughput_fps": 73.43333333333334,
+      "device_peak_mib": 334.28125,
+      "process_peak_mib": 488.2039489746094,
+      "retained_device_mib": 334.28125,
+      "frames": 2204,
+      "new_buffers_histogram": {
+        "0": 2204
+      },
+      "thermal_histogram": {
+        "1": 2204
+      },
+      "environment_before": {
+        "free_disk_bytes": 3292721152,
+        "load_average": [
+          4.75927734375,
+          5.564453125,
+          6.27783203125
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12512.50M  free = 799.50M  (encrypted)",
+        "system_memory_free_percent": 47
+      },
+      "environment_after": {
+        "free_disk_bytes": 3372986368,
+        "load_average": [
+          15.65625,
+          8.14453125,
+          7.18115234375
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12504.50M  free = 807.50M  (encrypted)",
+        "system_memory_free_percent": 52
+      },
+      "five_second_bins_ms": [
+        11.715396016370505,
+        11.473458027467132,
+        9.567499510012567,
+        10.71137492544949,
+        10.654416517354548,
+        10.23570797406137
+      ]
+    },
+    {
+      "case": "portra400-coffee-1920x1080",
+      "index": 2,
+      "arm": "Recent",
+      "api_ms": 9.53302049310878,
+      "p95_ms": 13.99279199540615,
+      "throughput_fps": 99.7,
+      "device_peak_mib": 334.28125,
+      "process_peak_mib": 488.8445739746094,
+      "retained_device_mib": 334.28125,
+      "frames": 2992,
+      "new_buffers_histogram": {
+        "0": 2992
+      },
+      "thermal_histogram": {
+        "1": 2992
+      },
+      "environment_before": {
+        "free_disk_bytes": 3372310528,
+        "load_average": [
+          15.65625,
+          8.14453125,
+          7.18115234375
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12504.50M  free = 807.50M  (encrypted)",
+        "system_memory_free_percent": 52
+      },
+      "environment_after": {
+        "free_disk_bytes": 3365511168,
+        "load_average": [
+          10.59619140625,
+          7.7685546875,
+          7.0849609375
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12496.50M  free = 815.50M  (encrypted)",
+        "system_memory_free_percent": 48
+      },
+      "five_second_bins_ms": [
+        10.35183301428333,
+        9.155458072200418,
+        9.176979016046971,
+        8.521000505425036,
+        10.215083020739257,
+        10.349375021178275
+      ]
+    },
+    {
+      "case": "portra400-coffee-1920x1080",
+      "index": 2,
+      "arm": "R",
+      "api_ms": 9.2508330126293,
+      "p95_ms": 12.940707965753973,
+      "throughput_fps": 102.5,
+      "device_peak_mib": 334.28125,
+      "process_peak_mib": 488.1570281982422,
+      "retained_device_mib": 334.28125,
+      "frames": 3076,
+      "new_buffers_histogram": {
+        "0": 3076
+      },
+      "thermal_histogram": {
+        "1": 3076
+      },
+      "environment_before": {
+        "free_disk_bytes": 3365486592,
+        "load_average": [
+          10.59619140625,
+          7.7685546875,
+          7.0849609375
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12496.50M  free = 815.50M  (encrypted)",
+        "system_memory_free_percent": 48
+      },
+      "environment_after": {
+        "free_disk_bytes": 3360505856,
+        "load_average": [
+          7.62548828125,
+          7.33203125,
+          6.95361328125
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12496.50M  free = 815.50M  (encrypted)",
+        "system_memory_free_percent": 48
+      },
+      "five_second_bins_ms": [
+        8.299520995933563,
+        9.657437505666167,
+        10.051583463791758,
+        9.122834075242281,
+        9.25181299680844,
+        9.477125015109777
+      ]
+    },
+    {
+      "case": "portra400-coffee-1920x1080",
+      "index": 2,
+      "arm": "BestFit",
+      "api_ms": 8.91733297612518,
+      "p95_ms": 11.703124968335032,
+      "throughput_fps": 108.46666666666667,
+      "device_peak_mib": 334.28125,
+      "process_peak_mib": 488.37586975097656,
+      "retained_device_mib": 334.28125,
+      "frames": 3255,
+      "new_buffers_histogram": {
+        "0": 3255
+      },
+      "thermal_histogram": {
+        "1": 3255
+      },
+      "environment_before": {
+        "free_disk_bytes": 3360477184,
+        "load_average": [
+          7.62548828125,
+          7.33203125,
+          6.95361328125
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12496.50M  free = 815.50M  (encrypted)",
+        "system_memory_free_percent": 48
+      },
+      "environment_after": {
+        "free_disk_bytes": 3356004352,
+        "load_average": [
+          5.8056640625,
+          6.91015625,
+          6.81591796875
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12496.50M  free = 815.50M  (encrypted)",
+        "system_memory_free_percent": 48
+      },
+      "five_second_bins_ms": [
+        7.834332995116711,
+        9.082249947823584,
+        9.219500003382564,
+        9.017499978654087,
+        9.08020802307874,
+        9.113083477132022
+      ]
+    },
+    {
+      "case": "portra400-coffee-3840x2160",
+      "index": 0,
+      "arm": "Recent",
+      "api_ms": 51.78747948957607,
+      "p95_ms": 65.42174995411187,
+      "throughput_fps": 18.566666666666666,
+      "device_peak_mib": 1183.71875,
+      "process_peak_mib": 1778.485496520996,
+      "retained_device_mib": 1183.71875,
+      "frames": 558,
+      "new_buffers_histogram": {
+        "12": 558
+      },
+      "thermal_histogram": {
+        "1": 558
+      },
+      "environment_before": {
+        "free_disk_bytes": 3355983872,
+        "load_average": [
+          5.8056640625,
+          6.91015625,
+          6.81591796875
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12496.50M  free = 815.50M  (encrypted)",
+        "system_memory_free_percent": 48
+      },
+      "environment_after": {
+        "free_disk_bytes": 3358994432,
+        "load_average": [
+          5.19921875,
+          6.62060546875,
+          6.7138671875
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12496.50M  free = 815.50M  (encrypted)",
+        "system_memory_free_percent": 47
+      },
+      "five_second_bins_ms": [
+        49.76558301132172,
+        48.93245897255838,
+        49.589165952056646,
+        53.25272894697264,
+        57.47087497729808,
+        59.533770952839404
+      ]
+    },
+    {
+      "case": "portra400-coffee-3840x2160",
+      "index": 0,
+      "arm": "BestFit",
+      "api_ms": 38.21904200594872,
+      "p95_ms": 48.06941596325487,
+      "throughput_fps": 25.133333333333333,
+      "device_peak_mib": 991.71875,
+      "process_peak_mib": 1336.094825744629,
+      "retained_device_mib": 991.71875,
+      "frames": 755,
+      "new_buffers_histogram": {
+        "0": 755
+      },
+      "thermal_histogram": {
+        "1": 755
+      },
+      "environment_before": {
+        "free_disk_bytes": 3358965760,
+        "load_average": [
+          5.19921875,
+          6.62060546875,
+          6.7138671875
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12496.50M  free = 815.50M  (encrypted)",
+        "system_memory_free_percent": 47
+      },
+      "environment_after": {
+        "free_disk_bytes": 3359567872,
+        "load_average": [
+          5.0439453125,
+          6.400390625,
+          6.6279296875
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12496.50M  free = 815.50M  (encrypted)",
+        "system_memory_free_percent": 45
+      },
+      "five_second_bins_ms": [
+        33.0021659610793,
+        37.60572895407677,
+        38.12431253027171,
+        37.853916990570724,
+        40.27604102157056,
+        39.01891701389104
+      ]
+    },
+    {
+      "case": "portra400-coffee-3840x2160",
+      "index": 0,
+      "arm": "R",
+      "api_ms": 41.91525001078844,
+      "p95_ms": 57.38537502475083,
+      "throughput_fps": 22.8,
+      "device_peak_mib": 1183.71875,
+      "process_peak_mib": 1720.8292236328125,
+      "retained_device_mib": 1183.71875,
+      "frames": 685,
+      "new_buffers_histogram": {
+        "4": 685
+      },
+      "thermal_histogram": {
+        "1": 685
+      },
+      "environment_before": {
+        "free_disk_bytes": 3359539200,
+        "load_average": [
+          5.0439453125,
+          6.400390625,
+          6.6279296875
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12496.50M  free = 815.50M  (encrypted)",
+        "system_memory_free_percent": 45
+      },
+      "environment_after": {
+        "free_disk_bytes": 3348467712,
+        "load_average": [
+          5.45458984375,
+          6.3330078125,
+          6.5908203125
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12496.50M  free = 815.50M  (encrypted)",
+        "system_memory_free_percent": 44
+      },
+      "five_second_bins_ms": [
+        43.68066706229001,
+        41.11537500284612,
+        40.26074998546392,
+        41.6185210342519,
+        40.695250034332275,
+        46.20233306195587
+      ]
+    },
+    {
+      "case": "portra400-coffee-3840x2160",
+      "index": 1,
+      "arm": "R",
+      "api_ms": 39.33204204076901,
+      "p95_ms": 50.852834014222026,
+      "throughput_fps": 24.166666666666668,
+      "device_peak_mib": 1183.71875,
+      "process_peak_mib": 1720.1885986328125,
+      "retained_device_mib": 1183.71875,
+      "frames": 726,
+      "new_buffers_histogram": {
+        "4": 726
+      },
+      "thermal_histogram": {
+        "1": 726
+      },
+      "environment_before": {
+        "free_disk_bytes": 3348430848,
+        "load_average": [
+          5.45458984375,
+          6.3330078125,
+          6.5908203125
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12496.50M  free = 815.50M  (encrypted)",
+        "system_memory_free_percent": 44
+      },
+      "environment_after": {
+        "free_disk_bytes": 3345739776,
+        "load_average": [
+          6.4619140625,
+          6.47216796875,
+          6.62646484375
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12496.50M  free = 815.50M  (encrypted)",
+        "system_memory_free_percent": 48
+      },
+      "five_second_bins_ms": [
+        39.250020985491574,
+        40.15608399640769,
+        41.76483303308487,
+        39.23962498083711,
+        39.01470801793039,
+        38.82941696792841
+      ]
+    },
+    {
+      "case": "portra400-coffee-3840x2160",
+      "index": 1,
+      "arm": "Recent",
+      "api_ms": 49.8467079596594,
+      "p95_ms": 54.4308329699561,
+      "throughput_fps": 19.866666666666667,
+      "device_peak_mib": 1183.71875,
+      "process_peak_mib": 1784.2980422973633,
+      "retained_device_mib": 1183.71875,
+      "frames": 597,
+      "new_buffers_histogram": {
+        "12": 597
+      },
+      "thermal_histogram": {
+        "1": 597
+      },
+      "environment_before": {
+        "free_disk_bytes": 3345715200,
+        "load_average": [
+          6.4619140625,
+          6.47216796875,
+          6.62646484375
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12496.50M  free = 815.50M  (encrypted)",
+        "system_memory_free_percent": 48
+      },
+      "environment_after": {
+        "free_disk_bytes": 3354742784,
+        "load_average": [
+          6.3837890625,
+          6.39306640625,
+          6.58642578125
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12496.50M  free = 815.50M  (encrypted)",
+        "system_memory_free_percent": 44
+      },
+      "five_second_bins_ms": [
+        47.88406251464039,
+        48.767333501018584,
+        49.648125015664846,
+        49.83612505020574,
+        50.631374469958246,
+        51.88924993854016
+      ]
+    },
+    {
+      "case": "portra400-coffee-3840x2160",
+      "index": 1,
+      "arm": "BestFit",
+      "api_ms": 39.50675000669435,
+      "p95_ms": 54.34079095721245,
+      "throughput_fps": 24.3,
+      "device_peak_mib": 991.71875,
+      "process_peak_mib": 1335.282371520996,
+      "retained_device_mib": 991.71875,
+      "frames": 730,
+      "new_buffers_histogram": {
+        "0": 730
+      },
+      "thermal_histogram": {
+        "1": 730
+      },
+      "environment_before": {
+        "free_disk_bytes": 3354697728,
+        "load_average": [
+          6.3837890625,
+          6.39306640625,
+          6.58642578125
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12496.50M  free = 815.50M  (encrypted)",
+        "system_memory_free_percent": 44
+      },
+      "environment_after": {
+        "free_disk_bytes": 3354071040,
+        "load_average": [
+          5.4775390625,
+          6.1416015625,
+          6.4833984375
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12488.50M  free = 823.50M  (encrypted)",
+        "system_memory_free_percent": 47
+      },
+      "five_second_bins_ms": [
+        33.8882920332253,
+        39.535437477752566,
+        38.91612507868558,
+        38.274208549410105,
+        40.204124932643026,
+        46.58745904453099
+      ]
+    },
+    {
+      "case": "portra400-coffee-3840x2160",
+      "index": 2,
+      "arm": "BestFit",
+      "api_ms": 36.502666072919965,
+      "p95_ms": 42.53545799292624,
+      "throughput_fps": 27.333333333333332,
+      "device_peak_mib": 991.71875,
+      "process_peak_mib": 1336.1573028564453,
+      "retained_device_mib": 991.71875,
+      "frames": 821,
+      "new_buffers_histogram": {
+        "0": 821
+      },
+      "thermal_histogram": {
+        "1": 821
+      },
+      "environment_before": {
+        "free_disk_bytes": 3354054656,
+        "load_average": [
+          5.4775390625,
+          6.1416015625,
+          6.4833984375
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12488.50M  free = 823.50M  (encrypted)",
+        "system_memory_free_percent": 47
+      },
+      "environment_after": {
+        "free_disk_bytes": 3352154112,
+        "load_average": [
+          4.20947265625,
+          5.7431640625,
+          6.3212890625
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12488.50M  free = 823.50M  (encrypted)",
+        "system_memory_free_percent": 49
+      },
+      "five_second_bins_ms": [
+        32.69612498115748,
+        36.20985453017056,
+        37.654582993127406,
+        36.6320830071345,
+        36.5692499326542,
+        35.266958991996944
+      ]
+    },
+    {
+      "case": "portra400-coffee-3840x2160",
+      "index": 2,
+      "arm": "R",
+      "api_ms": 41.953207983169705,
+      "p95_ms": 62.807624926790595,
+      "throughput_fps": 22.166666666666668,
+      "device_peak_mib": 1183.71875,
+      "process_peak_mib": 1720.344871520996,
+      "retained_device_mib": 1183.71875,
+      "frames": 666,
+      "new_buffers_histogram": {
+        "4": 665,
+        "3": 1
+      },
+      "thermal_histogram": {
+        "1": 666
+      },
+      "environment_before": {
+        "free_disk_bytes": 3352133632,
+        "load_average": [
+          4.20947265625,
+          5.7431640625,
+          6.3212890625
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12488.50M  free = 823.50M  (encrypted)",
+        "system_memory_free_percent": 49
+      },
+      "environment_after": {
+        "free_disk_bytes": 3350814720,
+        "load_average": [
+          6.4677734375,
+          6.13330078125,
+          6.43603515625
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12480.50M  free = 831.50M  (encrypted)",
+        "system_memory_free_percent": 48
+      },
+      "five_second_bins_ms": [
+        34.82937510125339,
+        53.035125019960105,
+        42.561125010252,
+        43.56504196766764,
+        44.25333347171545,
+        41.474812489468604
+      ]
+    },
+    {
+      "case": "portra400-coffee-3840x2160",
+      "index": 2,
+      "arm": "Recent",
+      "api_ms": 50.80166691914201,
+      "p95_ms": 56.62658403161913,
+      "throughput_fps": 19.4,
+      "device_peak_mib": 1183.71875,
+      "process_peak_mib": 1784.4074630737305,
+      "retained_device_mib": 1183.71875,
+      "frames": 583,
+      "new_buffers_histogram": {
+        "12": 583
+      },
+      "thermal_histogram": {
+        "1": 583
+      },
+      "environment_before": {
+        "free_disk_bytes": 3350749184,
+        "load_average": [
+          6.4677734375,
+          6.13330078125,
+          6.43603515625
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12480.50M  free = 831.50M  (encrypted)",
+        "system_memory_free_percent": 48
+      },
+      "environment_after": {
+        "free_disk_bytes": 3349192704,
+        "load_average": [
+          5.8212890625,
+          6.03125,
+          6.38427734375
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12480.50M  free = 831.50M  (encrypted)",
+        "system_memory_free_percent": 49
+      },
+      "five_second_bins_ms": [
+        48.83564548799768,
+        49.733458494301885,
+        50.46429100912064,
+        52.07072902703658,
+        51.330541959032416,
+        52.08460456924513
+      ]
+    }
+  ],
+  "limitations": [
+    "one HD and one UHD fixed input on a changing background session",
+    "three cyclic position-balanced orders, not predecessor-balanced within a size",
+    "one concrete recent-frequency/LRU-tie policy; not all eviction policies",
+    "no detailed timing probes; resource histories are a separate correctness cohort"
+  ],
+  "date": "2026-11-01",
+  "implementation_commit": "e9d689b",
+  "normal_preflight_cases": 6,
+  "resource_preflight_frames": 37,
+  "test_counts": {
+    "native_policy": 7,
+    "pool_analysis": 4,
+    "resource_analysis": 13
+  },
+  "measurement_frames": 31826,
+  "native_film_or_aot_sources_changed": false,
+  "defaults_unchanged": true,
+  "proof": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-pool-stage23-proof/report.json",
+  "proof_sha256": "720a0a9e2bed0a4e8b60f1e1c3e5e45705e2582c9cf2e8ec1122905dc7b6b557",
+  "post_timing_original_confirmation": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-pool-stage23-reference-confirmation/report.json",
+  "post_timing_original_confirmation_sha256": "e8c12dd1382bbcbe12ade3972bd0817a15a08efc7b4d9dd65ca276bb4702516c",
+  "steady_new_requested_bytes": {
+    "R": 201326592,
+    "Recent": 268436452
+  },
+  "steady_recent_fresh_rounded_histogram": {
+    "80": 1,
+    "76": 1,
+    "52": 1,
+    "100": 1,
+    "108": 1,
+    "60": 1,
+    "256": 2,
+    "4": 2,
+    "134217728": 2
+  },
+  "decision": "Reject this frequency-first exact-size eviction experiment: no UHD Metal peak reduction, twelve new buffers per measured UHD call, all three UHD comparisons slower. This does not rule out every eviction policy. BestFit remains an optional memory experiment without default activation or stable performance acceptance.",
+  "chart": "/Users/kunhuang/.codex/visualizations/2026/10/30/01a18d11-7818-7982-b2f7-71166c1fc048/fotufilm-windowed-pool-stage23/comparison.png",
+  "analysis_tools_sha256": {
+    "summarize-windowed-pool-recent.py": "9fefe143482ff27762929f3922b66a8bde414a6bcaa932be78b2fa4526151c64",
+    "windowed-pool-recent-chart.py": "c107ff88ebe11781cbeac41e7c9b567ca5bf3dcefa72fb58608249d51a1d6e26",
+    "verify-windowed-pool-recent.py": "3748c093eb2c106cca54c752bb55d0cba1e001de894b5909fe63b4a93c02dc69",
+    "test-windowed-pool-recent.cpp": "a2e7f22bf9ad3f2af4970d5835532a553c1cdf6a53bb184fd82fcac39fd7ab01",
+    "windowed_pool_analysis.py": "2e7d00c86bdcaf9e2d66c5e8e53eb3f9f0733c16a014557bd1d108be7e81dfc9",
+    "wavefront_resource_analysis.py": "0618c7cbcceaa10b68244c8eb2a474b1e7380edc5a39491f5224a3cdd422471b"
+  }
+}
