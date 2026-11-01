@@ -1,0 +1,207 @@
+{
+  "complete": true,
+  "stage": 16,
+  "date": "2026-11-01",
+  "scope": "isolated exact-windowed MTF mixed/separated fusion; diagnostic, defaults off",
+  "implementation_commit": "a45d89d",
+  "reference_base": "96623ba0831a52dbddcda35727a206d4123a8b5f",
+  "source_key": "4f9d84dc2c9aba095e55d1c1d36fdab8bfa2556b1d34be1f1c928cfaaa664325",
+  "performance_acceptance": false,
+  "B_ref_frozen": false,
+  "current_source_release_set": false,
+  "fresh_archives_per_arm": 1,
+  "frozen_archives_per_arm": 62,
+  "unchanged_math": true,
+  "window_rows": 1080,
+  "aot_calls_per_frame": 1,
+  "active_case": "portra400-coffee-3840x2160",
+  "summary": {
+    "R-B1": {
+      "round_medians_ms": [
+        34.26966699771583,
+        36.666124942712486,
+        37.756479054223746
+      ],
+      "median_of_round_medians_ms": 36.666124942712486,
+      "worst_round_p95_ms": 49.5498749660328,
+      "median_throughput_fps": 27.366666666666667,
+      "device_peaks_mib": [
+        1183.71875,
+        1183.71875,
+        1183.71875
+      ],
+      "max_device_peak_mib": 1183.71875,
+      "max_process_peak_mib": 1717.8292236328125,
+      "retained_process_footprint_mib": [
+        1456.6417236328125,
+        1456.501075744629,
+        1456.5166778564453
+      ],
+      "max_thermal_state": 1,
+      "measurement_requests": 2443
+    },
+    "W0": {
+      "round_medians_ms": [
+        39.79225002694875,
+        37.47170849237591,
+        37.90827048942447
+      ],
+      "median_of_round_medians_ms": 37.90827048942447,
+      "worst_round_p95_ms": 96.13449999596924,
+      "median_throughput_fps": 26.5,
+      "device_peaks_mib": [
+        1183.71875,
+        1183.71875,
+        1183.71875
+      ],
+      "max_device_peak_mib": 1183.71875,
+      "max_process_peak_mib": 1717.6885986328125,
+      "retained_process_footprint_mib": [
+        1456.360496520996,
+        1456.4854736328125,
+        1456.3916778564453
+      ],
+      "max_thermal_state": 1,
+      "measurement_requests": 2194
+    },
+    "Fused": {
+      "round_medians_ms": [
+        31.072208017576486,
+        34.302353975363076,
+        32.90362498955801
+      ],
+      "median_of_round_medians_ms": 32.90362498955801,
+      "worst_round_p95_ms": 41.99154209345579,
+      "median_throughput_fps": 30.7,
+      "device_peaks_mib": [
+        1071.71875,
+        1071.71875,
+        1071.71875
+      ],
+      "max_device_peak_mib": 1071.71875,
+      "max_process_peak_mib": 1461.7198028564453,
+      "retained_process_footprint_mib": [
+        1344.5010528564453,
+        1344.4385986328125,
+        1344.3917236328125
+      ],
+      "max_thermal_state": 1,
+      "measurement_requests": 2696
+    }
+  },
+  "effect_vs": {
+    "R-B1": {
+      "observed_latency_reduction_percent": 10.26151511519977,
+      "device_peak_reduction_mib": 112.0,
+      "device_peak_reduction_percent": 9.461707014440723
+    },
+    "W0": {
+      "observed_latency_reduction_percent": 13.201988471783842,
+      "device_peak_reduction_mib": 112.0,
+      "device_peak_reduction_percent": 9.461707014440723
+    }
+  },
+  "protocol": {
+    "orders": [
+      [
+        "R-B1",
+        "W0",
+        "Fused"
+      ],
+      [
+        "W0",
+        "Fused",
+        "R-B1"
+      ],
+      [
+        "Fused",
+        "R-B1",
+        "W0"
+      ]
+    ],
+    "rounds_per_arm": 3,
+    "warmup_seconds": 5,
+    "window_seconds": 30,
+    "tail_seconds": 2,
+    "idle_seconds": 5,
+    "inflight_frames": 1,
+    "pool_mib": 1024,
+    "minimum_free_bytes": 1073741824,
+    "evidence_budget_bytes": 268435456,
+    "image_dumps": false
+  },
+  "measurement_requests": 7333,
+  "pixel_proof": {
+    "independent_comparisons": 10,
+    "oracle_self_rows": 5,
+    "all_bitwise_equal_R": true,
+    "actual_dispatches": {
+      "R-B1": 77,
+      "W0": 77,
+      "Fused": 73
+    }
+  },
+  "history": {
+    "comparisons": 28,
+    "active_fresh_archive_comparisons": 14,
+    "all_bitwise_equal_R": true,
+    "scope": "Fourteen calls per process; UHD luma calibration stresses the active twin at HD geometry."
+  },
+  "jit_parity": {
+    "comparisons": 2,
+    "worst_linear_error": 1.9669532775878906e-06
+  },
+  "validation": {
+    "python_suite_tests": 249,
+    "python_suite_skipped": 8,
+    "focused_tests": 11,
+    "focused_overlap_with_suite": 7,
+    "native_cli_rejections": 5,
+    "cpu_stages": 11,
+    "metal_stages": 11,
+    "release_build": true,
+    "release_swift_tests": 18
+  },
+  "single_frame_device_peak_mib": {
+    "R-B1": 1183.71875,
+    "W0": 1183.71875,
+    "Fused": 927.71875
+  },
+  "evidence": {
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-mtf-stage16-proof/report.json": "3b28f825c9dda7ec3ffb48d8d9db7f2d8ccc9063ad17d8311a0c481f38f03f97",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-mtf-stage16-history/report.json": "5e4379ee8bf65580148ad78b8ae5396f11448306fac62a23aa0689050fafa2d9",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-mtf-stage16-proof/jit-parity/report.json": "d160888339d5f958373a1d4dcbac6d757b027ab3a975e68749419ae0b3240015",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-mtf-stage16-timing/c2a45505230b/report.json": "2d3021e8dee23854da92f1a9d85c54022e4efd4b9bbd2caf32103429f4376e52",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-mtf-stage16/W0/identity.json": "620c028ce83dd6d2adf9eabb5cac30d6009c01aec51e2d93a9862a112bce424f",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-mtf-stage16/Fused/identity.json": "20024f182e1ca8a940c412641cbaf2b7db889fff6e2d9051cefe772c9ade4b8f",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-mtf-stage16/generator-rejections.json": "3777f91b986594f40bed57d889474c70d1c103d8e4317a24d88a435401913198",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-mtf-stage16-validation/manifest.json": "7a614b88132ef0be1f45e71fdeef0e04df3b09e99c880fbb5efbfea0e2b3cbcf"
+  },
+  "workers": {
+    "R-B1": {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/reference/build/wavefront-benchmark-v2/instrumented/runner",
+      "sha256": "eff89993d9b138ea0197c5bb2c08c7d157d8facfea596a413805b9f4ddc3339b"
+    },
+    "W0": {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-mtf-stage16-proof/W0/runner",
+      "sha256": "f7e759d63e71ab7b9388fc6ff4c30e9b638b4c08730f88fec69cf8fe006c6f3e"
+    },
+    "Fused": {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-mtf-stage16-proof/Fused/runner",
+      "sha256": "d486b84219c7fdc54acf4d23f03cc187169b40d1a082b403449158b9e9372334"
+    }
+  },
+  "limitations": [
+    "Three balanced repeats of one upscaled Coffee SDR case; no all-stock/holdout performance result or formal B_ref freeze.",
+    "Inactive primary cases retain frozen archives and have pixel checks, not a fusion speedup.",
+    "Device totals include input/output, LUT, pools and scratch. Single-frame and repeated-run peaks differ; use repeated-run peaks for timing comparison.",
+    "No per-kernel GPU time, register/spill or DRAM bandwidth profiling.",
+    "Full current-source release AOT/JIT parity and broader platform/render tests pending.",
+    "Other two fusion candidates remain unimplemented; no Taggii source integration, default activation, push or PR."
+  ],
+  "figures": {
+    "/Users/kunhuang/.codex/visualizations/2026/10/30/01a18d11-7818-7982-b2f7-71166c1fc048/fotufilm-windowed-mtf-stage16/comparison.svg": "9cb3702551ea86f6e1a8a9c8dc1933ef57ce66dfa5cf4cec78d929d5ab197f80",
+    "/Users/kunhuang/.codex/visualizations/2026/10/30/01a18d11-7818-7982-b2f7-71166c1fc048/fotufilm-windowed-mtf-stage16/comparison.png": "fde082450c772b3849de87338d699ee3daff3c531a09db6d85b4e208ccd53153"
+  },
+  "plot_tool_sha256": "1c4d4b468b14c8b1e82e64c872d05e883f4ca6c20d485ccba4d42a9658df71fc"
+}

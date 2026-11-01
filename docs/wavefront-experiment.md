@@ -878,3 +878,8 @@ release/parity, retention and holdout gates remain pending; no default or PR.
 See [general-stage15 results](general-stage15-results.md),
 [full provenance](general-stage15-results.json) and
 [contract](general-optimizations-contract.md).
+
+
+## Stage sixteen: original-windowed MTF fusion
+
+The private exact negative_luma experiment removes Mixed/Separated intermediate stores while retaining shared final light. Ten direct pixel and 28 history comparisons are bitwise equal to original windowed; targeted current-source JIT/AOT parity passes. Nine balanced timing rounds on the active Coffee UHD case observe 10.3% less median time than original windowed and 112 MiB lower repeated total device peak. This is one diagnostic case; defaults remain off and full release/B_ref/holdout gates remain pending. [Results](windowed-mtf-stage16-results.md), [evidence](windowed-mtf-stage16-results.json), [contract](windowed-mtf-fusion-contract.md).
