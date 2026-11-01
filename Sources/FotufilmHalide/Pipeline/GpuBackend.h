@@ -152,7 +152,16 @@ public:
             }
             return remember(values, schedule_.store_frame(values, half, channels, branch));
         case Store::MtfMixed:
+            if (fuse_windowed_mtf()) {
+                // The neutral read needs all three mixed records. Compute each once in the
+                // final MTF store's thread, rather than inline it once per output channel.
+                schedule_.register_stage(values);
+                return remember(values, values);
+            }
+            return remember(values, schedule_.store_frame(values, half, channels, branch));
         case Store::MtfSeparated:
+            if (fuse_windowed_mtf()) return remember(values, values);
+            return remember(values, schedule_.store_frame(values, half, channels, branch));
         case Store::LogExposure:
         case Store::Released:
         case Store::FlatLog:
@@ -550,6 +559,13 @@ private:
     /// Whether a stage that only one kernel reads, and reads across its channels, is developed
     /// in that kernel's threads rather than stored: the row-window graphs on Metal, which the
     /// row-window host measures.
+    bool fuse_windowed_mtf() const {
+        return schedule_.configuration().windowed_mtf_fusion
+            && schedule_.gpu_device_api() == DeviceAPI::Metal
+            && schedule_.windowed() && policy_.windowed && policy_.realtime
+            && !policy_.half_store;
+    }
+
     bool register_stages() const {
         return schedule_.gpu_device_api()==DeviceAPI::Metal
             && (policy_.windowed || schedule_.general_optimization(gpu::kGeneralRegisters));

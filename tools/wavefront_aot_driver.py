@@ -15,7 +15,7 @@ import sys
 
 def build(repo, kernels, out, driver, *, definitions=(), driver_definitions=(),
           adapter=None, adapter_definitions=(), trace_overrides=(), diagnostic_control=None, diagnostic_kernels=None,
-          shim_definitions=(), resource_hooks=False, shim_suffix=None, general_research=False):
+          shim_definitions=(), resource_hooks=False, shim_suffix=None, general_research=False, windowed_mtf_research=False):
     repo, kernels, out, driver = (Path(p).resolve() for p in (repo, kernels, out, driver))
     out.mkdir(parents=True, exist_ok=True)
     if not (kernels / ".generated-from").is_file():
@@ -33,7 +33,23 @@ def build(repo, kernels, out, driver, *, definitions=(), driver_definitions=(),
         diagnostic_kernels=Path(diagnostic_kernels).resolve()
         expected=subprocess.check_output([sys.executable,str(repo/'tools/aot-release.py'),'key','macos'],text=True).strip()
         if (diagnostic_kernels/'source-key.txt').read_text().strip()!=expected:raise ValueError('diagnostic kernel source changed')
-        if general_research:
+        if general_research and windowed_mtf_research:
+            raise ValueError('research modes are exclusive')
+        if windowed_mtf_research:
+            identity=json.loads((diagnostic_kernels/'identity.json').read_text())
+            expected_names={'fotufilm_halide_ios_color_float_realtime_windowed_negative_luma.a'}
+            diagnostic_archives=sorted(diagnostic_kernels.glob('*.a'))
+            if identity.get('kind')!='windowed-mtf' or type(identity.get('fusion')) is not bool:
+                raise ValueError('explicit windowed MTF identity required')
+            if identity.get('windowed') is not True or identity.get('wavefront') is not False:
+                raise ValueError('windowed MTF must retain the original windowed graph')
+            if {p.name for p in diagnostic_archives}!=expected_names:
+                raise ValueError('exactly the declared negative_luma archive required')
+            if identity.get('source_key')!=expected or {p.name:digest(p) for p in diagnostic_archives}!=identity.get('archives'):
+                raise ValueError('windowed MTF archive identity changed')
+            if any('WAVEFRONT_HOST=1' in flag for flag in definitions) or trace_overrides:
+                raise ValueError('windowed MTF research cannot use wavefront or trace overrides')
+        elif general_research:
             identity=json.loads((diagnostic_kernels/'identity.json').read_text())
             if identity.get('kind')!='general' or identity.get('optimizations') not in (0,1,2,4,8,15):
                 raise ValueError('explicit general-research identity required')
@@ -60,7 +76,7 @@ def build(repo, kernels, out, driver, *, definitions=(), driver_definitions=(),
             diagnostic_archives=sorted(diagnostic_kernels.glob('fotufilm_halide_ios_*_wavefront_*.a'))
             if len(diagnostic_archives)!=manifest.get('experimental_archive_count',12):raise ValueError('complete explicit producer/consumer kernel set required')
         (out/'diagnostic-build.json').write_text(json.dumps({'mixed_candidate_revisions':True,'performance_acceptance':False,
-            'control_manifest_sha256':digest(control/'control.json'),'experimental_source_key':expected,'general_research':general_research,
+            'control_manifest_sha256':digest(control/'control.json'),'experimental_source_key':expected,'general_research':general_research,'windowed_mtf_research':windowed_mtf_research,
             'experimental_archives':{a.name:digest(a) for a in diagnostic_archives}},indent=2)+'\n')
     else:
         source_key = subprocess.check_output(
