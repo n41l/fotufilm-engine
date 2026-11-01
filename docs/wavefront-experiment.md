@@ -883,3 +883,8 @@ See [general-stage15 results](general-stage15-results.md),
 ## Stage sixteen: original-windowed MTF fusion
 
 The private exact negative_luma experiment removes Mixed/Separated intermediate stores while retaining shared final light. Ten direct pixel and 28 history comparisons are bitwise equal to original windowed; targeted current-source JIT/AOT parity passes. Nine balanced timing rounds on the active Coffee UHD case observe 10.3% less median time than original windowed and 112 MiB lower repeated total device peak. This is one diagnostic case; defaults remain off and full release/B_ref/holdout gates remain pending. [Results](windowed-mtf-stage16-results.md), [evidence](windowed-mtf-stage16-results.json), [contract](windowed-mtf-fusion-contract.md).
+
+
+## Stage seventeen: isolated Coupler release/downsample fusion
+
+Two exact windowed twins remove one Released pass per window. Twelve direct and28 history comparisons are bitwise equal, including stride4/nonlinear odd stress; four targeted JIT/AOT comparisons pass. Eighteen balanced timing rounds on two active Coffee sizes show no repeated peak saving, and both medians are slower than original R. Keep disabled, without MTF combination or default promotion. [Results](windowed-coupler-stage17-results.md), [evidence](windowed-coupler-stage17-results.json), [contract](windowed-coupler-fusion-contract.md).

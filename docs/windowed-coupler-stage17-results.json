@@ -1,0 +1,317 @@
+{
+  "complete": true,
+  "stage": 17,
+  "date": "2026-11-01",
+  "scope": "isolated exact-windowed release/downsample fusion; MTF fusion off; diagnostic defaults off",
+  "implementation_commit": "aba20e2",
+  "reference_base": "96623ba0831a52dbddcda35727a206d4123a8b5f",
+  "source_key": "c43620ff28c49a420dae528b472f65fa38c705060a40a9ad04d10fab6708cf1f",
+  "performance_acceptance": false,
+  "B_ref_frozen": false,
+  "current_source_release_set": false,
+  "fresh_archives_per_arm": 2,
+  "frozen_archives_per_arm": 61,
+  "unchanged_graph_and_stage_math": true,
+  "window_rows": 1080,
+  "aot_calls_per_frame": 1,
+  "active_case_strides": {
+    "portra400-coffee-1920x1080": 1,
+    "portra400-coffee-3840x2160": 1
+  },
+  "summary": {
+    "portra400-coffee-1920x1080": {
+      "R-B1": {
+        "round_medians_ms": [
+          7.232625037431717,
+          8.471000008285046,
+          8.293375023640692
+        ],
+        "median_of_round_medians_ms": 8.293375023640692,
+        "worst_round_p95_ms": 14.314083033241332,
+        "median_throughput_fps": 117.13333333333334,
+        "device_peaks_mib": [
+          334.28125,
+          334.28125,
+          334.28125
+        ],
+        "max_device_peak_mib": 334.28125,
+        "max_process_peak_mib": 486.2351989746094,
+        "retained_process_footprint_mib": [
+          417.0633239746094,
+          416.1883239746094,
+          416.7195510864258
+        ],
+        "max_thermal_state": 1,
+        "measurement_requests": 10486
+      },
+      "W0": {
+        "round_medians_ms": [
+          7.258874946273863,
+          10.005895979702473,
+          9.424207964912057
+        ],
+        "median_of_round_medians_ms": 9.424207964912057,
+        "worst_round_p95_ms": 23.544541909359396,
+        "median_throughput_fps": 87.43333333333334,
+        "device_peaks_mib": [
+          334.28125,
+          334.28125,
+          334.28125
+        ],
+        "max_device_peak_mib": 334.28125,
+        "max_process_peak_mib": 486.0476989746094,
+        "retained_process_footprint_mib": [
+          415.6414489746094,
+          416.8133239746094,
+          416.5945510864258
+        ],
+        "max_thermal_state": 1,
+        "measurement_requests": 8932
+      },
+      "Fused": {
+        "round_medians_ms": [
+          7.91470892727375,
+          8.909937459975481,
+          9.493916993960738
+        ],
+        "median_of_round_medians_ms": 8.909937459975481,
+        "worst_round_p95_ms": 18.257125047966838,
+        "median_throughput_fps": 99.56666666666666,
+        "device_peaks_mib": [
+          334.28125,
+          334.28125,
+          334.28125
+        ],
+        "max_device_peak_mib": 334.28125,
+        "max_process_peak_mib": 486.6101989746094,
+        "retained_process_footprint_mib": [
+          416.7351989746094,
+          417.4070739746094,
+          416.6570510864258
+        ],
+        "max_thermal_state": 1,
+        "measurement_requests": 9148
+      }
+    },
+    "portra400-coffee-3840x2160": {
+      "R-B1": {
+        "round_medians_ms": [
+          41.730499477125704,
+          41.701958514750004,
+          46.97308398317546
+        ],
+        "median_of_round_medians_ms": 41.730499477125704,
+        "worst_round_p95_ms": 77.95545796398073,
+        "median_throughput_fps": 22.166666666666668,
+        "device_peaks_mib": [
+          1183.71875,
+          1183.71875,
+          1183.71875
+        ],
+        "max_device_peak_mib": 1183.71875,
+        "max_process_peak_mib": 1718.001075744629,
+        "retained_process_footprint_mib": [
+          1456.782325744629,
+          1456.6885528564453,
+          1456.6885986328125
+        ],
+        "max_thermal_state": 1,
+        "measurement_requests": 1919
+      },
+      "W0": {
+        "round_medians_ms": [
+          45.544959022663534,
+          41.77187499590218,
+          42.07754204981029
+        ],
+        "median_of_round_medians_ms": 42.07754204981029,
+        "worst_round_p95_ms": 94.3764999974519,
+        "median_throughput_fps": 22.066666666666666,
+        "device_peaks_mib": [
+          1183.71875,
+          1183.71875,
+          1183.71875
+        ],
+        "max_device_peak_mib": 1183.71875,
+        "max_process_peak_mib": 1718.3605194091797,
+        "retained_process_footprint_mib": [
+          1456.688575744629,
+          1457.1574172973633,
+          1456.3135986328125
+        ],
+        "max_thermal_state": 1,
+        "measurement_requests": 1885
+      },
+      "Fused": {
+        "round_medians_ms": [
+          45.01672904007137,
+          40.37085402524099,
+          43.86420804075897
+        ],
+        "median_of_round_medians_ms": 43.86420804075897,
+        "worst_round_p95_ms": 59.44479093886912,
+        "median_throughput_fps": 22.133333333333333,
+        "device_peaks_mib": [
+          1183.71875,
+          1183.71875,
+          1183.71875
+        ],
+        "max_device_peak_mib": 1183.71875,
+        "max_process_peak_mib": 1717.860450744629,
+        "retained_process_footprint_mib": [
+          1456.672950744629,
+          1456.641700744629,
+          1456.6416778564453
+        ],
+        "max_thermal_state": 1,
+        "measurement_requests": 2037
+      }
+    }
+  },
+  "effect_vs": {
+    "portra400-coffee-1920x1080": {
+      "R-B1": {
+        "observed_latency_reduction_percent": -7.434397149257643,
+        "device_peak_reduction_mib": 0.0,
+        "device_peak_reduction_percent": 0.0
+      },
+      "W0": {
+        "observed_latency_reduction_percent": 5.456909555172096,
+        "device_peak_reduction_mib": 0.0,
+        "device_peak_reduction_percent": 0.0
+      }
+    },
+    "portra400-coffee-3840x2160": {
+      "R-B1": {
+        "observed_latency_reduction_percent": -5.113067397630466,
+        "device_peak_reduction_mib": 0.0,
+        "device_peak_reduction_percent": 0.0
+      },
+      "W0": {
+        "observed_latency_reduction_percent": -4.24612727814202,
+        "device_peak_reduction_mib": 0.0,
+        "device_peak_reduction_percent": 0.0
+      }
+    }
+  },
+  "protocol": {
+    "orders": [
+      [
+        "R-B1",
+        "W0",
+        "Fused"
+      ],
+      [
+        "W0",
+        "Fused",
+        "R-B1"
+      ],
+      [
+        "Fused",
+        "R-B1",
+        "W0"
+      ]
+    ],
+    "rounds_per_arm_case": 3,
+    "warmup_seconds": 5,
+    "window_seconds": 30,
+    "tail_seconds": 2,
+    "idle_seconds": 5,
+    "inflight_frames": 1,
+    "pool_mib": 1024,
+    "minimum_free_bytes": 1073741824,
+    "evidence_budget_bytes": 268435456,
+    "image_dumps": false
+  },
+  "measurement_requests": 34407,
+  "pixel_proof": {
+    "independent_comparisons": 12,
+    "oracle_self_rows": 6,
+    "all_bitwise_equal_R": true,
+    "actual_dispatches": {
+      "portra400-coffee-1920x1080": {
+        "R-B1": 41,
+        "W0": 41,
+        "Fused": 40
+      },
+      "portra400-coffee-3840x2160": {
+        "R-B1": 77,
+        "W0": 77,
+        "Fused": 75
+      }
+    },
+    "stress": "Nonlinear gamma[1.7,0.8,2.3] on negative/luma odd two-window cases; negative additionally sigma4.2/radius13/stride4."
+  },
+  "history": {
+    "comparisons": 28,
+    "active_fresh_archive_comparisons": 16,
+    "all_bitwise_equal_R": true,
+    "scope": "Fourteen calls per process; UHD luma calibration stresses the active twin at HD geometry."
+  },
+  "jit_parity": {
+    "comparisons": 4,
+    "worst_linear_error": 2.6226043701171875e-06
+  },
+  "validation": {
+    "python_suite_tests": 266,
+    "python_suite_skipped": 8,
+    "focused_tests_included_in_suite": 13,
+    "native_cli_rejections": 8,
+    "cpu_stages": 11,
+    "metal_stages": 11,
+    "release_build": true,
+    "release_swift_tests": 18
+  },
+  "single_frame_device_peak_mib": {
+    "portra400-coffee-1920x1080": {
+      "R-B1": 308.65625,
+      "W0": 334.28125,
+      "Fused": 259.15625
+    },
+    "portra400-coffee-3840x2160": {
+      "R-B1": 1183.71875,
+      "W0": 1183.71875,
+      "Fused": 983.71875
+    }
+  },
+  "evidence": {
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-coupler-stage17-proof/report.json": "e54a313b96b5ee864423d004b26402fa01211e6d4939e7cc2ad94cb3c156ff35",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-coupler-stage17-history/report.json": "05efdfb104b81a362b8f98b431112910525401192b5c9b78e5874563b0de4557",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-coupler-stage17-jit-proof/report.json": "b4f4a3acc48a13c4629f45ca22c017462fd2e0189afd0686a44032eda2967ce0",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-coupler-stage17-timing/7b3a1e93cbdd/report.json": "e64b203b964e567c3599243123990090a2be4ce1f9e89f32277bb661153ddb89",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-coupler-stage17/W0/identity.json": "ebddfac11cec8f701c9ee8b9a9778f00af981e6b29bfcdefcfa781838bcce638",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-coupler-stage17/Fused/identity.json": "76f3c52c244fec5878e1d2d0834f715bb46d2fb4a6e8f16f724851987551463c",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-coupler-stage17/generator-rejections.json": "e0b44076688dd4ca72387f6bdc95c36ecb015c68fd8d4e80810a47e4ccc9bd3f",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-coupler-stage17-validation/manifest.json": "ce3d323bcafd579b1f5e5dc70413f379c58b776647688bf0de199e927d3dfa1b"
+  },
+  "workers": {
+    "R-B1": {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/reference/build/wavefront-benchmark-v2/instrumented/runner",
+      "sha256": "eff89993d9b138ea0197c5bb2c08c7d157d8facfea596a413805b9f4ddc3339b"
+    },
+    "W0": {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-coupler-stage17-proof/W0/runner",
+      "sha256": "7fd704f40a8d34283d588575b61a743c63c22e709e73d6adcf00daa2b3c265ee"
+    },
+    "Fused": {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-coupler-stage17-proof/Fused/runner",
+      "sha256": "99f24d346518c5ad3c1bbad692a9c1e4cc6f6a9bcc4217de6cacfddc2f2a5329"
+    }
+  },
+  "limitations": [
+    "Three balanced repeats per active case on two upscaled Coffee SDR workloads; no all-stock/holdout performance or formal B_ref freeze.",
+    "Both performance profiles have stride1. True coarse stride4 and nonlinear release are correctness stress only.",
+    "Inactive HP5 classes retain frozen archives; unchanged pixels are not a fusion speedup.",
+    "Total device peaks include I/O, LUT, pools and scratch. Isolated-frame peaks can differ from repeated-render peaks.",
+    "No per-kernel GPU time/register/spill/DRAM bandwidth profiling.",
+    "Full current-source release AOT/JIT and broader platform/render tests pending.",
+    "MTF combinations and Print MTF/output fusion remain untested; no Taggii source integration, default activation, push or PR."
+  ],
+  "decision": "Keep disabled and do not combine: no repeated device-peak saving; both medians slower than original windowed in this diagnostic.",
+  "interpretation": "Control drift prevents stable causal speed attribution; stride1 in both measured cases means coarse-grid thread reduction cannot explain these timings. Per-kernel profiling, unit-stride scheduling and pooling are untested follow-ups.",
+  "figures": {
+    "/Users/kunhuang/.codex/visualizations/2026/10/30/01a18d11-7818-7982-b2f7-71166c1fc048/fotufilm-windowed-coupler-stage17/comparison.svg": "babeb719deb4f355836cf23990fbe18f51b84105fae7ed5a22f140341271db58",
+    "/Users/kunhuang/.codex/visualizations/2026/10/30/01a18d11-7818-7982-b2f7-71166c1fc048/fotufilm-windowed-coupler-stage17/comparison.png": "e2dd188338181d9de5182eec9ba1c142949b401ed6c54114755df1f4b513e7c9"
+  },
+  "plot_tool_sha256": "8e3026660c033983af4c0cac47465dcab112f052c6fb2b9dea547d9c64013d69"
+}
