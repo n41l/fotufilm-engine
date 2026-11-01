@@ -888,3 +888,8 @@ The private exact negative_luma experiment removes Mixed/Separated intermediate 
 ## Stage seventeen: isolated Coupler release/downsample fusion
 
 Two exact windowed twins remove one Released pass per window. Twelve direct and28 history comparisons are bitwise equal, including stride4/nonlinear odd stress; four targeted JIT/AOT comparisons pass. Eighteen balanced timing rounds on two active Coffee sizes show no repeated peak saving, and both medians are slower than original R. Keep disabled, without MTF combination or default promotion. [Results](windowed-coupler-stage17-results.md), [evidence](windowed-coupler-stage17-results.json), [contract](windowed-coupler-fusion-contract.md).
+
+
+## Post-experiment comparison: MTF vs Coupler fusion
+
+Inspection of the original generated Metal and saved timing events finds a practical distinction: MTF UHD steady fresh-buffer calls fall from about4/frame to1/frame, whereas Coupler stays near4/frame. MTF remains loop-free pointwise arithmetic with thread-local mixed records; Coupler retains generic reduction loops containing the curve/release expressions even for stride1 requests. No new build or GPU run was performed; register/DRAM/allocation-time attribution is not established. [Comparison](windowed-fusion-comparison.md), [counts and source fingerprints](windowed-fusion-comparison.json).
