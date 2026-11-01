@@ -15,7 +15,7 @@ import sys
 
 def build(repo, kernels, out, driver, *, definitions=(), driver_definitions=(),
           adapter=None, adapter_definitions=(), trace_overrides=(), diagnostic_control=None, diagnostic_kernels=None,
-          shim_definitions=(), resource_hooks=False, shim_suffix=None, general_research=False, windowed_mtf_research=False, windowed_coupler_research=False):
+          shim_definitions=(), resource_hooks=False, shim_suffix=None, shim_prefix=None, shim_replacements=(), general_research=False, windowed_mtf_research=False, windowed_coupler_research=False):
     repo, kernels, out, driver = (Path(p).resolve() for p in (repo, kernels, out, driver))
     out.mkdir(parents=True, exist_ok=True)
     if not (kernels / ".generated-from").is_file():
@@ -162,15 +162,26 @@ def build(repo, kernels, out, driver, *, definitions=(), driver_definitions=(),
               f"-I{repo}/Sources/FotufilmHalide/include"]
     shim_source=repo / "Sources/FotufilmHalide/FotufilmHalideIOS.cpp"
     shim_quote=[]
-    if shim_suffix:
-        suffix=Path(shim_suffix).resolve()
+    if shim_suffix or shim_prefix or shim_replacements:
+        suffix=Path(shim_suffix).resolve() if shim_suffix else None
+        prefix=Path(shim_prefix).resolve() if shim_prefix else None
         original=shim_source.read_bytes()
+        transformed=original
+        applied=[]
+        for needle,replacement,expected_count in shim_replacements:
+            count=transformed.count(needle.encode())
+            if expected_count<1 or count!=expected_count:
+                raise ValueError("diagnostic shim replacement count mismatch")
+            transformed=transformed.replace(needle.encode(),replacement.encode())
+            applied.append({"needle":needle,"replacement":replacement,"count":count})
         generated=out/'diagnostic-shim.cpp'
-        generated.write_bytes(original+b'\n'+suffix.read_bytes())
+        generated.write_bytes((prefix.read_bytes()+b'\n' if prefix else b'')+transformed+b'\n'+(suffix.read_bytes() if suffix else b''))
         shim_quote=['-iquote',str(shim_source.parent)]
         (out/'diagnostic-shim.json').write_text(json.dumps({
             'diagnostic_only':True,'original_sha256':hashlib.sha256(original).hexdigest(),
-            'suffix_sha256':hashlib.sha256(suffix.read_bytes()).hexdigest(),
+            'suffix_sha256':hashlib.sha256(suffix.read_bytes()).hexdigest() if suffix else None,
+            'prefix_sha256':hashlib.sha256(prefix.read_bytes()).hexdigest() if prefix else None,
+            'replacements':applied,
             'generated_sha256':hashlib.sha256(generated.read_bytes()).hexdigest(),
             'shim_definitions':list(shim_definitions),'resource_hooks':bool(resource_hooks)},indent=2)+'\n')
         shim_source=generated
