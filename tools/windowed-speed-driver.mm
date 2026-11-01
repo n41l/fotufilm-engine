@@ -27,7 +27,10 @@ int main(int argc,char **argv) { @autoreleasepool {
     for(int frame=0;frame<warm+measured;++frame) { @autoreleasepool {
         fotufilm_bench_actual_variant=nullptr;fotufilm_bench_aot_calls=0;uint64_t beforeAlloc=allocations.load(),beforeDispatch=dispatches.load();
         wf_speed_begin(frame);double cpuBegin=mainThreadCpu(),begin=wf_speed_clock();
-        int error=fotufilm_halide_metal_process_linear_float(input.data(),output.data(),h[2],h[3],0,0,cfg.data(),exposure.data(),film.data(),paper.data(),33,1,mask,h[5]);
+        int error;
+        @autoreleasepool {
+            error=fotufilm_halide_metal_process_linear_float(input.data(),output.data(),h[2],h[3],0,0,cfg.data(),exposure.data(),film.data(),paper.data(),33,1,mask,h[5]);
+        }
         double end=wf_speed_clock(),cpuEnd=mainThreadCpu();auto path=std::filesystem::path(argv[3])/(std::to_string(frame)+".json");
         if(!wf_speed_finish(path.c_str(),begin,end)) return 1;
         if(error || !fotufilm_bench_actual_variant || fotufilm_bench_aot_calls!=1) return 1;
