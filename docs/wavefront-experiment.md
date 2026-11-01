@@ -908,3 +908,8 @@ Inspection of the original generated Metal and saved timing events finds a pract
 ## Stage20: CPU/GPU/wait timing probes
 
 [Contract](windowed-speed-contract.md), [results](windowed-speed-stage20-results.md), [metrics/evidence](windowed-speed-stage20-results.json). The final32-process scope-correct cohort reports direct UHD allocation CPU0.213→0.077ms, GPU interval union30.439/31.412ms and explicit wait3.766/3.898ms. Intervals overlap; encoding wall time is not active CPU. Probe/off policy comparisons change direction, so no latency promotion. The earlier autorelease-scope exploratory cohort is retained separately. Defaults stay unchanged.
+
+
+## Stage21: native Metal acquisition and queue backpressure
+
+[Contract](windowed-metal-methods-contract.md), [results](windowed-metal-stage21-results.md), [metrics/evidence](windowed-metal-stage21-results.json). Native commandBuffer acquisition is25.542/22.581ms per UHD frame, consistent with original queue capacity4 host backpressure; pipeline creation/binding/end are small. All three short-cohort controls are faster for BestFit, so the earlier relative slowdown is not reproduced as a stable property. Defaults and queue capacity remain unchanged.
