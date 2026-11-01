@@ -898,3 +898,8 @@ Inspection of the original generated Metal and saved timing events finds a pract
 ## Stage18: Coupler unit-stride specialization
 
 [Contract](windowed-unit-stride-contract.md), [results](windowed-unit-stage18-results.md), [metrics/evidence](windowed-unit-stage18-results.json). Actual stride1 kernels lose reduction loops and preserve pixels, but18 balanced diagnostic rounds do not demonstrate a gain over Generic; repeated device peaks and UHD allocation churn remain unchanged. Defaults stay off; full release, stable baseline and formal gates remain pending.
+
+
+## Stage19: bounded best-fit pool reuse
+
+[Contract](windowed-pool-contract.md), [results](windowed-pool-stage19-results.md), [evidence](windowed-pool-stage19-results.json). The isolated frozen-R host suffix reduces UHD repeated device peak192MiB and measured new buffers/frame4→0, while observed HD/UHD latency increases. Production/default sources remain unchanged; keep experimental-only. The interrupted9-round campaign is preserved separately from the complete12-round rerun.

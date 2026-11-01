@@ -1,0 +1,599 @@
+{
+  "complete": true,
+  "stage": 19,
+  "date": "2026-11-01",
+  "implementation_commit": "a1e60a9",
+  "scope": "frozen R full63 AOT set with isolated bounded best-fit host suffix; no production source/default changes; no fusions",
+  "reference_base": "96623ba0831a52dbddcda35727a206d4123a8b5f",
+  "performance_acceptance": false,
+  "B_ref_frozen": false,
+  "default_enabled": false,
+  "native_film_or_aot_sources_changed": false,
+  "protocol": {
+    "rounds_per_arm_case": 3,
+    "orders_hd": [
+      [
+        "R-B1",
+        "BestFit"
+      ],
+      [
+        "BestFit",
+        "R-B1"
+      ],
+      [
+        "R-B1",
+        "BestFit"
+      ]
+    ],
+    "orders_uhd": [
+      [
+        "BestFit",
+        "R-B1"
+      ],
+      [
+        "R-B1",
+        "BestFit"
+      ],
+      [
+        "BestFit",
+        "R-B1"
+      ]
+    ],
+    "warmup_seconds": 5,
+    "window_seconds": 30,
+    "tail_seconds": 2,
+    "idle_seconds": 5,
+    "inflight_frames": 1,
+    "pool_mib": 1024,
+    "minimum_free_bytes": 1073741824,
+    "evidence_budget_bytes": 268435456,
+    "image_dumps": false
+  },
+  "summary": {
+    "portra400-coffee-1920x1080": {
+      "R-B1": {
+        "round_medians_ms": [
+          6.996145995799452,
+          8.521854062564671,
+          11.805917019955814
+        ],
+        "median_of_round_medians_ms": 8.521854062564671,
+        "worst_round_p95_ms": 29.34745792299509,
+        "median_throughput_fps": 99.96666666666667,
+        "device_peaks_mib": [
+          334.28125,
+          334.28125,
+          334.28125
+        ],
+        "max_device_peak_mib": 334.28125,
+        "max_process_peak_mib": 489.2820510864258,
+        "retained_device_mib": [
+          334.28125,
+          334.28125,
+          334.28125
+        ],
+        "retained_process_footprint_mib": [
+          419.0008010864258,
+          420.0633010864258,
+          419.0164031982422
+        ],
+        "max_thermal_state": 1,
+        "measurement_requests": 9123,
+        "new_metal_buffers_per_measurement_histogram": {
+          "0": 9123
+        },
+        "per_round_new_buffer_histograms": [
+          {
+            "0": 4138
+          },
+          {
+            "0": 3000
+          },
+          {
+            "0": 1985
+          }
+        ]
+      },
+      "BestFit": {
+        "round_medians_ms": [
+          11.852291994728148,
+          12.29912502458319,
+          11.767582967877388
+        ],
+        "median_of_round_medians_ms": 11.852291994728148,
+        "worst_round_p95_ms": 17.349458066746593,
+        "median_throughput_fps": 81.83333333333333,
+        "device_peaks_mib": [
+          334.28125,
+          334.28125,
+          334.28125
+        ],
+        "max_device_peak_mib": 334.28125,
+        "max_process_peak_mib": 488.2508010864258,
+        "retained_device_mib": [
+          334.28125,
+          334.28125,
+          334.28125
+        ],
+        "retained_process_footprint_mib": [
+          418.9070510864258,
+          419.0476760864258,
+          418.9226760864258
+        ],
+        "max_thermal_state": 1,
+        "measurement_requests": 7275,
+        "new_metal_buffers_per_measurement_histogram": {
+          "0": 7275
+        },
+        "per_round_new_buffer_histograms": [
+          {
+            "0": 2495
+          },
+          {
+            "0": 2324
+          },
+          {
+            "0": 2456
+          }
+        ]
+      }
+    },
+    "portra400-coffee-3840x2160": {
+      "R-B1": {
+        "round_medians_ms": [
+          43.54556248290464,
+          44.38816703623161,
+          48.21854108013213
+        ],
+        "median_of_round_medians_ms": 44.38816703623161,
+        "worst_round_p95_ms": 80.75224992353469,
+        "median_throughput_fps": 21.233333333333334,
+        "device_peaks_mib": [
+          1183.71875,
+          1183.71875,
+          1183.71875
+        ],
+        "max_device_peak_mib": 1183.71875,
+        "max_process_peak_mib": 1720.3135986328125,
+        "retained_device_mib": [
+          1183.71875,
+          1183.71875,
+          1183.71875
+        ],
+        "retained_process_footprint_mib": [
+          1459.1417236328125,
+          1458.969871520996,
+          1458.969825744629
+        ],
+        "max_thermal_state": 1,
+        "measurement_requests": 1851,
+        "new_metal_buffers_per_measurement_histogram": {
+          "4": 1851
+        },
+        "per_round_new_buffer_histograms": [
+          {
+            "4": 638
+          },
+          {
+            "4": 654
+          },
+          {
+            "4": 559
+          }
+        ]
+      },
+      "BestFit": {
+        "round_medians_ms": [
+          45.79956247471273,
+          46.082145476248115,
+          46.609916957095265
+        ],
+        "median_of_round_medians_ms": 46.082145476248115,
+        "worst_round_p95_ms": 70.00295899342746,
+        "median_throughput_fps": 20.1,
+        "device_peaks_mib": [
+          991.71875,
+          991.71875,
+          991.71875
+        ],
+        "max_device_peak_mib": 991.71875,
+        "max_process_peak_mib": 1336.235450744629,
+        "retained_device_mib": [
+          991.71875,
+          991.71875,
+          991.71875
+        ],
+        "retained_process_footprint_mib": [
+          1266.969825744629,
+          1267.016700744629,
+          1267.016700744629
+        ],
+        "max_thermal_state": 1,
+        "measurement_requests": 1825,
+        "new_metal_buffers_per_measurement_histogram": {
+          "0": 1825
+        },
+        "per_round_new_buffer_histograms": [
+          {
+            "0": 618
+          },
+          {
+            "0": 604
+          },
+          {
+            "0": 603
+          }
+        ]
+      }
+    }
+  },
+  "comparisons": {
+    "portra400-coffee-1920x1080": {
+      "time_change_percent": 39.08114252734778,
+      "device_peak_change_mib": 0.0,
+      "device_peak_change_percent": 0.0,
+      "paired_faster_rounds": 1,
+      "paired_slower_rounds": 2
+    },
+    "portra400-coffee-3840x2160": {
+      "time_change_percent": 3.8162838277007616,
+      "device_peak_change_mib": -192.0,
+      "device_peak_change_percent": -16.22006916761266,
+      "paired_faster_rounds": 1,
+      "paired_slower_rounds": 2
+    }
+  },
+  "valid_rounds": 12,
+  "measurement_requests": 20074,
+  "normal_pixel_cases": 6,
+  "normal_bitwise_equal_R": true,
+  "original_count_frames": 24,
+  "best_fit_count_frames": 24,
+  "best_fit_mixed_history_frames": 12,
+  "resource_analysis_tests": 4,
+  "existing_resource_tests": 13,
+  "forensics": {
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-pool-stage19/portra400-coffee-3840x2160-detail/analysis.json": {
+      "frame_count": 6,
+      "fresh_counts": [
+        52,
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "last_frame": {
+        "frame": 5,
+        "allocation_attempts": 78,
+        "fresh_count": 4,
+        "fresh_rounded_histogram": {
+          "50331648": 4
+        },
+        "fresh": [
+          {
+            "physical": 69,
+            "requested": 49858560,
+            "rounded": 50331648,
+            "pooled": true,
+            "idle_before": 477299208,
+            "idle_exact": 0,
+            "idle_larger_eligible": 7,
+            "returned_exact_pending": 3,
+            "returned_exact_ready": 0
+          },
+          {
+            "physical": 70,
+            "requested": 49812480,
+            "rounded": 50331648,
+            "pooled": true,
+            "idle_before": 504562184,
+            "idle_exact": 0,
+            "idle_larger_eligible": 7,
+            "returned_exact_pending": 3,
+            "returned_exact_ready": 0
+          },
+          {
+            "physical": 71,
+            "requested": 49812480,
+            "rounded": 50331648,
+            "pooled": true,
+            "idle_before": 504562184,
+            "idle_exact": 0,
+            "idle_larger_eligible": 7,
+            "returned_exact_pending": 3,
+            "returned_exact_ready": 0
+          },
+          {
+            "physical": 72,
+            "requested": 49766400,
+            "rounded": 50331648,
+            "pooled": true,
+            "idle_before": 504562184,
+            "idle_exact": 0,
+            "idle_larger_eligible": 7,
+            "returned_exact_pending": 7,
+            "returned_exact_ready": 0
+          }
+        ],
+        "reclaim_evictions": [
+          {
+            "request": 24576,
+            "idle_before": 504562184,
+            "returned_before": 734061128,
+            "capacity": 1073741824,
+            "evicted": [
+              {
+                "physical": 60,
+                "length": 50331648,
+                "pre_fence_status": 4
+              },
+              {
+                "physical": 58,
+                "length": 50331648,
+                "pre_fence_status": 4
+              },
+              {
+                "physical": 67,
+                "length": 50331648,
+                "pre_fence_status": 4
+              },
+              {
+                "physical": 62,
+                "length": 50331648,
+                "pre_fence_status": 4
+              }
+            ]
+          }
+        ]
+      },
+      "scope": "Snapshots may perturb scheduling and fence status may progress. Removal during original allocator reclamation is distinguished from ordinary logical release. No field-name or time attribution."
+    },
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-pool-stage19/portra400-coffee-1920x1080-detail/analysis.json": {
+      "frame_count": 6,
+      "fresh_counts": [
+        40,
+        1,
+        1,
+        1,
+        0,
+        0
+      ],
+      "last_frame": {
+        "frame": 5,
+        "allocation_attempts": 43,
+        "fresh_count": 0,
+        "fresh_rounded_histogram": {},
+        "fresh": [],
+        "reclaim_evictions": []
+      },
+      "scope": "Snapshots may perturb scheduling and fence status may progress. Removal during original allocator reclamation is distinguished from ordinary logical release. No field-name or time attribution."
+    },
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-pool-stage19-best-fit/portra400-coffee-3840x2160-detail/analysis.json": {
+      "frame_count": 6,
+      "fresh_counts": [
+        45,
+        2,
+        0,
+        0,
+        0,
+        0
+      ],
+      "last_frame": {
+        "frame": 5,
+        "allocation_attempts": 78,
+        "fresh_count": 0,
+        "fresh_rounded_histogram": {},
+        "fresh": [],
+        "reclaim_evictions": []
+      },
+      "scope": "Snapshots may perturb scheduling and fence status may progress. Removal during original allocator reclamation is distinguished from ordinary logical release. No field-name or time attribution."
+    },
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-pool-stage19-best-fit/mixed-history/analysis.json": {
+      "frame_count": 12,
+      "fresh_counts": [
+        41,
+        29,
+        10,
+        6,
+        23,
+        40,
+        3,
+        3,
+        3,
+        3,
+        6,
+        4
+      ],
+      "last_frame": {
+        "frame": 11,
+        "allocation_attempts": 46,
+        "fresh_count": 4,
+        "fresh_rounded_histogram": {
+          "574992": 3,
+          "25165824": 1
+        },
+        "fresh": [
+          {
+            "physical": 168,
+            "requested": 574992,
+            "rounded": 574992,
+            "pooled": false,
+            "idle_before": 384657136,
+            "idle_exact": 0,
+            "idle_larger_eligible": 5,
+            "returned_exact_pending": 0,
+            "returned_exact_ready": 0
+          },
+          {
+            "physical": 169,
+            "requested": 574992,
+            "rounded": 574992,
+            "pooled": false,
+            "idle_before": 384657136,
+            "idle_exact": 0,
+            "idle_larger_eligible": 5,
+            "returned_exact_pending": 0,
+            "returned_exact_ready": 0
+          },
+          {
+            "physical": 170,
+            "requested": 574992,
+            "rounded": 574992,
+            "pooled": false,
+            "idle_before": 384657136,
+            "idle_exact": 0,
+            "idle_larger_eligible": 5,
+            "returned_exact_pending": 0,
+            "returned_exact_ready": 0
+          },
+          {
+            "physical": 171,
+            "requested": 24883200,
+            "rounded": 25165824,
+            "pooled": true,
+            "idle_before": 774727536,
+            "idle_exact": 0,
+            "idle_larger_eligible": 0,
+            "returned_exact_pending": 8,
+            "returned_exact_ready": 0
+          }
+        ],
+        "reclaim_evictions": [
+          {
+            "request": 24576,
+            "idle_before": 384657136,
+            "returned_before": 843113032,
+            "capacity": 1073741824,
+            "evicted": [
+              {
+                "physical": 167,
+                "length": 50331648,
+                "pre_fence_status": 4
+              },
+              {
+                "physical": 166,
+                "length": 50331648,
+                "pre_fence_status": 4
+              },
+              {
+                "physical": 165,
+                "length": 58720256,
+                "pre_fence_status": 4
+              }
+            ]
+          }
+        ]
+      },
+      "scope": "Snapshots may perturb scheduling and fence status may progress. Removal during original allocator reclamation is distinguished from ordinary logical release. No field-name or time attribution."
+    },
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-pool-stage19-best-fit/portra400-coffee-1920x1080-detail/analysis.json": {
+      "frame_count": 6,
+      "fresh_counts": [
+        42,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "last_frame": {
+        "frame": 5,
+        "allocation_attempts": 43,
+        "fresh_count": 0,
+        "fresh_rounded_histogram": {},
+        "fresh": [],
+        "reclaim_evictions": []
+      },
+      "scope": "Snapshots may perturb scheduling and fence status may progress. Removal during original allocator reclamation is distinguished from ordinary logical release. No field-name or time attribution."
+    }
+  },
+  "sources": {
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-pool-stage19-timing/6ef5c7a907cb/report.json": "df4882d0f304a8c22ca5f8da9d30213617278799cd20eec7fc8f097060aea0eb",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-pool-stage19-timing/15d841cd734d/report.json": "f27a9762fc6f81fce96ed35283e11c07f4d0423770c23e0bf1f94469a0eb1898",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-unit-stage18-proof/report.json": "0238d98acaa5a3ee953c58e5f80fa387e0e4c5629d1e742c3cba363c3e750f37",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-pool-stage19-performance/normal-proof.json": "85b49dce21ea6d2aeccefba07af1424a404f48aff17849bc0218640ccdefc48c",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-pool-stage19/report.json": "4f5a78c204ce37c19e0942d67539cdbdb9725b61f8bef30ad575f553b410cbe9",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-pool-stage19-best-fit/report.json": "5cd1db64e726944c70720ebfcd6d8c001a833fbcdbd4588e2148e50b35cd4fd5",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-pool-stage19/portra400-coffee-3840x2160-detail/analysis.json": "c7ef4b0107ad6fa66660fcf6a85c624169ea0ab062a7d464aeeb73b3cc6623bf",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-pool-stage19/portra400-coffee-1920x1080-detail/analysis.json": "91e8f2ce3bf7d1ff66111df8f5f4b5a7ad7a786a593e58b4bae57673900e577a",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-pool-stage19-best-fit/portra400-coffee-3840x2160-detail/analysis.json": "bdb64701ad09d4213a5e326593d71aa7caf7e44b716f49f2644e3f5846c4556f",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-pool-stage19-best-fit/mixed-history/analysis.json": "e3dd67b30a668fe4d81061c7e147a4c5d9a9e914c85702fcd607d37cd1cca2b8",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-pool-stage19-best-fit/portra400-coffee-1920x1080-detail/analysis.json": "3c3ce6e4c8e858fb5517635ab45da83265fed1f64782c9882474261d5b288412",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-pool-stage19/disk-recovery.json": "40b9b5b3fe247b494d6bc1e21c762c229f76c9c43754e0609b7962be3091c175",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-pool-stage19/worker-archives.json": "df6ebdbbc6b1fb12ddd81190b12bdd0b5d627f18dce816c7fc0e4a2fd37622fc"
+  },
+  "timing_event_artifacts": {
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-pool-stage19-timing/6ef5c7a907cb/portra400-coffee-1920x1080-0-R-B1/events.jsonl": {
+      "sha256": "4b8c204b5a2da2586b96bf78a9c9de64fcc4d76ff4963ce7bd851de0324213d9",
+      "bytes": 1933059
+    },
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-pool-stage19-timing/6ef5c7a907cb/portra400-coffee-1920x1080-1-R-B1/events.jsonl": {
+      "sha256": "145247a773bf7d1208b326cf6df8bea9ea23c51b4470623e2222410ec7ac1a0b",
+      "bytes": 1462690
+    },
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-pool-stage19-timing/6ef5c7a907cb/portra400-coffee-1920x1080-2-R-B1/events.jsonl": {
+      "sha256": "eac41ec7d018d227af234ed1125069665ff325612b249514795de12e1b7da348",
+      "bytes": 1048766
+    },
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-pool-stage19-timing/6ef5c7a907cb/portra400-coffee-1920x1080-0-BestFit/events.jsonl": {
+      "sha256": "7aa03c022b3df44e2a48b815ec991b762bc92fcca2bd750fed37ebcf19f14772",
+      "bytes": 1172605
+    },
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-pool-stage19-timing/6ef5c7a907cb/portra400-coffee-1920x1080-1-BestFit/events.jsonl": {
+      "sha256": "1f4845649a47cb1802e9886e1d2bfb4f8067f574cc4b83552aa9ad2f743f41fb",
+      "bytes": 1080378
+    },
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-pool-stage19-timing/6ef5c7a907cb/portra400-coffee-1920x1080-2-BestFit/events.jsonl": {
+      "sha256": "df3ad0c21cc4e83bc055418b40c19235717e5ec418bb96d23e8e423db3179fe7",
+      "bytes": 1202639
+    },
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-pool-stage19-timing/6ef5c7a907cb/portra400-coffee-3840x2160-0-R-B1/events.jsonl": {
+      "sha256": "209e18515c35a7bf64e47091d8d1af62353ca87bcc357972910e7c37dd2ad36f",
+      "bytes": 315819
+    },
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-pool-stage19-timing/6ef5c7a907cb/portra400-coffee-3840x2160-1-R-B1/events.jsonl": {
+      "sha256": "5088fa2d5c77c6ce2cf3b183943283c74782bdec0e3c25b18460d69610f1cd48",
+      "bytes": 323529
+    },
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-pool-stage19-timing/6ef5c7a907cb/portra400-coffee-3840x2160-2-R-B1/events.jsonl": {
+      "sha256": "645d6ea52a48ed023ee212c67eed65e4aeaf78bb55dfb032a6365aa51a191260",
+      "bytes": 282092
+    },
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-pool-stage19-timing/6ef5c7a907cb/portra400-coffee-3840x2160-0-BestFit/events.jsonl": {
+      "sha256": "e769888c7c3a99af899f02793b765d0b7d1515010bcd877db4a6d7f4ea2e846c",
+      "bytes": 309686
+    },
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-pool-stage19-timing/6ef5c7a907cb/portra400-coffee-3840x2160-1-BestFit/events.jsonl": {
+      "sha256": "e3464b2950e861c4b29b2e664186d437632dd4eaabcedaff96090b3bf51e9529",
+      "bytes": 307216
+    },
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-pool-stage19-timing/6ef5c7a907cb/portra400-coffee-3840x2160-2-BestFit/events.jsonl": {
+      "sha256": "f5cf59996564a0863edd603347b2dc5e1c6d82abcf9fe2c34d49542ed0da4a6f",
+      "bytes": 300792
+    }
+  },
+  "timing_report": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-pool-stage19-timing/6ef5c7a907cb/report.json",
+  "interrupted_campaign": {
+    "report": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-pool-stage19-timing/15d841cd734d/report.json",
+    "failure": "1 GiB disk reserve",
+    "completed_rounds": 9,
+    "included_in_complete_summary": false
+  },
+  "decision": "Keep experimental-only: UHD peak falls192MiB and all measured fresh allocations disappear, but median latency increases in both cases. Full stock/holdout, concurrency and formal gates remain pending.",
+  "limitations": [
+    "HD original round medians drift6.996..11.806ms; balancing does not establish a causal regression size.",
+    "Two upscaled Coffee SDR timing workloads only. Mixed-size history is correctness evidence, not memory nonregression.",
+    "Detailed observers alter scheduling; latency and process peaks come only from normal common workers.",
+    "No per-kernel GPU/CPU allocation-time/DRAM/register attribution; no claim that larger buffers caused the observed slowdown."
+  ],
+  "chart": {
+    "path": "/Users/kunhuang/.codex/visualizations/2026/10/30/01a18d11-7818-7982-b2f7-71166c1fc048/fotufilm-windowed-pool-stage19/comparison.png",
+    "sha256": "e3580a0703e13e8f2bfc9c1de92cee5cb5b60b0314dfc9784248046087c3cacd"
+  },
+  "analysis_tools_sha256": {
+    "summarize-windowed-pool.py": "8de31e6ad7e92c24a5bc81f5cefc91bba9fcd143274448e1b66759f53348e76c",
+    "windowed-pool-chart.py": "4419ed1a86420f8259a25a97071a83e4b88889728c2080b950f59822f257cc75",
+    "windowed_pool_analysis.py": "2e7d00c86bdcaf9e2d66c5e8e53eb3f9f0733c16a014557bd1d108be7e81dfc9"
+  }
+}
