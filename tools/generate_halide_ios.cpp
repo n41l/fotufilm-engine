@@ -33,6 +33,7 @@ int main(int argc, char **argv) {
     bool three_stage = false, bundle = false;
     int general_optimizations=0;bool general_research=false;
     bool mtf_research=false, windowed_mtf_fusion=false;
+    bool coupler_research=false, windowed_coupler_fusion=false;
     // Build policy only; runtime requests use explicit per-call options.
     const char *wavefront_setting = std::getenv("FOTUFILM_AOT_WAVEFRONT");
     const bool wavefront = wavefront_setting && std::string(wavefront_setting) == "1";
@@ -43,7 +44,13 @@ int main(int argc, char **argv) {
     std::string prefix = "fotufilm_halide_ios_";
     for (int i = 2; i < argc; ++i) {
         const std::string argument = argv[i];
-        if (argument.rfind("--windowed-mtf-fusion=",0)==0) {
+        if (argument.rfind("--windowed-coupler-fusion=",0)==0) {
+            const auto value=argument.substr(std::string("--windowed-coupler-fusion=").size());
+            if (value!="0" && value!="1") {
+                std::cerr<<"windowed Coupler fusion must be 0 or 1\n";return 2;
+            }
+            coupler_research=true;windowed_coupler_fusion=value=="1";
+        } else if (argument.rfind("--windowed-mtf-fusion=",0)==0) {
             const auto value=argument.substr(std::string("--windowed-mtf-fusion=").size());
             if (value!="0" && value!="1") {
                 std::cerr<<"windowed MTF fusion must be 0 or 1\n";return 2;
@@ -93,8 +100,12 @@ int main(int argc, char **argv) {
         std::cerr<<"general research requires one explicit macOS general variant, without wavefront\n";return 2;
     }
     if (mtf_research && (platform!="--macos" || wavefront || trace_wavefront || three_stage
-        || bundle || general_research || count_only || work!=Work::OneVariant)) {
+        || bundle || general_research || coupler_research || count_only || work!=Work::OneVariant)) {
         std::cerr<<"windowed MTF research requires one exclusive macOS exact luma variant\n";return 2;
+    }
+    if (coupler_research && (platform!="--macos" || wavefront || trace_wavefront || three_stage
+        || bundle || general_research || mtf_research || count_only || work!=Work::OneVariant)) {
+        std::cerr<<"windowed Coupler research requires one exclusive macOS exact negative variant\n";return 2;
     }
     const bool simulator = platform == "--simulator";
     const bool macos = platform == "--macos" || platform == "--macos-intel";
@@ -184,6 +195,7 @@ int main(int argc, char **argv) {
     GpuConfiguration defaults;
     defaults.general_optimizations=general_optimizations;
     defaults.windowed_mtf_fusion=windowed_mtf_fusion;
+    defaults.windowed_coupler_fusion=windowed_coupler_fusion;
     defaults.half_blur = !macos && !linux;
     defaults.half_lut = !macos && !linux;
     if (linux) {
@@ -275,6 +287,10 @@ int main(int argc, char **argv) {
             if (mtf_research && (variant.name!=prefix+"color_float_realtime_windowed_negative_luma"
                 || !variant.windowed || !variant.exact_stages || variant.wavefront_rows))
                 throw std::invalid_argument("windowed MTF research only admits the exact negative_luma twin");
+            if (coupler_research && ((variant.name!=prefix+"color_float_realtime_windowed_negative"
+                && variant.name!=prefix+"color_float_realtime_windowed_negative_luma")
+                || !variant.windowed || !variant.exact_stages || variant.wavefront_rows))
+                throw std::invalid_argument("windowed Coupler research only admits exact negative/negative_luma twins");
             GpuFramePipeline pipeline(variant.features,
                                         "_v" + std::to_string(index), variant.windowed, configuration,
                                         variant.exact_stages, {variant.wavefront_rows, trace_wavefront,

@@ -541,6 +541,10 @@ public:
         policy.approximate = approximate_;
         policy.realtime = realtime_;
         policy.windowed = windowed || wavefront.light == WavefrontSchedule::Light::ExportLog || wavefront.light == WavefrontSchedule::Light::ExportBundle;
+        const int coupler_stages = FOTUFILM_FRAME_COUPLERS | FOTUFILM_FRAME_COUPLER_DIFFUSION;
+        policy.coupler_down_fusion = exact_stages && windowed
+            && wavefront.light == WavefrontSchedule::Light::None
+            && (feature_mask & coupler_stages) == coupler_stages;
         // The reference CPU samples a 2048-entry table of each curve. The browser, Vulkan and
         // the fast still road sample the same table; the native reference road evaluates the
         // analytic curve, which the table matches within 1e-4 D.

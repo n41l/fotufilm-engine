@@ -51,6 +51,8 @@ struct GpuPolicy {
     bool approximate = false;
     bool realtime = false;
     bool windowed = false;
+    // Admission from an exact graph with couplers and their diffusion both compiled on.
+    bool coupler_down_fusion = false;
     bool tabulated_curves = false;
     bool table_grain = false;
     /// Whether the frame averages its own first stage for the veiling glare rather than reading the
@@ -162,8 +164,15 @@ public:
         case Store::MtfSeparated:
             if (fuse_windowed_mtf()) return remember(values, values);
             return remember(values, schedule_.store_frame(values, half, channels, branch));
-        case Store::LogExposure:
         case Store::Released:
+            // Release remains a per-source-sample expression before the box sum. The exact
+            // diffusion-on graph has no pointwise bypass or broad-fringe reader of this field.
+            if (policy_.coupler_down_fusion && schedule_.configuration().windowed_coupler_fusion
+                && schedule_.gpu_device_api() == DeviceAPI::Metal && schedule_.windowed()
+                && policy_.windowed && policy_.realtime && !half)
+                return remember(values, values);
+            return remember(values, schedule_.store_frame(values, half, channels, branch));
+        case Store::LogExposure:
         case Store::FlatLog:
         case Store::FlatReleased:
             return remember(values, schedule_.store_frame(values, half, channels, branch));

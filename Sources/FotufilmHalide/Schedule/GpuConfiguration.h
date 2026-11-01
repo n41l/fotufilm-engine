@@ -46,6 +46,7 @@ struct GpuConfiguration {
     int32_t general_optimizations = 0;
     // Private scheduling experiment; opt in explicitly, never through the environment.
     bool windowed_mtf_fusion = false;
+    bool windowed_coupler_fusion = false;
 
     Halide::Target target() const {
         auto target = Halide::get_host_target();
@@ -73,7 +74,8 @@ struct GpuConfiguration {
             + std::to_string(profile) + ":" + std::to_string(still_fast)
             + ":" + std::to_string(ablated)
             + (general_optimizations ? ":general:" + std::to_string(general_optimizations) : "")
-            + (windowed_mtf_fusion ? ":windowed-mtf-fusion:1" : "");
+            + (windowed_mtf_fusion ? ":windowed-mtf-fusion:1" : "")
+            + (windowed_coupler_fusion ? ":windowed-coupler-fusion:1" : "");
     }
 };
 
