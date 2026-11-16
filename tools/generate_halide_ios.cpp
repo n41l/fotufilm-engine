@@ -30,12 +30,58 @@ int main(int argc, char **argv) {
     Work work = Work::Everything;
     int wanted = 0;
     bool count_only = false;
+    bool three_stage = false, bundle = false;
+    int general_optimizations=0;bool general_research=false;
+    bool mtf_research=false, windowed_mtf_fusion=false;
+    bool print_mtf_research=false, windowed_print_mtf_fusion=false;
+    bool coupler_research=false, windowed_coupler_fusion=false;
+    bool coupler_unit_requested=false, coupler_unit_stride=false;
+    // Build policy only; runtime requests use explicit per-call options.
+    const char *wavefront_setting = std::getenv("FOTUFILM_AOT_WAVEFRONT");
+    const bool wavefront = wavefront_setting && std::string(wavefront_setting) == "1";
+    const char *trace_setting = std::getenv("FOTUFILM_AOT_WAVEFRONT_TRACE");
+    const bool trace_wavefront = trace_setting && std::string(trace_setting) == "1";
     // What the generated functions are called: `<prefix><variant>`. Linux links a CUDA and a
     // Vulkan set side by side, so each set needs a prefix of its own.
     std::string prefix = "fotufilm_halide_ios_";
     for (int i = 2; i < argc; ++i) {
         const std::string argument = argv[i];
-        if (argument == "--count") {
+        if (argument.rfind("--windowed-coupler-unit-stride=",0)==0) {
+            const auto value=argument.substr(std::string("--windowed-coupler-unit-stride=").size());
+            if (value!="0" && value!="1") {
+                std::cerr<<"Coupler unit stride must be 0 or 1\n";return 2;
+            }
+            coupler_unit_requested=true;coupler_unit_stride=value=="1";
+        } else if (argument.rfind("--windowed-coupler-fusion=",0)==0) {
+            const auto value=argument.substr(std::string("--windowed-coupler-fusion=").size());
+            if (value!="0" && value!="1") {
+                std::cerr<<"windowed Coupler fusion must be 0 or 1\n";return 2;
+            }
+            coupler_research=true;windowed_coupler_fusion=value=="1";
+        } else if (argument.rfind("--windowed-mtf-fusion=",0)==0) {
+            const auto value=argument.substr(std::string("--windowed-mtf-fusion=").size());
+            if (value!="0" && value!="1") {
+                std::cerr<<"windowed MTF fusion must be 0 or 1\n";return 2;
+            }
+            mtf_research=true;windowed_mtf_fusion=value=="1";
+        } else if (argument.rfind("--windowed-print-mtf-fusion=",0)==0) {
+            const auto value=argument.substr(std::string("--windowed-print-mtf-fusion=").size());
+            if (value!="0" && value!="1") {
+                std::cerr<<"windowed Print MTF fusion must be 0 or 1\n";return 2;
+            }
+            print_mtf_research=true;windowed_print_mtf_fusion=value=="1";
+        } else if (argument.rfind("--general-optimizations=",0)==0) {
+            const auto value=argument.substr(std::string("--general-optimizations=").size());
+            char *end=nullptr;long bits=std::strtol(value.c_str(),&end,10);
+            if(value.empty()||!end||*end||bits<0||bits>kGeneralOptimizationBits) {
+                std::cerr<<"invalid general optimization mask\n";return 2;
+            }
+            general_research=true;general_optimizations=int(bits);
+        } else if (argument == "--bundle") {
+            bundle=true;
+        } else if (argument == "--three-stage") {
+            three_stage = true;
+        } else if (argument == "--count") {
             count_only = true;
         } else if (argument.rfind("--variant=", 0) == 0) {
             work = Work::OneVariant;
@@ -52,6 +98,35 @@ int main(int argc, char **argv) {
             std::cerr << "unknown argument: " << argument << "\n";
             return 2;
         }
+    }
+    if (wavefront && platform != "--macos") {
+        std::cerr << "experimental wavefront generation requires --macos\n";
+        return 2;
+    }
+    if (three_stage && (!wavefront || platform != "--macos")) {
+        std::cerr << "--three-stage requires opt-in macOS wavefront generation\n";
+        return 2;
+    }
+    if (bundle && (!wavefront || platform!="--macos" || three_stage)) {
+        std::cerr<<"--bundle requires exclusive opt-in macOS wavefront generation\n";return 2;
+    }
+    if(general_research && (platform!="--macos" || wavefront || three_stage || bundle || work!=Work::OneVariant)) {
+        std::cerr<<"general research requires one explicit macOS general variant, without wavefront\n";return 2;
+    }
+    if (mtf_research && (platform!="--macos" || wavefront || trace_wavefront || three_stage
+        || bundle || general_research || coupler_research || print_mtf_research || count_only || work!=Work::OneVariant)) {
+        std::cerr<<"windowed MTF research requires one exclusive macOS exact luma variant\n";return 2;
+    }
+    if (print_mtf_research && (platform!="--macos" || wavefront || trace_wavefront || three_stage
+        || bundle || general_research || mtf_research || coupler_research || count_only || work!=Work::OneVariant)) {
+        std::cerr<<"windowed Print MTF research requires one exclusive macOS exact luma variant\n";return 2;
+    }
+    if (coupler_research && (platform!="--macos" || wavefront || trace_wavefront || three_stage
+        || bundle || general_research || mtf_research || print_mtf_research || count_only || work!=Work::OneVariant)) {
+        std::cerr<<"windowed Coupler research requires one exclusive macOS exact negative variant\n";return 2;
+    }
+    if (coupler_unit_requested && (!coupler_research || !windowed_coupler_fusion)) {
+        std::cerr<<"Coupler unit stride requires explicit Coupler fusion=1\n";return 2;
     }
     const bool simulator = platform == "--simulator";
     const bool macos = platform == "--macos" || platform == "--macos-intel";
@@ -72,6 +147,11 @@ int main(int argc, char **argv) {
         bool windowed;
         // Compiled for exactly its stages, none of them gated at run time.
         bool exact_stages;
+        int wavefront_rows = 0;
+        bool exports_light = false;
+        bool exports_log = false;
+        bool consumes_log = false;
+        bool exports_bundle = false, consumes_bundle = false;
     };
 #define FOTUFILM_AOT_GENERATOR_ENTRY(variant_name, variant_mask) \
     {prefix + #variant_name, (variant_mask), false, false, false},
@@ -80,7 +160,7 @@ int main(int argc, char **argv) {
 #define FOTUFILM_AOT_EXACT_WINDOWED_ENTRY(variant_name, stages_name, variant_mask) \
     {prefix + #variant_name "_windowed_" #stages_name, (variant_mask), false, true, true},
     // The exact twins come last, so adding one leaves every earlier variant's tag where it was.
-    Variant variants[] = {
+    std::vector<Variant> variants = {
         FOTUFILM_AOT_VARIANTS(FOTUFILM_AOT_GENERATOR_ENTRY)
         FOTUFILM_AOT_WINDOWED_VARIANTS(FOTUFILM_AOT_WINDOWED_ENTRY)
         FOTUFILM_AOT_EXACT_WINDOWED_VARIANTS(FOTUFILM_AOT_EXACT_WINDOWED_ENTRY)
@@ -88,6 +168,39 @@ int main(int argc, char **argv) {
 #undef FOTUFILM_AOT_EXACT_WINDOWED_ENTRY
 #undef FOTUFILM_AOT_WINDOWED_ENTRY
 #undef FOTUFILM_AOT_GENERATOR_ENTRY
+    if (wavefront) {
+#define FOTUFILM_WAVEFRONT_ENTRY(variant_name, stages_name, variant_mask, rows) \
+        variants.push_back({prefix + #variant_name "_wavefront_" #stages_name "_" #rows, \
+                            variant_mask, false, true, true, rows});
+        FOTUFILM_AOT_WAVEFRONT_VARIANTS(FOTUFILM_WAVEFRONT_ENTRY)
+#undef FOTUFILM_WAVEFRONT_ENTRY
+#define FOTUFILM_WAVEFRONT_LIGHT_ENTRY(variant_name, stages_name, variant_mask) \
+        variants.push_back({prefix + #variant_name "_wavefront_light_" #stages_name, \
+                            variant_mask, false, false, true, 256, true});
+        FOTUFILM_AOT_WAVEFRONT_LIGHT_VARIANTS(FOTUFILM_WAVEFRONT_LIGHT_ENTRY)
+#undef FOTUFILM_WAVEFRONT_LIGHT_ENTRY
+    }
+    if (three_stage) {
+        for (Variant &variant : variants)
+            if (variant.wavefront_rows == 512 && !variant.exports_light) variant.consumes_log = true;
+#define FOTUFILM_WAVEFRONT_LOG_ENTRY(variant_name, stages_name, variant_mask) \
+        variants.push_back({prefix + #variant_name "_wavefront_halation_" #stages_name, \
+                            variant_mask, false, false, true, 512, false, true});
+        FOTUFILM_AOT_WAVEFRONT_LIGHT_VARIANTS(FOTUFILM_WAVEFRONT_LOG_ENTRY)
+#undef FOTUFILM_WAVEFRONT_LOG_ENTRY
+    }
+    if(bundle) {
+#define FOTUFILM_BUNDLE_ENTRY(variant_name, stages_name, variant_mask) \
+        { Variant producer{prefix+#variant_name "_wavefront_bundle_source_" #stages_name,variant_mask,false,false,true,512}; \
+          producer.exports_bundle=true;variants.push_back(producer); }
+        FOTUFILM_AOT_WAVEFRONT_LIGHT_VARIANTS(FOTUFILM_BUNDLE_ENTRY)
+#undef FOTUFILM_BUNDLE_ENTRY
+#define FOTUFILM_BUNDLE_CONSUMER(variant_name, stages_name, variant_mask, rows) \
+        { Variant consumer{prefix+#variant_name "_wavefront_bundle_" #stages_name "_" #rows,variant_mask,false,true,true,rows}; \
+          consumer.consumes_bundle=true;variants.push_back(consumer); }
+        FOTUFILM_AOT_BUNDLE_VARIANTS(FOTUFILM_BUNDLE_CONSUMER)
+#undef FOTUFILM_BUNDLE_CONSUMER
+    }
     // Linux's two sets share one runtime, compiled with --extras.
     variants[0].runtime = !linux;
     const int variant_count = static_cast<int>(std::size(variants));
@@ -101,6 +214,11 @@ int main(int argc, char **argv) {
         return 2;
     }
     GpuConfiguration defaults;
+    defaults.general_optimizations=general_optimizations;
+    defaults.windowed_mtf_fusion=windowed_mtf_fusion;
+    defaults.windowed_print_mtf_fusion=windowed_print_mtf_fusion;
+    defaults.windowed_coupler_fusion=windowed_coupler_fusion;
+    defaults.windowed_coupler_unit_stride=coupler_unit_stride;
     defaults.half_blur = !macos && !linux;
     defaults.half_lut = !macos && !linux;
     if (linux) {
@@ -186,16 +304,36 @@ int main(int argc, char **argv) {
         // The Linux shim develops whole frames; the row-window twins are Apple's.
         if (linux && variant.windowed) continue;
         try {
+            if(general_research && (variant.windowed || variant.wavefront_rows ||
+                (variant.name!=prefix+"color_float_realtime" && variant.name!=prefix+"monochrome_float_realtime")))
+                throw std::invalid_argument("general research only admits color/monochrome float realtime general graphs");
+            if (mtf_research && (variant.name!=prefix+"color_float_realtime_windowed_negative_luma"
+                || !variant.windowed || !variant.exact_stages || variant.wavefront_rows))
+                throw std::invalid_argument("windowed MTF research only admits the exact negative_luma twin");
+            if (coupler_research && ((variant.name!=prefix+"color_float_realtime_windowed_negative"
+                && variant.name!=prefix+"color_float_realtime_windowed_negative_luma")
+                || !variant.windowed || !variant.exact_stages || variant.wavefront_rows))
+                throw std::invalid_argument("windowed Coupler research only admits exact negative/negative_luma twins");
             GpuFramePipeline pipeline(variant.features,
                                         "_v" + std::to_string(index), variant.windowed, configuration,
-                                        variant.exact_stages);
+                                        variant.exact_stages, {variant.wavefront_rows, trace_wavefront,
+                                            variant.exports_bundle ? WavefrontSchedule::Light::ExportBundle
+                                            : variant.consumes_bundle ? WavefrontSchedule::Light::ConsumeBundle
+                                            : variant.exports_log ? WavefrontSchedule::Light::ExportLog
+                                            : variant.consumes_log ? WavefrontSchedule::Light::ConsumeLog
+                                            : variant.wavefront_rows ? (variant.exports_light ? WavefrontSchedule::Light::Export
+                                                                                             : WavefrontSchedule::Light::Consume)
+                                                                     : WavefrontSchedule::Light::None});
             pipeline.compile_aot((output / variant.name).string(), variant.name,
                                  variant.runtime, target);
-        } catch (const Halide::CompileError &error) {
+        } catch (const Halide::Error &error) {
             // Name the variant: eighty compile in a row, and a bare terminate() says only that
             // one of them did not.
             std::cerr << "compiling " << variant.name << " (mask 0x" << std::hex
                       << variant.features << std::dec << "): " << error.what() << "\n";
+            return 1;
+        } catch (const std::exception &error) {
+            std::cerr << "constructing " << variant.name << ": " << error.what() << "\n";
             return 1;
         }
     }

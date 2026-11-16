@@ -1,0 +1,193 @@
+{
+  "scope": "fixed clean-R B1 with simulator off and Docker still present; no candidate E performance score",
+  "source_base": "96623ba0831a52dbddcda35727a206d4123a8b5f",
+  "complete": true,
+  "valid_rounds": 6,
+  "B_ref_frozen": false,
+  "performance_acceptance": false,
+  "actual_E_performance_rounds": 0,
+  "report": {
+    "path": "candidate/build/wavefront-stability-simulator-off/e65553433cfb/report.json",
+    "sha256": "67ed9ca611b1a675dc383f580a17374769954f0854c7f5c957ec3a23d9364105"
+  },
+  "analysis": {
+    "path": "candidate/build/wavefront-stability-simulator-off/e65553433cfb/analysis/analysis.json",
+    "sha256": "b3c1f332630844886066e977d5513dbc4d4559617dd8ffc9ff98e1b1710ad680"
+  },
+  "condition_before": {
+    "path": "candidate/build/wavefront-stability-simulator-off/condition.json",
+    "sha256": "1dc86fd6b4189617ee4ab4bddd5c9f6208da15534803bea44cf5c38ee4573862"
+  },
+  "condition_mid": {
+    "path": "candidate/build/wavefront-stability-simulator-off/e65553433cfb/condition-mid-campaign.json",
+    "sha256": "dc2497751d1bb983b53eb6dceac61633435aaa7f1f64b178e9ebbfd086f8b158"
+  },
+  "condition_after": {
+    "path": "candidate/build/wavefront-stability-simulator-off/e65553433cfb/condition-after.json",
+    "sha256": "d9954630b9e34c47db1907734b4e876d15ce0e4860fde28723489632d1398900"
+  },
+  "service_queries": {
+    "path": "candidate/build/wavefront-stability-simulator-off/fotufilm-runtime-recheck.json",
+    "sha256": "e12f459c9cbd9d11280286b5e1ab6472deb8d0f0a9f880c1b3d483bb7debd8a5"
+  },
+  "process_load": {
+    "path": "candidate/build/wavefront-stability-simulator-off/fotufilm-runtime-recheck-load.json",
+    "sha256": "423733c1c26341c3717d242670ac2256e7bf413b236f536155c228d938db84ca"
+  },
+  "worker_sha256": "eff89993d9b138ea0197c5bb2c08c7d157d8facfea596a413805b9f4ddc3339b",
+  "fps": [
+    90.33333333333333,
+    85.03333333333333,
+    136.06666666666666,
+    130.6,
+    98.2,
+    104.0
+  ],
+  "assessment": {
+    "throughput_range_ratio": 0.6001568012544101,
+    "timing_review_required": true,
+    "memory_epsilon": {
+      "device_total_peak_bytes": {
+        "epsilon_bytes": 0,
+        "cap_bytes": 4194304,
+        "pairs": [
+          0,
+          0,
+          0
+        ],
+        "stable": true
+      },
+      "process_lifetime_peak_bytes": {
+        "epsilon_bytes": 278624,
+        "cap_bytes": 4194304,
+        "pairs": [
+          278624,
+          98352,
+          81968
+        ],
+        "stable": true
+      },
+      "retained_device_bytes": {
+        "epsilon_bytes": 0,
+        "cap_bytes": 4194304,
+        "pairs": [
+          0,
+          0,
+          0
+        ],
+        "stable": true
+      },
+      "retained_process_footprint_bytes": {
+        "epsilon_bytes": 262240,
+        "cap_bytes": 4194304,
+        "pairs": [
+          262240,
+          114736,
+          81968
+        ],
+        "stable": true
+      }
+    },
+    "memory_stable": true,
+    "thermal_review_required": false,
+    "stable_under_diagnostic_protocol": false,
+    "B_ref_frozen": false,
+    "performance_acceptance": false
+  },
+  "round_artifacts": [
+    {
+      "round.json": {
+        "path": "candidate/build/wavefront-stability-simulator-off/e65553433cfb/portra400-coffee-1920x1080/B1-0/round.json",
+        "sha256": "53cd005ca1c9ea8611dac7b8bf33020a46108c9ae7169e807f17cdca5ad5db3f"
+      },
+      "events.jsonl": {
+        "path": "candidate/build/wavefront-stability-simulator-off/e65553433cfb/portra400-coffee-1920x1080/B1-0/events.jsonl",
+        "sha256": "0304901e0abf834224f64df676adce8cf582e28d249d956dd073b1a926fb9fdc"
+      },
+      "stderr.log": {
+        "path": "candidate/build/wavefront-stability-simulator-off/e65553433cfb/portra400-coffee-1920x1080/B1-0/stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "round.json": {
+        "path": "candidate/build/wavefront-stability-simulator-off/e65553433cfb/portra400-coffee-1920x1080/B1-1/round.json",
+        "sha256": "18340dde639f21a073c2d04610d1b6afc79bbe8242144e50524f0b1379d5ec49"
+      },
+      "events.jsonl": {
+        "path": "candidate/build/wavefront-stability-simulator-off/e65553433cfb/portra400-coffee-1920x1080/B1-1/events.jsonl",
+        "sha256": "dae9be14fea0ce59cb07afe319f0b46fa5637c5fa0ecc452368e9fc46cf6fdd0"
+      },
+      "stderr.log": {
+        "path": "candidate/build/wavefront-stability-simulator-off/e65553433cfb/portra400-coffee-1920x1080/B1-1/stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "round.json": {
+        "path": "candidate/build/wavefront-stability-simulator-off/e65553433cfb/portra400-coffee-1920x1080/B1-2/round.json",
+        "sha256": "42701db53569b6c036f57dae91b5881a035dbb1178af08d98542d64ee2751a5c"
+      },
+      "events.jsonl": {
+        "path": "candidate/build/wavefront-stability-simulator-off/e65553433cfb/portra400-coffee-1920x1080/B1-2/events.jsonl",
+        "sha256": "b5648232c7683c0793d4269eeabd3e7780138d018b9139bbeeb4da33b6829ac4"
+      },
+      "stderr.log": {
+        "path": "candidate/build/wavefront-stability-simulator-off/e65553433cfb/portra400-coffee-1920x1080/B1-2/stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "round.json": {
+        "path": "candidate/build/wavefront-stability-simulator-off/e65553433cfb/portra400-coffee-1920x1080/B1-3/round.json",
+        "sha256": "45ed2b236c51b9873b08af5e124c2e759d58c573ff89a1becb84c1c8087c08d7"
+      },
+      "events.jsonl": {
+        "path": "candidate/build/wavefront-stability-simulator-off/e65553433cfb/portra400-coffee-1920x1080/B1-3/events.jsonl",
+        "sha256": "64af2caa83728f33579b85ede223563e578cdb99eb0346b6f915f28448231931"
+      },
+      "stderr.log": {
+        "path": "candidate/build/wavefront-stability-simulator-off/e65553433cfb/portra400-coffee-1920x1080/B1-3/stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "round.json": {
+        "path": "candidate/build/wavefront-stability-simulator-off/e65553433cfb/portra400-coffee-1920x1080/B1-4/round.json",
+        "sha256": "018af35649b4efb19887091638f4eec2c9ee37ee7a4ab650eda2cc0b5327ce7b"
+      },
+      "events.jsonl": {
+        "path": "candidate/build/wavefront-stability-simulator-off/e65553433cfb/portra400-coffee-1920x1080/B1-4/events.jsonl",
+        "sha256": "6b73c56398749ed33a722b36c2f1d15506ba0c86094bcd0754f20a5a1bc5e03a"
+      },
+      "stderr.log": {
+        "path": "candidate/build/wavefront-stability-simulator-off/e65553433cfb/portra400-coffee-1920x1080/B1-4/stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "round.json": {
+        "path": "candidate/build/wavefront-stability-simulator-off/e65553433cfb/portra400-coffee-1920x1080/B1-5/round.json",
+        "sha256": "1483a2bedb465280b01d72efb78e83443adf2aed35d671013e8cfd6fa28e7d82"
+      },
+      "events.jsonl": {
+        "path": "candidate/build/wavefront-stability-simulator-off/e65553433cfb/portra400-coffee-1920x1080/B1-5/events.jsonl",
+        "sha256": "bcf4850c05d9ae80057a1b83bb6d423a772af4f928c74407959f2f65d7783793"
+      },
+      "stderr.log": {
+        "path": "candidate/build/wavefront-stability-simulator-off/e65553433cfb/portra400-coffee-1920x1080/B1-5/stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "Docker_shutdown_performed": false,
+  "Docker_fully_off_control_measured": false,
+  "conclusion": "Closing Simulator did not stabilize this campaign; Docker remains an unisolated factor, not a demonstrated cause.",
+  "limitations": [
+    "Docker API timeouts are not a CPU/GPU utilization measurement.",
+    "Runtime snapshots do not prove constant load throughout every measurement window.",
+    "The single-case diagnostic cannot freeze the four-case reference."
+  ],
+  "upstream_PR_created": false,
+  "pushed": false
+}

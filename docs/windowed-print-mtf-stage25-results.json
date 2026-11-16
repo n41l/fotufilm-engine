@@ -1,0 +1,251 @@
+{
+  "complete": true,
+  "stage": 25,
+  "date": "2026-11-01",
+  "scope": "isolated exact-windowed Print MTF vertical-into-output fusion; implemented, verified and timed; diagnostic, defaults off",
+  "implementation_files": [
+    "Sources/FotufilmHalide/Schedule/GpuConfiguration.h",
+    "Sources/FotufilmHalide/Schedule/Gpu.h",
+    "Sources/FotufilmHalide/Pipeline/GpuBackend.h",
+    "tools/generate_halide_ios.cpp"
+  ],
+  "reference_base": "96623ba0831a52dbddcda35727a206d4123a8b5f",
+  "source_key": "8c7c3a8b1d60d1cc17ae723cf8a0c0a7d4c4781bdaad8f7a3fafe6dea17a692b",
+  "performance_acceptance": false,
+  "B_ref_frozen": false,
+  "current_source_release_set": false,
+  "fresh_archives_per_arm": 1,
+  "frozen_archives_per_arm": 62,
+  "unchanged_math": true,
+  "window_rows": 1080,
+  "aot_calls_per_frame": 1,
+  "active_case": "portra400-coffee-3840x2160",
+  "graph_change": "Print MTF vertical result no longer stored: the reader kernel (frame_output through the unstored print chain) computes the vertical reduction in its threads with the same tap order, data/weight accumulation and radius-one select; transmittance and horizontal stores, sharpening transmittance reads, boundary normalization and the radius-one shortcut are preserved.",
+  "summary": {
+    "R-B1": {
+      "round_medians_ms": [
+        40.162375,
+        58.993729,
+        55.175729
+      ],
+      "median_of_round_medians_ms": 55.1757289795205,
+      "worst_round_p95_ms": 94.17900000698864,
+      "median_throughput_fps": 16.833333333333332,
+      "device_peaks_mib": [
+        1183.71875,
+        1183.71875,
+        1183.71875
+      ],
+      "max_device_peak_mib": 1183.71875,
+      "max_process_peak_mib": 1722.0791778564453,
+      "retained_process_footprint_mib": [
+        1458.8292236328125,
+        1458.782325744629,
+        1460.9073028564453
+      ],
+      "max_thermal_state": 1,
+      "measurement_requests": 1685
+    },
+    "W0": {
+      "round_medians_ms": [
+        40.26725,
+        47.276146,
+        40.915416
+      ],
+      "median_of_round_medians_ms": 40.915415971539915,
+      "worst_round_p95_ms": 63.020374975167215,
+      "median_throughput_fps": 23.933333333333334,
+      "device_peaks_mib": [
+        1183.71875,
+        1183.71875,
+        1183.71875
+      ],
+      "max_device_peak_mib": 1183.71875,
+      "max_process_peak_mib": 1721.1417236328125,
+      "retained_process_footprint_mib": [
+        1459.1417236328125,
+        1459.9229736328125,
+        1459.4073486328125
+      ],
+      "max_thermal_state": 1,
+      "measurement_requests": 2060
+    },
+    "Fused": {
+      "round_medians_ms": [
+        38.350437,
+        47.483208,
+        57.211584
+      ],
+      "median_of_round_medians_ms": 47.4832080071792,
+      "worst_round_p95_ms": 74.01874999050051,
+      "median_throughput_fps": 20.9,
+      "device_peaks_mib": [
+        1183.71875,
+        1183.71875,
+        1183.71875
+      ],
+      "max_device_peak_mib": 1183.71875,
+      "max_process_peak_mib": 1720.563621520996,
+      "retained_process_footprint_mib": [
+        1459.344871520996,
+        1458.860450744629,
+        1458.422950744629
+      ],
+      "max_thermal_state": 1,
+      "measurement_requests": 1909
+    }
+  },
+  "effect_vs": {
+    "R-B1": {
+      "observed_latency_reduction_percent": 13.941856527525937,
+      "device_peak_reduction_mib": 0.0,
+      "device_peak_reduction_percent": 0.0
+    },
+    "W0": {
+      "observed_latency_reduction_percent": -16.052120893033894,
+      "device_peak_reduction_mib": 0.0,
+      "device_peak_reduction_percent": 0.0
+    }
+  },
+  "per_round_pairs": {
+    "0": {
+      "order": [
+        "R-B1",
+        "W0",
+        "Fused"
+      ],
+      "fused_vs_r_percent": -4.5115297311063065,
+      "fused_vs_w0_percent": -4.760226848505884
+    },
+    "1": {
+      "order": [
+        "W0",
+        "Fused",
+        "R-B1"
+      ],
+      "fused_vs_r_percent": -19.511431456853643,
+      "fused_vs_w0_percent": 0.43798408546692263
+    },
+    "2": {
+      "order": [
+        "Fused",
+        "R-B1",
+        "W0"
+      ],
+      "fused_vs_r_percent": 3.689765416847229,
+      "fused_vs_w0_percent": 39.82891921640398
+    }
+  },
+  "dispatches": {
+    "R-B1": 77,
+    "W0": 77,
+    "Fused": 75,
+    "note": "two active windows, one vertical pass removed each; inactive cases unchanged and bit-identical"
+  },
+  "pixel_proof": {
+    "independent_comparisons": 15,
+    "oracle_self_rows": 0,
+    "all_bitwise_equal_R": true,
+    "worst_error": 0.0
+  },
+  "history": {
+    "comparisons": 28,
+    "active_fresh_archive_comparisons": 14,
+    "all_passed": true
+  },
+  "jit_parity": {
+    "comparisons": 2,
+    "worst_linear_error": 1.9669532775878906e-06
+  },
+  "admission_and_rejection": {
+    "python_admission_tests": 13,
+    "generator_rejection_checks": 6
+  },
+  "first_timing_attempt": {
+    "path": "build/windowed-print-mtf-stage25-timing/b36b1df153d5/report.json",
+    "outcome": "1 GiB disk reserve guard tripped after five valid rounds (swap growth); retained, not spliced",
+    "rounds_completed": 5
+  },
+  "disk_recovery": "build/windowed-print-mtf-stage25/disk-recovery.json (17 lossless-verified archive/deletion actions)",
+  "protocol": {
+    "orders": [
+      [
+        "R-B1",
+        "W0",
+        "Fused"
+      ],
+      [
+        "W0",
+        "Fused",
+        "R-B1"
+      ],
+      [
+        "Fused",
+        "R-B1",
+        "W0"
+      ]
+    ],
+    "rounds_per_arm": 3,
+    "warmup_seconds": 5,
+    "window_seconds": 30,
+    "tail_seconds": 2,
+    "idle_seconds": 5,
+    "inflight_frames": 1,
+    "pool_mib": 1024,
+    "minimum_free_bytes": 1073741824,
+    "evidence_budget_bytes": 268435456,
+    "image_dumps": false
+  },
+  "measurement_requests": 5654,
+  "environment": {
+    "load_average_1min_range": [
+      4.205078125,
+      9.69384765625
+    ],
+    "system_memory_free_percent_range": [
+      42,
+      47
+    ],
+    "swap_used_mib_range": [
+      12280.62,
+      12304.62
+    ],
+    "max_thermal_state": 1,
+    "attribution_disclaimer": "Observations only; no root cause claimed."
+  },
+  "evidence": {
+    "build/windowed-print-mtf-stage25-timing/382cbcae7d48/report.json": "6aac171529204bcba2e64e9d4c1e21215d8f78b2f7b3ea24c6e322585782790b",
+    "build/windowed-print-mtf-stage25-proof/report.json": "c888d0b748a056ddbd9b56be49f47dbc45a79e188aa274f8677319dd3a52beb2",
+    "build/windowed-print-mtf-stage25-history/report.json": "e49944c6fba8bb77ea068c7059cde002e027fd8eb08df200ce10148f6901adcb",
+    "build/windowed-print-mtf-stage25-proof/jit-parity/report.json": "278773e8ca22c65a2463dfba56e7cc5e4b9dc4a5bc972e2d21898ad07cbc9cac"
+  },
+  "workers": {
+    "R-B1": {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/reference/build/wavefront-benchmark-v2/instrumented/runner",
+      "sha256": "eff89993d9b138ea0197c5bb2c08c7d157d8facfea596a413805b9f4ddc3339b"
+    },
+    "W0": {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-print-mtf-stage25-proof/W0/runner",
+      "sha256": "f7e759d63e71ab7b9388fc6ff4c30e9b638b4c08730f88fec69cf8fe006c6f3e"
+    },
+    "Fused": {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-print-mtf-stage25-proof/Fused/runner",
+      "sha256": "78f8d3eeb93703c838684fcddd48a6e4f7d38e1feb13b8fa57b5c4af80056080"
+    }
+  },
+  "controllers": {
+    "run-windowed-print-mtf-diagnostic.py": "eecc549eda6c0e3aa8a3c44753dccd41f466805c2c34eee118983eb959b54336",
+    "windowed_print_mtf_helper.py": "eb40b2f3c8faa06f67bc3b21ffa0703360eefe42619c4ac0efafc6b630d23351",
+    "run-wavefront-baseline.py": "40ae1f157a57288b33aae1c3e7b80656df14d5652b336b59cf241b443bb7c1b8",
+    "wavefront_metrics.py": "5cc21b16c88df2043400c05105ab6c18f7fc70a3a3dcaea3f265fa6afa3edc75",
+    "wavefront-benchmark.mm": "680c889bdf9217728f4458d04dbe8c2283e78b9a3ae607cfba1a130d2a599cc1"
+  },
+  "limitations": [
+    "Three balanced repeats of one upscaled Coffee SDR case; no all-stock, holdout, retention or concurrency result.",
+    "Severe within-campaign drift: R-B1 rounds span 40.2-59.0 ms and W0 rounds 40.3-47.3 ms; summary deltas are not stable estimates.",
+    "Fused beats same-source W0 in one round (-4.76%), ties one (+0.44%) and loses one (+39.83%); summary is 16.05% slower. No confirmed latency benefit.",
+    "Device peak unchanged at 1183.72 MiB on every arm: the removed per-window field did not shrink the concurrent retained set.",
+    "Dispatch reduction 77 to 75 on the active case is the only confirmed structural change.",
+    "Not a release acceptance; defaults remain off; no Taggii/iOS integration, push or PR."
+  ]
+}

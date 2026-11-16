@@ -336,5 +336,54 @@
       "decode_realtime",
       "halation_fields"
     ]
+  },
+  "wavefront_experiment": {
+    "doc": "Opt-in macOS research producer/consumer kernels. The source exports the original final post-MTF selected light expression into a private Float32 row cache; consumers read that cache and keep existing per-window intermediates. Explicit call-scoped scheduling owns row labels and GPU completion. No automatic legacy selection.",
+    "bands": [
+      64,
+      128,
+      256,
+      512,
+      1080
+    ],
+    "variants": [
+      {
+        "variant": "color_float_realtime",
+        "name": "negative",
+        "stages": "PRINTED_NEGATIVE"
+      },
+      {
+        "variant": "color_float_realtime",
+        "name": "negative_luma",
+        "stages": "PRINTED_NEGATIVE_LUMA"
+      },
+      {
+        "variant": "monochrome_float_realtime",
+        "name": "printed_slide",
+        "stages": "PRINTED_SLIDE"
+      }
+    ],
+    "three_stage_research": {
+      "band": 512,
+      "second_cut": "LogExposure",
+      "log_ring_rows": 1024,
+      "doc": "Explicit --three-stage research build only: three per-class halation/log exporters and log-consuming 512 consumers; other bands keep their two-stage kernels. No default legacy selection."
+    },
+    "bundle_research": {
+      "band": 512,
+      "light_ring_rows": 2048,
+      "producer_margin": 360,
+      "outputs": [
+        "light",
+        "halation_0",
+        "halation_1",
+        "halation_2"
+      ],
+      "field_layout": "planar-float32",
+      "bands": [
+        512,
+        1080
+      ]
+    }
   }
 }

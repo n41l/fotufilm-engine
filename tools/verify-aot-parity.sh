@@ -79,7 +79,11 @@ bash tools/verify-negative-aot.sh "$KERNELS"
 echo "--- fixture ---"
 PACK="$OUT/fixture.fswp"
 GRAIN_MODEL="${FOTUFILM_PARITY_GRAIN_MODEL:-}"
-swift run -c release fotufilm --dump-wasm-pack "$PACK" --stock "$STOCK" --pack-size "$SIZE" \
+PARITY_CLI=(swift run -c release fotufilm)
+if [[ -n "${FOTUFILM_PARITY_CLI:-}" ]]; then
+  PARITY_CLI=("$FOTUFILM_PARITY_CLI")
+fi
+"${PARITY_CLI[@]}" --dump-wasm-pack "$PACK" --stock "$STOCK" --pack-size "$SIZE" \
   ${GRAIN_MODEL:+--grain-model "$GRAIN_MODEL"}
 
 echo "--- building the AOT harness ---"
@@ -137,4 +141,11 @@ echo "--- comparison ---"
 # The row-window twins against the full-frame variants they stand in for, on the same fixture:
 # window seams, the reach fallbacks, and requests that gate stages off.
 echo "--- row windows ---"
-FOTUFILM_PARITY_KERNELS="$KERNELS" bash tools/verify-aot-windows.sh "$PACK"
+if [[ "${FOTUFILM_PARITY_STREAM_WINDOWS:-0}" == 1 ]]; then
+  # Preserve both seeds in each original process, consuming/deleting one complete pair
+  # before the next. Local C comparisons remain explicitly labelled as regressions.
+  python3 tools/verify-wavefront-baseline.py --reference "$PWD" --kernels "$KERNELS" \
+    --pack "$PACK" --candidate-regression
+else
+  FOTUFILM_PARITY_KERNELS="$KERNELS" bash tools/verify-aot-windows.sh "$PACK"
+fi

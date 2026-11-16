@@ -1,0 +1,127 @@
+#!/usr/bin/env python3
+"""Full-pixel C general/windowed and non-traced E against independent frozen R. Never a performance gate."""
+import argparse
+import json
+import os
+import re
+from pathlib import Path
+import subprocess
+import uuid
+from wavefront_aot_driver import build
+from importlib.util import spec_from_file_location, module_from_spec
+
+spec=spec_from_file_location('baseline',Path(__file__).with_name('run-wavefront-baseline.py'))
+baseline=module_from_spec(spec);spec.loader.exec_module(baseline)
+sha=baseline.sha
+atomic_json=baseline.atomic_json
+
+
+def main():
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--reference',required=True,type=Path)
+    parser.add_argument('--reference-worker',required=True,type=Path)
+    parser.add_argument('--kernels',required=True,type=Path)
+    parser.add_argument('--frozen-cases',required=True,type=Path)
+    parser.add_argument('--diagnostic-control',type=Path)
+    parser.add_argument('--diagnostic-kernels',type=Path)
+    args=parser.parse_args()
+    diagnostic=dict(diagnostic_control=args.diagnostic_control,diagnostic_kernels=args.diagnostic_kernels) if args.diagnostic_control else {}
+    candidate=Path(__file__).resolve().parents[1];reference=args.reference.resolve()
+    if candidate==reference or subprocess.check_output(['git','-C',str(reference),'status','--porcelain'],text=True):
+        raise ValueError('R must be a separate clean checkout')
+    frozen=json.loads(args.frozen_cases.read_text());worker=args.reference_worker.resolve()
+    if sha(worker)!=frozen['worker_sha256']:raise ValueError('frozen R worker changed')
+    if sha(candidate/'tools/wavefront-benchmark.mm')!=frozen['tool_sources']['wavefront-benchmark.mm']:
+        raise ValueError('common measurement/verification driver changed')
+    if subprocess.check_output(['git','-C',str(reference),'rev-parse','HEAD'],text=True).strip()!=frozen['source_base']:
+        raise ValueError('R base changed')
+    for case in frozen['cases']:
+        for field in ('pack','input'):
+            if sha(case[field])!=case[field+'_sha256']:raise ValueError('frozen input changed')
+    root=candidate/'build/wavefront-candidate'/uuid.uuid4().hex[:12];root.mkdir(parents=True)
+    driver=candidate/'tools/wavefront-benchmark.mm'
+    kernels=args.kernels.resolve()
+    runners={'C_B0':build(candidate,kernels,root/'legacy',driver,**diagnostic)}
+    runners['C_B1']=runners['C_B0']
+    experimental=build(candidate,kernels,root/'experimental',driver,
+            definitions=('-DFOTUFILM_AOT_WAVEFRONT_HOST=1',),
+            driver_definitions=('-Dfotufilm_halide_metal_process_linear_float=fotufilm_wavefront_bench_process_linear_float',),
+            adapter=candidate/'tools/wavefront-benchmark-adapter.cpp',
+            adapter_definitions=('-DFOTUFILM_WAVEFRONT_RUNTIME_BAND=1',),**diagnostic)
+    for band in (64,128,256,512):runners[f'E_{band}']=experimental
+    ring_rows=int(re.search(r'kWavefrontLightRows = (\d+)',(candidate/'Sources/FotufilmHalide/Pipeline/WavefrontLightLayout.h').read_text())[1])
+    compare=root/'compare'
+    subprocess.run(['xcrun','clang++','-std=c++17','-O2',str(candidate/'tools/wavefront-compare.cpp'),'-o',str(compare)],check=True)
+    report={'scope':'full shared film graph, four frozen SDR main cases; non-traced E and legacy, no warm performance acceptance',
+            'mixed_candidate_revisions':bool(args.diagnostic_control),'final_candidate_accepted':False,
+            'diagnostic_control_sha256':sha(args.diagnostic_control/'control.json') if args.diagnostic_control else None,
+            'experimental_aot_sha256':{p.name:sha(p) for p in args.diagnostic_kernels.glob('*.a')} if args.diagnostic_kernels else {},
+            'reference_base':frozen['source_base'],'frozen_cases_sha256':sha(args.frozen_cases),
+            'common_driver_sha256':sha(driver),'R_worker_sha256':sha(worker),
+            'C_worker_sha256':{k:sha(v) for k,v in runners.items()},
+            'C_worker_paths':{k:str(v) for k,v in runners.items()},'ring_rows':ring_rows,
+            'C_aot_sha256':{p.name:sha(p) for p in sorted(kernels.glob('*.a'))},
+            'source_sha256':{p:sha(candidate/p) for p in (
+                'Sources/FotufilmHalide/FotufilmHalideIOS.cpp','Sources/FotufilmHalide/Pipeline/Gpu.h',
+                'Sources/FotufilmHalide/FotufilmHalideWavefront.h','Sources/FotufilmHalide/aot-variants.json',
+                'tools/verify-wavefront-candidate.py','tools/wavefront-benchmark-adapter.cpp','tools/wavefront_aot_driver.py',
+                'Sources/FotufilmHalide/Pipeline/WavefrontLightLayout.h')},
+            'results':[],'complete':False,'performance_acceptance':False,'experimental_reuse_coverage':False,'normal_experimental_kernel_coverage':True}
+    def checkpoint():atomic_json(root/'verification.json',report)
+    def invoke(label,runner,case):
+        out=root/case['id'];out.mkdir(exist_ok=True)
+        dump=out/f'{label}.rgba32f';log=out/f'{label}.jsonl';errors=out/f'{label}.stderr'
+        with log.open('w') as stdout,errors.open('w') as stderr:
+            subprocess.run([str(runner),case['pack'],case['input'],'--dump',str(dump)],
+                env={**os.environ,'FOTUFILM_AOT_WINDOWED':'1' if label=='C_B1' else '0',
+                     'FOTUFILM_METAL_POOL':'1024','FOTUFILM_TRACE_VARIANT':'0',
+                     **({'FOTUFILM_WAVEFRONT_BENCH_ROWS':label.split('_')[1]} if label.startswith('E_') else {})},
+                stdout=stdout,stderr=stderr,check=True,timeout=120)
+        events=[json.loads(line) for line in log.read_text().splitlines()]
+        calls=[e for e in events if e['type']=='call_complete']
+        identity=next(e for e in events if e['type']=='identity')
+        if identity['input_sha256']!=case['input_sha256'] or identity['encoded_output']:
+            raise AssertionError('verification input or linear output contract changed')
+        if len(calls)!=1 or calls[0]['status']!='success' or calls[0]['gpu_dispatches']<1:
+            raise AssertionError('missing successful actual AOT/GPU execution')
+        actual=calls[0]['actual_variant']
+        if label.startswith('E_'):
+            band=int(label.split('_')[1]);w,h=map(int,case['size'].split('x'))
+            stderr=errors.read_text()
+            counts=re.search(r'WAVEFRONT_COUNTS rows=(\d+) source_calls=(\d+) consumer_calls=(\d+) ring_rows=(\d+)',stderr)
+            if '_wavefront_' not in actual or not actual.endswith('_'+str(band)):
+                raise AssertionError('fallback cannot count as E coverage')
+            if not re.search(rf'WAVEFRONT_POLICY requested=1 actual=1 rows={band} reason=admitted',stderr):
+                raise AssertionError('actual private E admission missing')
+            if not counts or int(counts[1])!=h or int(counts[2])<1 or int(counts[3])!=(h+band-1)//band or int(counts[4])!=ring_rows:
+                raise AssertionError('invalid normal source/consumer accounting')
+            if calls[0]['aot_calls']!=int(counts[2])+int(counts[3]):
+                raise AssertionError('normal E actual AOT count mismatch')
+        elif calls[0]['aot_calls']!=1 or ('windowed' in actual)!=(label=='C_B1') or '_wavefront_' in actual:
+            raise AssertionError('legacy selection/count changed')
+        return dump,actual
+    try:
+        for case in frozen['cases']:
+            left,actual=invoke('R_B0',worker,case)
+            for label,runner in runners.items():
+                right,variant=invoke(label,runner,case)
+                result=subprocess.run([str(compare),str(left),str(right),'linear'],capture_output=True,text=True)
+                comparison=json.loads(result.stdout)
+                width,height=map(int,case['size'].split('x'))
+                comparison['passed']=comparison['passed'] and comparison['samples']==width*height*4 and result.returncode==0
+                report['results'].append({'case':case['id'],'candidate':label,'R_actual':actual,'C_actual':variant,
+                    'R_output_sha256':sha(left),'C_output_sha256':sha(right),'comparison':comparison})
+                checkpoint()
+                if not comparison['passed']:raise AssertionError('pixel disagreement; failed dumps preserved')
+                right.unlink()
+                print('PASS',case['id'],label,flush=True)
+            left.unlink()
+        report['complete']=len(report['results'])==len(frozen['cases'])*len(runners)
+    except BaseException as error:
+        report['failure']=str(error);raise
+    finally:checkpoint()
+    atomic_json(root.parent/'latest.json',{'report':str(root/'verification.json')})
+    print('REPORT',root/'verification.json',flush=True)
+
+
+if __name__=='__main__':main()

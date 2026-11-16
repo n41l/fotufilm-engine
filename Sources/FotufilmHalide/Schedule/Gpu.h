@@ -34,10 +34,19 @@ inline Expr typed_zero(const Func &function) {
 class GpuSchedule {
 public:
     explicit GpuSchedule(GpuConfiguration configuration = default_gpu_configuration(),
-                         bool windowed = false)
-        : configuration_(std::move(configuration)), windowed_(windowed) {}
+                         bool windowed = false, bool region_blur = false)
+        : configuration_(std::move(configuration)), windowed_(windowed),
+          region_blur_(windowed || region_blur) {}
     const GpuConfiguration &configuration() const { return configuration_; }
     bool windowed() const { return windowed_; }
+    bool general_optimization(int32_t bit) const {
+        return !windowed_ && gpu_device_api()==DeviceAPI::Metal
+            && (configuration_.general_optimizations & bit)!=0;
+    }
+    bool register_fusion() const {
+        return gpu_device_api()==DeviceAPI::Metal
+            && (windowed_ || general_optimization(kGeneralRegisters));
+    }
     Target gpu_target() const { return configuration_.target(); }
     DeviceAPI gpu_device_api() const { return configuration_.device; }
     // Preserve the CPU model's sampling and operation order on portable GPU backends.
@@ -92,6 +101,9 @@ public:
 private:
     const GpuConfiguration configuration_;
     const bool windowed_;
+    // A crop producer can use the windowed Metal blur arithmetic without introducing a
+    // window loop or placing all of its stores in that loop. Legacy defaults are unchanged.
+    const bool region_blur_;
     std::vector<Func> window_stores_;
     /// Every kernel the graph stores, with the thread loop its body runs in.
     struct RootKernel {
@@ -242,7 +254,7 @@ public:
     void normalized_taps(Func f, Var x, Var y, Var channel, Expr data, Expr weight,
                          bool stored, const std::string &name) {
         const bool fused = gpu_device_api() == DeviceAPI::WebGPU
-            || (gpu_device_api() == DeviceAPI::Metal && windowed_);
+            || (gpu_device_api() == DeviceAPI::Metal && (region_blur_ || general_optimization(kGeneralNormalized)));
         if (!fused || !stored) {
             f(x, y, channel) = Halide::sum(data, name + "_sum")
                 / Halide::max(Halide::sum(weight, name + "_weight"), 1.0e-12f);
@@ -266,7 +278,7 @@ public:
     Expr cell_count(Expr valid, Expr start_x, Expr start_y, Expr cells, Expr width, Expr height,
                     const std::string &name) {
         const bool counted = gpu_device_api() == DeviceAPI::WebGPU
-            || (gpu_device_api() == DeviceAPI::Metal && windowed_);
+            || (gpu_device_api() == DeviceAPI::Metal && (region_blur_ || general_optimization(kGeneralCountedCells)));
         if (!counted) return Halide::sum(valid, name);
         return Halide::cast<float>(cells_inside(start_x, cells, width)
                                    * cells_inside(start_y, cells, height));
@@ -279,7 +291,8 @@ public:
                       Expr radius, Expr width, Expr height, bool half,
                       const std::string &name, int channels = 3,
                       bool store_result = true,
-                      Expr sigma3 = Expr(), Expr radius3 = Expr()) {
+                      Expr sigma3 = Expr(), Expr radius3 = Expr(),
+                      bool fuse_into_reader = false) {
         Var x("x"), y("y"), channel("channel"), k("k");
         const bool merged = sigma3.defined();
         const bool taps16 = half && f16_blur_compute();
@@ -343,10 +356,10 @@ public:
                                                   && y + vertical_taps.x < height,
                                               Halide::cast<float>(kernel(vertical_taps.x, channel)),
                                               0.0f);
-        if (windowed_ && gpu_device_api() == DeviceAPI::Metal && store_result && !half
+        if ((region_blur_ || general_optimization(kGeneralRadiusOne)) && gpu_device_api() == DeviceAPI::Metal && (store_result || fuse_into_reader) && !half
             && !merged) {
             return gpu_gaussian_three(bounded, kernel, vertical_data, vertical_weight, extent,
-                                      width, height, channels, name);
+                                      width, height, channels, name, store_result);
         }
         Func vertical(name);
         normalized_taps(vertical, x, y, channel, vertical_data, vertical_weight,
@@ -360,12 +373,15 @@ public:
     }
 
     /// The separable blur's second pass in a kernel that, at a one-pixel radius, runs the first
-    /// pass too: three taps of three taps, written out in the order and with the arithmetic of
-    /// the two passes' sums, read from the source instead of a frame-sized store of the first
+    /// pass too: three taps of three taps, written out in the order and with the arithmetic of the
+    /// two passes' sums, read from the source instead of a frame-sized store of the first
     /// pass. Every other radius reads the stored first pass, which then runs only for it.
+    /// With `store` false the second pass is not materialised either: the reader that consumes the
+    /// blur's result computes it in its own threads (see register_stage), keeping the same tap
+    /// order, the same data/weight accumulation and the same radius-one shortcut's select.
     Func gpu_gaussian_three(Func bounded, Func kernel, Expr vertical_data, Expr vertical_weight,
                             Expr extent, Expr width, Expr height, int channels,
-                            const std::string &name) {
+                            const std::string &name, bool store = true) {
         Var x("x"), y("y"), channel("channel");
         auto sum_taps = [](const std::vector<std::pair<Expr, Expr>> &taps) {
             Expr data = taps[0].first, weight = taps[0].second;
@@ -390,6 +406,31 @@ public:
             taps.push_back({row(y + offset) * kernel(offset, channel),
                             Halide::select(y + offset >= 0 && y + offset < height,
                                            Halide::cast<float>(kernel(offset, channel)), 0.0f)});
+        }
+        // Isolate the radius-one experiment: larger radii retain the general graph's
+        // separate data/weight reductions unless normalized fusion is explicitly enabled.
+        if (!region_blur_ && general_optimization(kGeneralRadiusOne)
+            && !general_optimization(kGeneralNormalized)) {
+            Func blurred(name);
+            Expr vertical = Halide::sum(vertical_data, name + "_vertical_sum")
+                / Halide::max(Halide::sum(vertical_weight, name + "_vertical_weight"), 1.0e-12f);
+            blurred(x,y,channel)=Halide::select(extent==1,sum_taps(taps),vertical);
+            store_frame(blurred,false,channels);
+            blurred.specialize(extent==1);
+            return blurred;
+        }
+        if (!store) {
+            // The reader computes the second pass in registers. The sums stay inline — a Tuple
+            // reduction stage cannot be placed in a kernel that never materialises this Func —
+            // so each accumulator keeps the stored version's tap order and the division keeps
+            // its max guard; without a realization there is no radius-one specialization to
+            // prune the untaken branch.
+            Func blurred(name);
+            Expr vertical = Halide::sum(vertical_data, name + "_vertical_sum")
+                / Halide::max(Halide::sum(vertical_weight, name + "_vertical_weight"), 1.0e-12f);
+            blurred(x, y, channel) = Halide::select(extent == 1, sum_taps(taps), vertical);
+            register_stage(blurred);
+            return blurred;
         }
         Func sums(name + "_vertical_sums");
         sums(x, y, channel) = {Halide::cast(vertical_data.type(), 0),
@@ -500,7 +541,7 @@ public:
 
     DecimatedGrid decimated_grid(Func source, Expr stride, Expr origin_x,
                                  Expr origin_y, Expr width, Expr height, bool half,
-                                 const std::string &name) {
+                                 const std::string &name, bool specialize_unit_stride = false) {
         using Halide::cast;
         Var x("x"), y("y"), channel("channel");
         Expr phase_x = origin_x % stride;
@@ -509,7 +550,7 @@ public:
         Expr down_height = (height + phase_y + stride - 1) / stride;
         Func bounded_source = constant_exterior(
             source, typed_zero(source), {{0, width}, {0, height}, {0, 3}});
-        Func down(name + "_down");
+        Func down(name + (specialize_unit_stride ? "_generic_down" : "_down"));
         if (split_down_compute()) {
             RDom row_cell(0, stride, name + "_row_cell");
             Func down_rows(name + "_down_rows");
@@ -545,6 +586,17 @@ public:
                 bounded_source(x * stride - phase_x + cell.x,
                                y * stride - phase_y + cell.y, channel),
                 name + "_down_sum") / Halide::max(count, 1.0f);
+        }
+        if (specialize_unit_stride) {
+            // A one-cell box at stride one is the bounded source itself: origin modulo one
+            // is zero and the sole valid sample has weight one. Keep a separate specialization
+            // so lowering discards the reduction and normalization on this path alone.
+            Func selected(name + "_down");
+            selected(x, y, channel) = Halide::select(stride == 1,
+                bounded_source(x, y, channel), down(x, y, channel));
+            Func view = store_frame(selected, half);
+            selected.specialize(stride == 1);
+            return {view, stride, phase_x, phase_y, down_width, down_height};
         }
         return {store_frame(down, half), stride, phase_x, phase_y,
                 down_width, down_height};
@@ -612,10 +664,10 @@ public:
     Func gpu_gaussian_decimated(Func source, Expr sigma, Expr radius,
                                 Expr origin_x, Expr origin_y,
                                 Expr width, Expr height, bool half,
-                                const std::string &name) {
+                                const std::string &name, bool specialize_unit_stride = false) {
         DecimatedGrid grid = decimated_grid(
             source, decimated_gaussian_stride(sigma), origin_x, origin_y,
-            width, height, half, name);
+            width, height, half, name, specialize_unit_stride);
         return gpu_gaussian_on_grid(grid, sigma, radius, half, name);
     }
 }; // GpuSchedule

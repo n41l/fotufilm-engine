@@ -1,3 +1,7 @@
+#include "FotufilmHalideWavefront.h"
+#if FOTUFILM_AOT_WAVEFRONT_HOST && !FOTUFILM_AOT_WINDOWED_HOST
+#error "experimental wavefront host requires the original windowed host"
+#endif
 #if defined(FOTUFILM_HALIDE_IOS_AOT)
 
 #ifndef FOTUFILM_AOT_WINDOWED_HOST
@@ -6,6 +10,12 @@
 
 #include "FotufilmHalideIOSVariants.h"
 #include "FotufilmAotFrame.h"
+#if FOTUFILM_BUNDLE_RESEARCH
+#include "fotufilm_bundle_declarations.h"
+#endif
+#if FOTUFILM_THREE_STAGE_RESEARCH
+#include "fotufilm_three_stage_declarations.h"
+#endif
 #include "FotufilmFilmTileBuild.h"
 #include "FotufilmNegativeScan.h"
 #include "fotufilm_halide_ios_negative_cpu.h"
@@ -27,7 +37,9 @@
 
 #include "FotufilmHalide.h"
 #include "FotufilmHalideGeometry.h"
+#include "Pipeline/WavefrontLightLayout.h"
 #include "FotufilmResolvedFrameParams.h"
+#include "FotufilmWavefrontAdmission.h"
 #include "Pipeline/FilmTileStore.h"
 
 #include <TargetConditionals.h>
@@ -188,12 +200,155 @@ struct FrameScope {
 };
 }
 
+#if FOTUFILM_AOT_WAVEFRONT_HOST
+struct WavefrontVariant {
+    FrameFunction source = nullptr, consumer = nullptr;
+    int rows = 0, channels = 0;
+};
+struct WavefrontCrop {
+    halide_buffer_t buffer{};
+    halide_dimension_t dimensions[3]{};
+    bool active = false;
+    ~WavefrontCrop() { if (active) halide_device_release_crop(nullptr, &buffer); }
+};
+
+template<class Invoke>
+int run_wavefront(const WavefrontVariant &variant, halide_buffer_t *out,
+                  int width, int height, const float *configuration,
+                  const FotufilmWavefrontOptions &options,
+                  FotufilmWavefrontResult *result, Invoke invoke) {
+    using namespace fotufilm::gpu;
+    FrameScope frame_scope;
+    const int64_t field_count = int64_t(width) * kWavefrontLightRows * variant.channels;
+    if (field_count + kWavefrontLightBase > INT32_MAX) return -1;
+    Buffer<float> cfg(static_cast<float *>(nullptr), int(field_count + kWavefrontLightBase));
+    int error = cfg.device_malloc(halide_metal_device_interface());
+    if (!error) error = halide_device_malloc(nullptr, out, halide_metal_device_interface());
+    if (error) return error;
+    id native = reinterpret_cast<id>(halide_metal_get_buffer(nullptr, cfg.raw_buffer()));
+    using GetMode = unsigned long (*)(id, SEL);
+    if (reinterpret_cast<GetMode>(objc_msgSend)(native, sel_getUid("storageMode")) != 0) return -1;
+    using GetContents = void *(*)(id, SEL);
+    auto *mapped = static_cast<float *>(reinterpret_cast<GetContents>(objc_msgSend)(native, sel_getUid("contents")));
+    if (!mapped) return -1;
+    // The GPU allocation is shared memory: no second host allocation or field upload.
+    cfg.raw_buffer()->host = reinterpret_cast<uint8_t *>(mapped);
+    if (options.trace) std::fill_n(mapped + kWavefrontLightBase, size_t(field_count), std::nanf(""));
+    std::memcpy(mapped, configuration, FOTUFILM_FRAME_CONFIGURATION_COUNT * sizeof(float));
+    cfg.set_device_dirty();
+    WavefrontCrop scalar_field;
+    scalar_field.dimensions[0] = {kWavefrontLightBase, int(field_count), 1, 0};
+    scalar_field.buffer = *cfg.raw_buffer();
+    scalar_field.buffer.dim = scalar_field.dimensions;
+    scalar_field.buffer.device = 0;
+    scalar_field.buffer.device_interface = nullptr;
+    scalar_field.buffer.host = reinterpret_cast<uint8_t *>(mapped + kWavefrontLightBase);
+    error = halide_device_crop(nullptr, cfg.raw_buffer(), &scalar_field.buffer);
+    scalar_field.active = !error;
+    if (error) return error;
+    halide_dimension_t ring_shape[] = {{0,width,1,0},{0,kWavefrontLightRows,width,0},
+                                      {0,variant.channels,width*kWavefrontLightRows,0}};
+    halide_buffer_t ring = scalar_field.buffer;
+    ring.dimensions = 3;
+    ring.dim = ring_shape;
+    std::vector<int> labels(kWavefrontLightRows, -1);
+    int head = 0, completed_band = -1;
+    int source_calls = 0;
+    const int bands = (height + variant.rows - 1) / variant.rows;
+    auto trace = [&](int event, int band, int start, int rows, int slot) {
+        if (options.trace) options.trace(options.trace_context,event,band,start,rows,slot);
+    };
+    if (result) result->ring_rows = kWavefrontLightRows;
+    for (int band = 0; band < bands && !error; ++band) {
+        const int start = band * variant.rows, rows = std::min(variant.rows, height-start);
+        const int needed_end = std::min(height, start + rows + kWavefrontLightMargin);
+        while (head < needed_end && !error) {
+            const int slot = head % kWavefrontLightRows;
+            const int count = std::min(needed_end-head, kWavefrontLightRows-slot);
+            for (int y=head; y<head+count; ++y) {
+                const int old = labels[y % kWavefrontLightRows];
+                if (old >= 0 && std::min(bands-1,(old+kWavefrontLightMargin)/variant.rows) > completed_band) {
+                    error = -91;
+                    break;
+                }
+            }
+            if (error) break;
+            WavefrontCrop target;
+            std::copy(std::begin(ring_shape),std::end(ring_shape),target.dimensions);
+            target.dimensions[1].min = slot;
+            target.dimensions[1].extent = count;
+            target.buffer = ring;
+            target.buffer.dim = target.dimensions;
+            target.buffer.device = 0;
+            target.buffer.device_interface = nullptr;
+            target.buffer.host = reinterpret_cast<uint8_t *>(mapped+kWavefrontLightBase+int64_t(slot)*width);
+            error = halide_device_crop(nullptr,&ring,&target.buffer);
+            target.active = !error;
+            if (error) break;
+            target.dimensions[1].min = head;
+            trace(1,band,head,count,slot);
+            error = invoke(variant.source,cfg.raw_buffer(),&target.buffer);
+            trace(2,band,head,count,slot);
+            if (error) break;
+            cfg.set_device_dirty();
+            for (int y=head; y<head+count; ++y) labels[y % kWavefrontLightRows] = y;
+            head += count;
+            if (result) { result->producer_rows += count; ++result->producer_calls; }
+            ++source_calls;
+#if FOTUFILM_WAVEFRONT_TESTING
+            if (options.test_fail_after_source_call == source_calls) { error = -93; break; }
+#endif
+        }
+        if (error) break;
+        for (int y=std::max(0,start-kWavefrontLightMargin); y<needed_end; ++y)
+            if (labels[y % kWavefrontLightRows] != y) { error = -92; break; }
+        if (error) break;
+        WavefrontCrop target;
+        std::copy(out->dim,out->dim+3,target.dimensions);
+        target.dimensions[1].min = start;
+        target.dimensions[1].extent = rows;
+        target.buffer = *out;
+        target.buffer.dim = target.dimensions;
+        target.buffer.device = 0;
+        target.buffer.device_interface = nullptr;
+        target.buffer.host = out->host + int64_t(start)*out->dim[1].stride*sizeof(float);
+        error = halide_device_crop(nullptr,out,&target.buffer);
+        target.active = !error;
+        if (error) break;
+        trace(3,band,start,rows,0);
+        error = invoke(variant.consumer,cfg.raw_buffer(),&target.buffer);
+        trace(4,band,start,rows,0);
+        if (!error) {
+            out->set_device_dirty();
+            error = halide_device_sync(nullptr,out);
+        }
+        if (!error) {
+            completed_band = band;
+            if (result) ++result->consumer_calls;
+            trace(5,band,start,rows,0);
+        }
+    }
+    // Drain all submitted commands on both success and failure before any view is released.
+    const int drain_error = halide_device_sync(nullptr,out);
+    if (result) result->drain_status = drain_error;
+    return error ? error : drain_error;
+}
+#if FOTUFILM_BUNDLE_RESEARCH
+#include "../../tools/wavefront-bundle-scheduler.h"
+#endif
+#if FOTUFILM_THREE_STAGE_RESEARCH
+#include "../../tools/wavefront-three-stage-scheduler.h"
+#endif
+#endif
+
 int run_aot(ExecutionState &state, halide_buffer_t *in, halide_buffer_t *out,
             int32_t width, int32_t height, const float *configuration,
             int32_t feature_mask, uint32_t seed,
             int32_t origin_x = 0, int32_t origin_y = 0,
             int32_t configuration_floats = FOTUFILM_FRAME_CONFIGURATION_COUNT,
-            uint64_t configuration_id = 0, bool configuration_stable = false) {
+            uint64_t configuration_id = 0, bool configuration_stable = false,
+            const FotufilmWavefrontOptions *wavefront = nullptr,
+            FotufilmWavefrontResult *wavefront_result = nullptr) {
     // A FIELDS_IN frame rides its halation grids behind the configuration, so its buffer is
     // frame-sized rather than slider-sized; it is cached by the caller's id so the tiles of one
     // frame upload it once — and read in place when the caller keeps it (`configuration_stable`),
@@ -253,6 +408,7 @@ int run_aot(ExecutionState &state, halide_buffer_t *in, halide_buffer_t *out,
                                  film_tiles.raw_buffer(), film_on ? 1 : 0)
     FrameFunction pipeline = select_variant(feature_mask);
     if (!pipeline) return -3;
+    if (wavefront_result) wavefront_result->actual_mode = 0;
 #if FOTUFILM_AOT_WINDOWED_HOST
     const FrameFunction general_pipeline = pipeline;
     FrameFunction exact = nullptr;
@@ -299,14 +455,15 @@ int run_aot(ExecutionState &state, halide_buffer_t *in, halide_buffer_t *out,
     // A row-window graph never sees the whole frame, so a request that asks the kernel to measure
     // its own glare stays on the full-frame variant.
     const bool measures = (feature_mask & FOTUFILM_FRAME_FLARE_MEASURE) != 0;
-    if (windowed_enabled && supports_windowed_transport && !measures
+    const bool window_eligible = supports_windowed_transport && !measures
         && width >= 32 && height >= fotufilm::kWindowMinimumHeight
         && origin_x == 0 && origin_y == 0 && !wants_extended
         && in->dim[0].min == 0 && in->dim[1].min == 0
         && out->dim[0].min == 0 && out->dim[1].min == 0
         && in->dim[0].extent == width && in->dim[1].extent == height
         && out->dim[0].extent == width && out->dim[1].extent == height
-        && std::max(image_reach, grain_reach) <= fotufilm::kWindowMaximumReach) {
+        && std::max(image_reach, grain_reach) <= fotufilm::kWindowMaximumReach;
+    if (windowed_enabled && window_eligible) {
         // A twin compiled for exactly the request's stages runs them with nothing gated, so it
         // serves the request ahead of the gated twin; it can serve no other. One compiled without
         // couplers or a donor applies no coupler warp, where a graph that gates them off still
@@ -331,6 +488,89 @@ int run_aot(ExecutionState &state, halide_buffer_t *in, halide_buffer_t *out,
         FOTUFILM_AOT_WINDOWED_VARIANTS(FOTUFILM_PICK_WINDOWED)
 #undef FOTUFILM_PICK_WINDOWED
         if (exact && pipeline != general_pipeline) pipeline = exact;
+    }
+    if (wavefront && wavefront->mode == 1) {
+        const char *reason = "experimental kernels not built";
+#if FOTUFILM_AOT_WAVEFRONT_HOST
+        // Keep the original conservative admission for a controlled cut-only experiment.
+        // Separately bound the actual post-MTF graph's parallel branches; neither bound
+        // relaxes the legacy geometry, transport, class or exact-stage requirements.
+        const int64_t source_reach = fotufilm::wavefront_source_reach(frame,configuration,feature_mask);
+        const int64_t post_mtf_reach = fotufilm::wavefront_post_mtf_reach(frame,feature_mask);
+        reason = std::max(source_reach,post_mtf_reach) > fotufilm::gpu::kWavefrontLightMargin ? "source demand exceeds private row-cache bound"
+            : "unsupported geometry, transport or spatial reach";
+#if FOTUFILM_THREE_STAGE_RESEARCH
+        const bool stage_band_supported=wavefront->rows==512;
+#elif FOTUFILM_BUNDLE_RESEARCH
+#define FOTUFILM_BUNDLE_BAND_SUPPORTED(variant_name, stages_name, variant_mask, band_rows) \
+            || wavefront->rows==band_rows
+        const bool stage_band_supported=false FOTUFILM_AOT_BUNDLE_VARIANTS(FOTUFILM_BUNDLE_BAND_SUPPORTED);
+#undef FOTUFILM_BUNDLE_BAND_SUPPORTED
+#else
+        const bool stage_band_supported=true;
+#endif
+        if (window_eligible && stage_band_supported && std::max(source_reach,post_mtf_reach) <= fotufilm::gpu::kWavefrontLightMargin) {
+            bool carries_warp = false;
+            for (int i = 0; i < 3 * FOTUFILM_COUPLER_WARP_SAMPLES; ++i)
+                carries_warp |= configuration[FOTUFILM_CONFIG_COUPLER_WARP + i] != 0.0f;
+            WavefrontVariant experimental;
+#define FOTUFILM_PICK_WAVEFRONT(variant_name, stages_name, variant_mask, band_rows) \
+            if (general_pipeline == fotufilm_halide_ios_##variant_name \
+                && wanted_stages == ((variant_mask) & FOTUFILM_VARIANT_STAGE_BITS) \
+                && wavefront->rows == band_rows \
+                && (((variant_mask) & (FOTUFILM_FRAME_COUPLERS | FOTUFILM_FRAME_DONOR_LAYER)) != 0 || !carries_warp)) \
+                experimental = {fotufilm_halide_ios_##variant_name##_wavefront_light_##stages_name, \
+                    fotufilm_halide_ios_##variant_name##_wavefront_##stages_name##_##band_rows,band_rows, \
+                    3}; // The post-MTF frontier has three channels for every admitted graph.
+            FOTUFILM_AOT_WAVEFRONT_VARIANTS(FOTUFILM_PICK_WAVEFRONT)
+#undef FOTUFILM_PICK_WAVEFRONT
+            reason = "unsupported exact stages, class, band or coupler warp";
+            if (experimental.consumer) {
+                if (wavefront_result) {
+                    wavefront_result->actual_mode = 1;
+                    wavefront_result->reason = "admitted";
+                }
+#if FOTUFILM_BUNDLE_RESEARCH
+                BundleFunction bundle_producer=nullptr;
+#define FOTUFILM_PICK_BUNDLE(variant_name, stages_name, variant_mask) \
+                if(experimental.source==fotufilm_halide_ios_##variant_name##_wavefront_light_##stages_name) { \
+                    bundle_producer=fotufilm_halide_ios_##variant_name##_wavefront_bundle_source_##stages_name; }
+                FOTUFILM_AOT_WAVEFRONT_LIGHT_VARIANTS(FOTUFILM_PICK_BUNDLE)
+#undef FOTUFILM_PICK_BUNDLE
+                experimental.consumer=nullptr;
+#define FOTUFILM_PICK_BUNDLE_CONSUMER(variant_name, stages_name, variant_mask, band_rows) \
+                if(experimental.source==fotufilm_halide_ios_##variant_name##_wavefront_light_##stages_name && wavefront->rows==band_rows) \
+                    experimental.consumer=fotufilm_halide_ios_##variant_name##_wavefront_bundle_##stages_name##_##band_rows;
+                FOTUFILM_AOT_BUNDLE_VARIANTS(FOTUFILM_PICK_BUNDLE_CONSUMER)
+#undef FOTUFILM_PICK_BUNDLE_CONSUMER
+                if(!experimental.consumer)return -94;
+                int strides[]={frame.halation_stride_0,frame.halation_stride_1,frame.halation_stride_2};
+                int radii[]={frame.halation_strided_radius_0,frame.halation_strided_radius_1,frame.halation_strided_radius_2};
+                return run_wavefront_bundle(experimental,bundle_producer,out,width,height,configuration,
+                    strides,radii,int(fotufilm::wavefront_log_reach(frame,feature_mask)),*wavefront,wavefront_result,
+#elif FOTUFILM_THREE_STAGE_RESEARCH
+                FrameFunction halation_stage=nullptr;
+#define FOTUFILM_PICK_HALATION(variant_name, stages_name, variant_mask) \
+                if (experimental.source==fotufilm_halide_ios_##variant_name##_wavefront_light_##stages_name) \
+                    halation_stage=fotufilm_halide_ios_##variant_name##_wavefront_halation_##stages_name;
+                FOTUFILM_AOT_WAVEFRONT_LIGHT_VARIANTS(FOTUFILM_PICK_HALATION)
+#undef FOTUFILM_PICK_HALATION
+                if (wavefront->rows!=512) return -94;
+                const int log_reach=int(fotufilm::wavefront_log_reach(frame,feature_mask));
+                const int halo_reach=int(post_mtf_reach-log_reach);
+                return run_wavefront_three_stage(experimental,halation_stage,out,width,height,configuration,
+                    log_reach,halo_reach,*wavefront,wavefront_result,
+#else
+                return run_wavefront(experimental,out,width,height,configuration,*wavefront,wavefront_result,
+#endif
+                    [&](auto function,halide_buffer_t *private_cfg,auto... destinations) {
+                        return function(FOTUFILM_AOT_FRAME_ARGUMENTS(in, private_cfg, exposure, film, paper, width, height,
+                            frame,seed,origin_x,origin_y,feature_mask,configuration,film_tiles.raw_buffer(),film_on ? 1 : 0),destinations...);
+                    });
+            }
+        }
+#endif
+        if (wavefront_result) wavefront_result->reason = reason;
     }
     if (pipeline != general_pipeline && state.last_windowed_trace_mask != feature_mask) {
         state.last_windowed_trace_mask = feature_mask;
@@ -723,13 +963,15 @@ extern "C" int32_t fotufilm_halide_metal_process_srgb8(
     });
 }
 
-extern "C" int32_t fotufilm_halide_metal_process_linear_float_rows(
+static int32_t process_linear_float_rows(
     const float *input, float *output, int32_t width, int32_t height,
     int32_t out_y, int32_t out_rows,
     int32_t origin_x, int32_t origin_y, const float *configuration,
     const float *exposure_lut, const float *film_output_lut,
     const float *paper_output_lut, int32_t lut_dimension,
-    uint64_t spectral_cache_id, int32_t feature_mask, uint32_t seed) {
+    uint64_t spectral_cache_id, int32_t feature_mask, uint32_t seed,
+    const FotufilmWavefrontOptions *wavefront = nullptr,
+    FotufilmWavefrontResult *wavefront_result = nullptr) {
     if (!input || !output || !configuration || width <= 0 || height <= 0 ||
         out_y < 0 || out_rows <= 0 || out_y + out_rows > height ||
         !valid_flare_mean(configuration, feature_mask)) return -1;
@@ -754,10 +996,42 @@ extern "C" int32_t fotufilm_halide_metal_process_linear_float_rows(
         error = run_aot(state, input_buffer.raw_buffer(), output_buffer.raw_buffer(),
                         width, height, configuration,
                         feature_mask | FOTUFILM_FRAME_FLOAT_IO, seed,
-                        origin_x, origin_y);
+                        origin_x, origin_y, FOTUFILM_FRAME_CONFIGURATION_COUNT,
+                        0, false, wavefront, wavefront_result);
         if (!error) error = output_buffer.copy_to_host();
         return error;
     });
+}
+
+extern "C" int32_t fotufilm_halide_metal_process_linear_float_rows(
+    const float *input, float *output, int32_t width, int32_t height,
+    int32_t out_y, int32_t out_rows,
+    int32_t origin_x, int32_t origin_y, const float *configuration,
+    const float *exposure_lut, const float *film_output_lut,
+    const float *paper_output_lut, int32_t lut_dimension,
+    uint64_t spectral_cache_id, int32_t feature_mask, uint32_t seed) {
+    return process_linear_float_rows(input, output, width, height, out_y, out_rows,
+        origin_x, origin_y, configuration, exposure_lut, film_output_lut,
+        paper_output_lut, lut_dimension, spectral_cache_id, feature_mask, seed);
+}
+
+extern "C" int32_t fotufilm_halide_metal_process_linear_float_wavefront(
+    const float *input, float *output, int32_t width, int32_t height,
+    int32_t origin_x, int32_t origin_y, const float *configuration,
+    const float *exposure_lut, const float *film_output_lut,
+    const float *paper_output_lut, int32_t lut_dimension,
+    uint64_t spectral_cache_id, int32_t feature_mask, uint32_t seed,
+    const FotufilmWavefrontOptions *options, FotufilmWavefrontResult *result) {
+    if (result) *result = {};
+    if (!options || options->size != sizeof(*options) || options->version != 1
+        || (options->mode != 0 && options->mode != 1)) return -1;
+    if (result) {
+        result->requested_mode = options->mode;
+        result->reason = options->mode ? "experimental kernels not built" : "legacy requested";
+    }
+    return process_linear_float_rows(input, output, width, height, 0, height,
+        origin_x, origin_y, configuration, exposure_lut, film_output_lut,
+        paper_output_lut, lut_dimension, spectral_cache_id, feature_mask, seed, options, result);
 }
 
 extern "C" int32_t fotufilm_halide_metal_process_linear_float(

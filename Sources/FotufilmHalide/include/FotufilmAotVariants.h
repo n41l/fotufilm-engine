@@ -156,6 +156,40 @@
     X(monochrome_float_realtime, printed_slide, (((FOTUFILM_AOT_WINDOWED_STAGES | FOTUFILM_FRAME_MONOCHROME) & ~FOTUFILM_VARIANT_STAGE_BITS) | FOTUFILM_AOT_PRINTED_SLIDE)) \
     X(color_float_realtime_negative, negative, (((FOTUFILM_AOT_WINDOWED_STAGES | FOTUFILM_FRAME_DENSITY_OUT) & ~FOTUFILM_VARIANT_STAGE_BITS) | FOTUFILM_AOT_NEGATIVE))
 
+/// Opt-in macOS research producer/consumer kernels. The source exports the original final post-MTF
+/// selected light expression into a private Float32 row cache; consumers read that cache and keep
+/// existing per-window intermediates. Explicit call-scoped scheduling owns row labels and GPU
+/// completion. No automatic legacy selection.
+#define FOTUFILM_AOT_WAVEFRONT_VARIANTS(X) \
+    X(color_float_realtime, negative, 134462, 64) \
+    X(color_float_realtime, negative, 134462, 128) \
+    X(color_float_realtime, negative, 134462, 256) \
+    X(color_float_realtime, negative, 134462, 512) \
+    X(color_float_realtime, negative, 134462, 1080) \
+    X(color_float_realtime, negative_luma, 134974, 64) \
+    X(color_float_realtime, negative_luma, 134974, 128) \
+    X(color_float_realtime, negative_luma, 134974, 256) \
+    X(color_float_realtime, negative_luma, 134974, 512) \
+    X(color_float_realtime, negative_luma, 134974, 1080) \
+    X(monochrome_float_realtime, printed_slide, 133558, 64) \
+    X(monochrome_float_realtime, printed_slide, 133558, 128) \
+    X(monochrome_float_realtime, printed_slide, 133558, 256) \
+    X(monochrome_float_realtime, printed_slide, 133558, 512) \
+    X(monochrome_float_realtime, printed_slide, 133558, 1080)
+
+#define FOTUFILM_AOT_WAVEFRONT_LIGHT_VARIANTS(X) \
+    X(color_float_realtime, negative, 134462) \
+    X(color_float_realtime, negative_luma, 134974) \
+    X(monochrome_float_realtime, printed_slide, 133558)
+
+#define FOTUFILM_AOT_BUNDLE_VARIANTS(X) \
+    X(color_float_realtime, negative, 134462, 512) \
+    X(color_float_realtime, negative, 134462, 1080) \
+    X(color_float_realtime, negative_luma, 134974, 512) \
+    X(color_float_realtime, negative_luma, 134974, 1080) \
+    X(monochrome_float_realtime, printed_slide, 133558, 512) \
+    X(monochrome_float_realtime, printed_slide, 133558, 1080)
+
 /// A stage bit is covered by any variant that carries it; an exact bit must match. The delivery
 /// encode and its transfer (ENCODE_OUT, OUTPUT_*) and the whole-frame glare measurement
 /// (FLARE_MEASURE) are neither: the pipeline chooses them at run time.

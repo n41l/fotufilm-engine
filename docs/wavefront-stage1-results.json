@@ -1,0 +1,148 @@
+{
+  "scope": "Stage 1 correctness and fragment feasibility; no complete-film E or performance acceptance",
+  "date": "2026-10-30",
+  "reference_sha": "96623ba0831a52dbddcda35727a206d4123a8b5f",
+  "halide_gitlink": "58868f0c7106f8e1214c8ae14f55e3157659b8e0",
+  "machine": {
+    "soc": "Apple M4 Pro",
+    "cpu_cores": 12,
+    "unified_memory_gib": 24,
+    "macos": "27.0.1",
+    "xcode": "27.1 (27A9269)",
+    "sdk": "27.0",
+    "metal": "32023.921.6",
+    "llvm_lld": "22.1.8",
+    "target": "arm64-apple-macos14.0"
+  },
+  "tests": {
+    "metrics": 16,
+    "numerical_oracle": 9,
+    "cpu_stages": 11,
+    "metal_stages": 11
+  },
+  "reference_aot": {
+    "archive_count": 63,
+    "source_key": "de4cc3dafd68ffb0652e8cb4e9cb4c8bbea9ac459a22fbf6507d15a420519054"
+  },
+  "baseline": {
+    "cases": 35,
+    "frame_comparisons": 70,
+    "max_linear_error": 2.86102294921875e-06,
+    "max_encoded_error": 0.0015872264048084617,
+    "windowed_cases": 27
+  },
+  "catalog": {
+    "non_example_stocks": 47,
+    "fixtures": 94,
+    "actual_calls": 188,
+    "windowed_by_size": {
+      "1920x1080": 47,
+      "3840x2160": 40
+    },
+    "fallbacks": [
+      {
+        "stock": "agfachrome100",
+        "size": "3840x2160",
+        "spatial_reach": 203,
+        "upstream_window_reach_limit": 180,
+        "actual_variant": "fotufilm_halide_ios_color_float_realtime",
+        "fallback_reason": "spatial reach exceeds upstream window limit"
+      },
+      {
+        "stock": "astia100f",
+        "size": "3840x2160",
+        "spatial_reach": 259,
+        "upstream_window_reach_limit": 180,
+        "actual_variant": "fotufilm_halide_ios_color_float_realtime",
+        "fallback_reason": "spatial reach exceeds upstream window limit"
+      },
+      {
+        "stock": "doublex5222",
+        "size": "3840x2160",
+        "spatial_reach": 244,
+        "upstream_window_reach_limit": 180,
+        "actual_variant": "fotufilm_halide_ios_monochrome_float_realtime",
+        "fallback_reason": "spatial reach exceeds upstream window limit"
+      },
+      {
+        "stock": "f64d",
+        "size": "3840x2160",
+        "spatial_reach": 237,
+        "upstream_window_reach_limit": 180,
+        "actual_variant": "fotufilm_halide_ios_color_float_realtime",
+        "fallback_reason": "spatial reach exceeds upstream window limit"
+      },
+      {
+        "stock": "pro160ns",
+        "size": "3840x2160",
+        "spatial_reach": 212,
+        "upstream_window_reach_limit": 180,
+        "actual_variant": "fotufilm_halide_ios_color_float_realtime",
+        "fallback_reason": "spatial reach exceeds upstream window limit"
+      },
+      {
+        "stock": "pro400h",
+        "size": "3840x2160",
+        "spatial_reach": 203,
+        "upstream_window_reach_limit": 180,
+        "actual_variant": "fotufilm_halide_ios_color_float_realtime",
+        "fallback_reason": "spatial reach exceeds upstream window limit"
+      },
+      {
+        "stock": "provia100f",
+        "size": "3840x2160",
+        "spatial_reach": 233,
+        "upstream_window_reach_limit": 180,
+        "actual_variant": "fotufilm_halide_ios_color_float_realtime",
+        "fallback_reason": "spatial reach exceeds upstream window limit"
+      }
+    ]
+  },
+  "fragment": {
+    "single_frame_comparisons": 216,
+    "real_folded_single_frame_results": 72,
+    "labelled_single_frame_fallbacks": 36,
+    "max_error": 0.0,
+    "lifecycle_sequences": 12,
+    "lifecycle_calls": 36,
+    "lifecycle_max_error": 0.0,
+    "generator_sha256": "4415b975c7fdcf90c77fe0e2f25fffc918980d8e3481f301ca67d64aa9f65a21",
+    "driver_sha256": "5da35b64f2cdab3071f1a9a7053f77ec53b55e340bee940c086545f404cca145"
+  },
+  "known_failures": [
+    {
+      "kind": "radius-one shortcut bypasses folded producer",
+      "record": "build/wavefront-probe/radius-one-diagnostic/reproducer.json"
+    },
+    {
+      "kind": "disk-full verification attempt",
+      "record": "../reference/build/wavefront-baseline/disk-full-attempt.json",
+      "artifacts": "../reference/build/wavefront-baseline/disk-full-artifacts.json"
+    }
+  ],
+  "raw_evidence": [
+    {
+      "path": "../reference/build/wavefront-baseline/verification.json",
+      "sha256": "707075368d1b8fd0315ab57ca8a4b6827745450f647beef67df0bea3173869c1"
+    },
+    {
+      "path": "../reference/build/wavefront-stock-probe/capabilities.json",
+      "sha256": "45fe45ea3f4a2b3478bccabb5a49c584ea8bb5662bbef4a6feef3bf35721d3cf"
+    },
+    {
+      "path": "build/wavefront-probe/verification.json",
+      "sha256": "5093c0bfc6309dc20651b4a19872c9052129f4b3468f681574e240d471ca0868"
+    },
+    {
+      "path": "../reference/build/wavefront-fixtures/catalog/catalog.json",
+      "sha256": "23d9d731f24e2516805ae7060fb97bbc634259341d19e08c482d3246d45d71a1"
+    }
+  ],
+  "not_completed": [
+    "warm B0/B1 benchmark and frozen B_ref",
+    "reliable total device/process/retained memory gates",
+    "complete-film active-producer wavefront mode",
+    "candidate legacy/byte/still/exact regression",
+    "upstream PR"
+  ]
+}

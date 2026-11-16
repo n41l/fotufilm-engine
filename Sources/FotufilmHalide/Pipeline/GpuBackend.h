@@ -6,6 +6,7 @@
 #include "../Graph/Frame.h"
 #include "../FotufilmCompiledCache.h"
 #include "FilmTileStore.h"
+#include "WavefrontLightLayout.h"
 
 #include <algorithm>
 #include <cmath>
@@ -50,6 +51,8 @@ struct GpuPolicy {
     bool approximate = false;
     bool realtime = false;
     bool windowed = false;
+    // Admission from an exact graph with couplers and their diffusion both compiled on.
+    bool coupler_down_fusion = false;
     bool tabulated_curves = false;
     bool table_grain = false;
     /// Whether the frame averages its own first stage for the veiling glare rather than reading the
@@ -63,12 +66,29 @@ struct GpuPolicy {
     int paper_lut_base = 0;
 };
 
+// A cut at the original final MTF-selected light expression, never a replacement formula.
+struct LightFrontier {
+    graph::Store point = graph::Store::MtfSelected;
+    Func external;
+    Func captured;
+    int matches = 0;
+    std::function<Func(Func)> external_builder;
+};
+struct CoarseFrontier {
+    bool consume = false;
+    std::array<Func,3> fields;
+};
+
 class GpuBackend : public graph::Backend {
 public:
     GpuBackend(GpuSchedule &schedule, GpuPolicy policy, FrameParams &p, ImageParam &configuration,
                ImageParam &film_lut, ImageParam &paper_lut)
         : schedule_(schedule), policy_(policy), p_(p), configuration_(configuration), film_lut_(film_lut),
           paper_lut_(paper_lut) {}
+
+    void light_frontier(LightFrontier *frontier) { frontiers_.push_back(frontier); }
+
+    void coarse_frontier(CoarseFrontier *value) { coarse_ = value; }
 
     bool approximate() const override { return policy_.approximate; }
     bool half_lut_math() const override { return policy_.half_tetra; }
@@ -82,6 +102,12 @@ public:
     using graph::Backend::store;
     Func store(Func values, graph::Store point, int channels, Expr branch) override {
         using graph::Store;
+        for (LightFrontier *frontier : frontiers_) if (point == frontier->point) {
+            ++frontier->matches;
+            frontier->captured = values;
+            if (frontier->external_builder) frontier->external=frontier->external_builder(values);
+            return remember(values, frontier->external.defined() ? frontier->external : values);
+        }
         if (!values.defined() || stored_.count(values.name())) return values;
         const bool half = policy_.half_store;
         switch (point) {
@@ -128,9 +154,27 @@ public:
             }
             return remember(values, schedule_.store_frame(values, half, channels, branch));
         case Store::MtfMixed:
+            if (fuse_windowed_mtf()) {
+                // The neutral read needs all three mixed records. Compute each once in the
+                // final MTF store's thread, rather than inline it once per output channel.
+                schedule_.register_stage(values);
+                return remember(values, values);
+            }
+            return remember(values, schedule_.store_frame(values, half, channels, branch));
         case Store::MtfSeparated:
-        case Store::LogExposure:
+            if (fuse_windowed_mtf()) return remember(values, values);
+            return remember(values, schedule_.store_frame(values, half, channels, branch));
         case Store::Released:
+            // Release remains a per-source-sample expression before the box sum. The exact
+            // diffusion-on graph has no pointwise bypass or broad-fringe reader of this field.
+            if (policy_.coupler_down_fusion && schedule_.configuration().windowed_coupler_fusion
+                && schedule_.gpu_device_api() == DeviceAPI::Metal && schedule_.windowed()
+                && policy_.windowed && policy_.realtime && !half) {
+                fused_coupler_source_ = values.name();
+                return remember(values, values);
+            }
+            return remember(values, schedule_.store_frame(values, half, channels, branch));
+        case Store::LogExposure:
         case Store::FlatLog:
         case Store::FlatReleased:
             return remember(values, schedule_.store_frame(values, half, channels, branch));
@@ -179,18 +223,25 @@ public:
     Func gaussian(Func source, Expr sigma0, Expr sigma1, Expr sigma2, Expr radius,
                   Expr width, Expr height, const std::string &name, int channels,
                   Expr luma_sigma, Expr luma_radius) override {
+        // The print MTF's vertical result is the one gaussian whose reader (the output kernel,
+        // through the unstored print chain) can take it into its own threads; every other blur
+        // keeps its stored second pass.
+        const bool fuse = fuse_windowed_print_mtf()
+            && name.find("print_mtf") != std::string::npos;
         Func blurred = schedule_.gpu_gaussian(source, sigma0, sigma1, sigma2, radius, width, height,
-                                    policy_.half_store, name, channels, true, luma_sigma,
-                                    luma_radius);
-        stored_.insert(blurred.name());
+                                    policy_.half_store, name, channels, !fuse, luma_sigma,
+                                    luma_radius, fuse);
+        if (!fuse) stored_.insert(blurred.name());
         return blurred;
     }
 
     Func gaussian_decimated(Func source, Expr sigma, Expr radius, Expr origin_x,
                             Expr origin_y, Expr width, Expr height,
                             const std::string &name, int) override {
+        const bool unit_stride = schedule_.configuration().windowed_coupler_unit_stride
+            && !fused_coupler_source_.empty() && source.name() == fused_coupler_source_;
         return schedule_.gpu_gaussian_decimated(source, sigma, radius, origin_x, origin_y, width,
-                                      height, policy_.half_store, name);
+                                      height, policy_.half_store, name, unit_stride);
     }
 
     std::array<Expr, 3> scattered(Func light, std::array<Expr, 3> strides,
@@ -229,6 +280,22 @@ public:
             }
             return center;
         };
+        if (halation && coarse_ && coarse_->consume) {
+            Expr base=kWavefrontLightBase+width*kWavefrontLightRows*3;
+            for (int i=0;i<3;++i) {
+                Expr w=(width+strides[i]-1)/strides[i],h=(height+strides[i]-1)/strides[i];
+                Expr offset=base;
+                auto at=[&](Expr cx,Expr cy) {
+                    Expr inside=cx>=0&&cx<w&&cy>=0&&cy<h;
+                    return Halide::select(inside,configuration_(offset+Halide::clamp(cx,0,w-1)
+                        +Halide::clamp(cy,0,h-1)*w+Halide::min(channel,2)*w*h),0.f);
+                };
+                auto valid=[&](Expr cx,Expr cy) {return Halide::select(cx>=0&&cx<w&&cy>=0&&cy<h,1.f,0.f);};
+                scattered_at[i]=read_scale(i,strides[i],at,valid);
+                base+=w*h*3;
+            }
+            return scattered_at;
+        }
         if (halation && policy_.fields_in) {
             // The grids arrive whole-frame behind the configuration: frame cells are their own
             // cells, and a cell off the grid reads zero and weighs nothing, as a cell off a
@@ -293,6 +360,7 @@ public:
             Func blurred = schedule_.gpu_triple_box_blur(
                 down_view, strided_radii[scale_index], down_width, down_height, half,
                 scale_name + "_spread", channels);
+            if (halation && coarse_ && !coarse_->consume) coarse_->fields[scale_index]=blurred;
             Func bounded_blur = constant_exterior(
                 blurred, typed_zero(blurred),
                 {{0, down_width}, {0, down_height}, {0, channels}});
@@ -509,8 +577,26 @@ private:
     /// Whether a stage that only one kernel reads, and reads across its channels, is developed
     /// in that kernel's threads rather than stored: the row-window graphs on Metal, which the
     /// row-window host measures.
+    bool fuse_windowed_mtf() const {
+        return schedule_.configuration().windowed_mtf_fusion
+            && schedule_.gpu_device_api() == DeviceAPI::Metal
+            && schedule_.windowed() && policy_.windowed && policy_.realtime
+            && !policy_.half_store;
+    }
+
+    /// Whether the print MTF's vertical convolution is developed in the output kernel's
+    /// threads instead of a stored second-pass field: the row-window float realtime Metal
+    /// schedule alone, where the print chain it feeds is the blur's only reader.
+    bool fuse_windowed_print_mtf() const {
+        return schedule_.configuration().windowed_print_mtf_fusion
+            && schedule_.gpu_device_api() == DeviceAPI::Metal
+            && schedule_.windowed() && policy_.windowed && policy_.realtime
+            && !policy_.half_store;
+    }
+
     bool register_stages() const {
-        return schedule_.windowed() && schedule_.gpu_device_api() == DeviceAPI::Metal;
+        return schedule_.gpu_device_api()==DeviceAPI::Metal
+            && (policy_.windowed || schedule_.general_optimization(gpu::kGeneralRegisters));
     }
 
     Func remember(Func original, Func view) {
@@ -519,6 +605,8 @@ private:
         return view;
     }
 
+    std::vector<LightFrontier *> frontiers_;
+    CoarseFrontier *coarse_ = nullptr;
     GpuSchedule &schedule_;
     GpuPolicy policy_;
     FrameParams &p_;
@@ -526,6 +614,7 @@ private:
     ImageParam &film_lut_;
     ImageParam &paper_lut_;
     std::set<std::string> stored_;
+    std::string fused_coupler_source_;
 };
 
 

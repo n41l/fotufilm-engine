@@ -112,6 +112,13 @@ void gpu_configuration() {
     auto half = metal;
     half.half_blur = true;
     check(metal.cache_key() != half.cache_key(), "schedule: precision enters cache identity");
+    auto general=metal;general.general_optimizations=gpu::kGeneralRegisters;
+    gpu::GpuSchedule general_schedule(general), plain(metal);
+    check(general.cache_key()!=metal.cache_key() && general_schedule.register_fusion()
+          && !plain.register_fusion() && !general_schedule.windowed(),
+          "schedule: general optimization is explicit, isolated and cache-keyed");
+    auto portable=general;portable.device=Halide::DeviceAPI::Vulkan;
+    check(!gpu::GpuSchedule(portable).register_fusion(),"schedule: general research leaves portable backends unchanged");
     Func a("window_a"), b("window_b");
     Var x("x"), y("y"), c("c");
     a(x, y, c) = 0.0f;

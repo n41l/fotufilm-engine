@@ -1,0 +1,1127 @@
+{
+  "stage": 22,
+  "complete": true,
+  "source": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-long-stage22-profile/report.json",
+  "source_sha256": "a21c52b9bf6ce8447ae577df16e51a9bf9adec7fbf6d987a1e0c16a9a811e76f",
+  "aggregation": "median of independent process medians; p95 entry is median of process p95s",
+  "performance_acceptance": false,
+  "groups": {
+    "R-normal": {
+      "api_ms": 44.821999967098236,
+      "p95_ms": 83.57799996156245,
+      "throughput_fps": 19.583333333333332,
+      "device_peak_mib": 1183.71875,
+      "process_peak_mib": 1720.1338996887207,
+      "frames": 2447,
+      "sampled_frames": 0,
+      "new_buffers_histogram": {
+        "4": 2441,
+        "3": 5,
+        "2": 1
+      },
+      "thermal_histogram": {
+        "0": 749,
+        "1": 1698
+      }
+    },
+    "BestFit-normal": {
+      "api_ms": 46.71843774849549,
+      "p95_ms": 74.91754199145362,
+      "throughput_fps": 19.083333333333332,
+      "device_peak_mib": 991.71875,
+      "process_peak_mib": 1335.907371520996,
+      "frames": 2445,
+      "sampled_frames": 0,
+      "new_buffers_histogram": {
+        "0": 2445
+      },
+      "thermal_histogram": {
+        "1": 2445
+      }
+    },
+    "BestFit-trace": {
+      "api_ms": 44.156937510706484,
+      "p95_ms": 72.76893750531599,
+      "throughput_fps": 20.566666666666666,
+      "device_peak_mib": 991.71875,
+      "process_peak_mib": 1337.8760986328125,
+      "sample_api_ms": 45.67146877525374,
+      "unsampled_api_ms": 44.10764604108408,
+      "main_thread_cpu_ms": 11.573500000000013,
+      "gpu_union_ms": 34.51216695248149,
+      "gpu_span_ms": 41.17632290581241,
+      "allocation_ms": 0.11571921641007066,
+      "metal_new_buffer_ms": 0.0,
+      "explicit_wait_ms": 4.880927182966843,
+      "encoding_ms": 31.83568752137944,
+      "native_factory_ms": 29.978864564327523,
+      "pipeline_create_ms": 0.7246772584039718,
+      "native_factory_previous_gpu_overlap_ms": 28.492490004282445,
+      "encoding_residual_ms": 0.6550546095240861,
+      "trace_write_ms": 11.492635530885309,
+      "trace_write_total_ms": 450.84158302051947,
+      "trace_api_bracket_delta_us": 0.16653211787343025,
+      "frames": 2401,
+      "sampled_frames": 120,
+      "new_buffers_histogram": {
+        "0": 2401
+      },
+      "thermal_histogram": {
+        "1": 2401
+      }
+    },
+    "R-trace": {
+      "api_ms": 50.9997192712035,
+      "p95_ms": 89.7127710049972,
+      "throughput_fps": 17.75,
+      "device_peak_mib": 1183.71875,
+      "process_peak_mib": 1722.079257965088,
+      "sample_api_ms": 55.762260511983186,
+      "unsampled_api_ms": 50.59057296602987,
+      "main_thread_cpu_ms": 10.543249999999894,
+      "gpu_union_ms": 39.351989777060226,
+      "gpu_span_ms": 50.80671879113652,
+      "allocation_ms": 0.30176041764207184,
+      "metal_new_buffer_ms": 0.12571873958222568,
+      "explicit_wait_ms": 5.4807187407277524,
+      "encoding_ms": 40.485385950887576,
+      "native_factory_ms": 37.522781698498875,
+      "pipeline_create_ms": 0.8004586561582983,
+      "native_factory_previous_gpu_overlap_ms": 31.640437577152625,
+      "encoding_residual_ms": 0.6517700385302305,
+      "trace_write_ms": 10.11437497800216,
+      "trace_write_total_ms": 327.7115447563119,
+      "trace_api_bracket_delta_us": 0.1354783307760954,
+      "frames": 2085,
+      "sampled_frames": 120,
+      "new_buffers_histogram": {
+        "4": 2072,
+        "3": 10,
+        "2": 3
+      },
+      "thermal_histogram": {
+        "1": 2085
+      }
+    }
+  },
+  "comparisons": {
+    "normal": {
+      "median_aggregate_delta_ms": 1.8964377813972533,
+      "median_aggregate_delta_percent": 4.231042306879074,
+      "pairs": [
+        {
+          "repeat": 0,
+          "delta_ms": -3.2640419667586684,
+          "delta_percent": -8.345523250982312
+        },
+        {
+          "repeat": 1,
+          "delta_ms": 0.7820214377716184,
+          "delta_percent": 1.6568068087137622
+        },
+        {
+          "repeat": 2,
+          "delta_ms": -0.6167914252728224,
+          "delta_percent": -1.338780908403947
+        },
+        {
+          "repeat": 3,
+          "delta_ms": 11.37466705404222,
+          "delta_percent": 26.10492665722841
+        }
+      ]
+    },
+    "trace": {
+      "median_aggregate_delta_ms": -6.842781760497019,
+      "median_aggregate_delta_percent": -13.417292993533646,
+      "pairs": [
+        {
+          "repeat": 0,
+          "delta_ms": -5.830520414747298,
+          "delta_percent": -12.853810160609658
+        },
+        {
+          "repeat": 1,
+          "delta_ms": -13.008042005822062,
+          "delta_percent": -22.45391927724323
+        },
+        {
+          "repeat": 2,
+          "delta_ms": 7.863165927119553,
+          "delta_percent": 14.137415809910237
+        },
+        {
+          "repeat": 3,
+          "delta_ms": -2.9901464586146176,
+          "delta_percent": -6.447074450142676
+        }
+      ]
+    }
+  },
+  "processes": [
+    {
+      "index": 0,
+      "cell": "R-normal",
+      "api_ms": 39.111291989684105,
+      "p95_ms": 46.76566692069173,
+      "throughput_fps": 24.933333333333334,
+      "frames": 749,
+      "sampled_frames": 0,
+      "new_buffers_histogram": {
+        "4": 749
+      },
+      "thermal_histogram": {
+        "0": 749
+      },
+      "device_peak_mib": 1183.71875,
+      "process_peak_mib": 1719.7667236328125,
+      "environment_before": {
+        "free_disk_bytes": 3397357568,
+        "load_average": [
+          5.86083984375,
+          5.7685546875,
+          5.85546875
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 11977.81M  free = 1334.19M  (encrypted)",
+        "system_memory_free_percent": 44
+      },
+      "environment_after": {
+        "free_disk_bytes": 3381952512,
+        "load_average": [
+          6.74365234375,
+          6.00048828125,
+          5.93505859375
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 11977.81M  free = 1334.19M  (encrypted)",
+        "system_memory_free_percent": 43
+      },
+      "five_second_bins_ms": [
+        38.03300007712096,
+        38.514166488312185,
+        38.35250000702217,
+        41.942665935494006,
+        41.436957952100784,
+        38.76954107545316
+      ]
+    },
+    {
+      "index": 0,
+      "cell": "BestFit-normal",
+      "api_ms": 35.84725002292544,
+      "p95_ms": 48.31633297726512,
+      "throughput_fps": 26.266666666666666,
+      "frames": 789,
+      "sampled_frames": 0,
+      "new_buffers_histogram": {
+        "0": 789
+      },
+      "thermal_histogram": {
+        "1": 789
+      },
+      "device_peak_mib": 991.71875,
+      "process_peak_mib": 1336.376075744629,
+      "environment_before": {
+        "free_disk_bytes": 3381927936,
+        "load_average": [
+          6.74365234375,
+          6.00048828125,
+          5.93505859375
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 11977.81M  free = 1334.19M  (encrypted)",
+        "system_memory_free_percent": 44
+      },
+      "environment_after": {
+        "free_disk_bytes": 3481632768,
+        "load_average": [
+          5.42041015625,
+          5.7861328125,
+          5.8603515625
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 11953.81M  free = 1358.19M  (encrypted)",
+        "system_memory_free_percent": 48
+      },
+      "five_second_bins_ms": [
+        35.72229202836752,
+        35.31337506137788,
+        35.09035398019478,
+        34.86868750769645,
+        37.67583298031241,
+        36.3885834813118
+      ]
+    },
+    {
+      "index": 0,
+      "cell": "BestFit-trace",
+      "api_ms": 39.52972951810807,
+      "p95_ms": 53.55633399449289,
+      "throughput_fps": 24.433333333333334,
+      "frames": 734,
+      "sampled_frames": 30,
+      "new_buffers_histogram": {
+        "0": 734
+      },
+      "thermal_histogram": {
+        "1": 734
+      },
+      "device_peak_mib": 991.71875,
+      "process_peak_mib": 1337.8135986328125,
+      "environment_before": {
+        "free_disk_bytes": 3481628672,
+        "load_average": [
+          5.42041015625,
+          5.7861328125,
+          5.8603515625
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 11953.81M  free = 1358.19M  (encrypted)",
+        "system_memory_free_percent": 48
+      },
+      "environment_after": {
+        "free_disk_bytes": 3723784192,
+        "load_average": [
+          4.20703125,
+          5.43359375,
+          5.72705078125
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 11953.81M  free = 1358.19M  (encrypted)",
+        "system_memory_free_percent": 46
+      },
+      "five_second_bins_ms": [
+        31.548709026537836,
+        39.77468749508262,
+        43.60650002490729,
+        39.5917710266076,
+        39.347542100586,
+        39.12537498399615
+      ],
+      "sample_api_ms": 40.04149994580075,
+      "main_thread_cpu_ms": 5.989000000000022,
+      "gpu_union_ms": 34.534854581579566,
+      "gpu_span_ms": 37.82672918168828,
+      "allocation_ms": 0.049188267439603806,
+      "metal_new_buffer_ms": 0.0,
+      "explicit_wait_ms": 4.9911876558326185,
+      "encoding_ms": 29.946729075163603,
+      "native_factory_ms": 29.046479612588882,
+      "pipeline_create_ms": 0.26739551685750484,
+      "native_factory_previous_gpu_overlap_ms": 28.152229730039835,
+      "encoding_residual_ms": 0.2559369895607233,
+      "trace_write_ms": 5.346250021830201,
+      "trace_write_total_ms": 166.21212509926409,
+      "trace_api_bracket_delta_us": 0.08300412446260452,
+      "sample_new_buffers_histogram": {
+        "0": 30
+      },
+      "unsampled_api_ms": 39.51443749247119,
+      "factory_pending_histogram": {
+        "0": 120,
+        "1": 133,
+        "2": 295,
+        "3": 432,
+        "4": 1420
+      }
+    },
+    {
+      "index": 0,
+      "cell": "R-trace",
+      "api_ms": 45.36024993285537,
+      "p95_ms": 68.82929196581244,
+      "throughput_fps": 19.933333333333334,
+      "frames": 599,
+      "sampled_frames": 30,
+      "new_buffers_histogram": {
+        "4": 598,
+        "3": 1
+      },
+      "thermal_histogram": {
+        "1": 599
+      },
+      "device_peak_mib": 1183.71875,
+      "process_peak_mib": 1722.0323944091797,
+      "environment_before": {
+        "free_disk_bytes": 3723751424,
+        "load_average": [
+          4.20703125,
+          5.43359375,
+          5.72705078125
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 11953.81M  free = 1358.19M  (encrypted)",
+        "system_memory_free_percent": 46
+      },
+      "environment_after": {
+        "free_disk_bytes": 3720167424,
+        "load_average": [
+          12.02587890625,
+          7.05126953125,
+          6.29150390625
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 11953.81M  free = 1358.19M  (encrypted)",
+        "system_memory_free_percent": 43
+      },
+      "five_second_bins_ms": [
+        41.35616641724482,
+        45.99293746287003,
+        47.17068752506748,
+        43.39045798406005,
+        44.999312434811145,
+        50.25281250709668
+      ],
+      "sample_api_ms": 49.04245852958411,
+      "main_thread_cpu_ms": 7.638999999999729,
+      "gpu_union_ms": 38.49845862714574,
+      "gpu_span_ms": 45.483625028282404,
+      "allocation_ms": 0.20004186080768704,
+      "metal_new_buffer_ms": 0.09643746307119727,
+      "explicit_wait_ms": 4.748354142066091,
+      "encoding_ms": 36.929375550244,
+      "native_factory_ms": 35.52656248211861,
+      "pipeline_create_ms": 0.38864585803821683,
+      "native_factory_previous_gpu_overlap_ms": 31.689791823737323,
+      "encoding_residual_ms": 0.37108128890395164,
+      "trace_write_ms": 8.313875005114824,
+      "trace_write_total_ms": 341.0374614177272,
+      "trace_api_bracket_delta_us": 0.12514647096395493,
+      "sample_new_buffers_histogram": {
+        "4": 30
+      },
+      "unsampled_api_ms": 45.298209064640105,
+      "factory_pending_histogram": {
+        "0": 120,
+        "1": 153,
+        "2": 312,
+        "3": 438,
+        "4": 1377
+      }
+    },
+    {
+      "index": 1,
+      "cell": "BestFit-normal",
+      "api_ms": 47.98254196066409,
+      "p95_ms": 105.43791693635285,
+      "throughput_fps": 17.2,
+      "frames": 517,
+      "sampled_frames": 0,
+      "new_buffers_histogram": {
+        "0": 517
+      },
+      "thermal_histogram": {
+        "1": 517
+      },
+      "device_peak_mib": 991.71875,
+      "process_peak_mib": 1336.3604736328125,
+      "environment_before": {
+        "free_disk_bytes": 3720114176,
+        "load_average": [
+          12.02587890625,
+          7.05126953125,
+          6.29150390625
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 11953.81M  free = 1358.19M  (encrypted)",
+        "system_memory_free_percent": 43
+      },
+      "environment_after": {
+        "free_disk_bytes": 3735896064,
+        "load_average": [
+          10.208984375,
+          7.21435546875,
+          6.3857421875
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 11953.81M  free = 1358.19M  (encrypted)",
+        "system_memory_free_percent": 41
+      },
+      "five_second_bins_ms": [
+        48.48825000226498,
+        44.70512492116541,
+        48.889540950767696,
+        52.660582994576544,
+        51.83908354956657,
+        44.439979013986886
+      ]
+    },
+    {
+      "index": 1,
+      "cell": "R-trace",
+      "api_ms": 57.93216696474701,
+      "p95_ms": 90.36454197485,
+      "throughput_fps": 16.8,
+      "frames": 505,
+      "sampled_frames": 30,
+      "new_buffers_histogram": {
+        "4": 505
+      },
+      "thermal_histogram": {
+        "1": 505
+      },
+      "device_peak_mib": 1183.71875,
+      "process_peak_mib": 1721.7042922973633,
+      "environment_before": {
+        "free_disk_bytes": 3735871488,
+        "load_average": [
+          10.208984375,
+          7.21435546875,
+          6.3857421875
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 11953.81M  free = 1358.19M  (encrypted)",
+        "system_memory_free_percent": 41
+      },
+      "environment_after": {
+        "free_disk_bytes": 3709435904,
+        "load_average": [
+          21.39453125,
+          10.1279296875,
+          7.46875
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 11953.81M  free = 1358.19M  (encrypted)",
+        "system_memory_free_percent": 44
+      },
+      "five_second_bins_ms": [
+        45.84581247763708,
+        44.5083340164274,
+        70.74893749086186,
+        62.9603125853464,
+        60.25408348068595,
+        56.35404150234535
+      ],
+      "sample_api_ms": 60.90858351672068,
+      "main_thread_cpu_ms": 13.162999999999592,
+      "gpu_union_ms": 39.880791679024696,
+      "gpu_span_ms": 54.17970835696906,
+      "allocation_ms": 0.3835629322566092,
+      "metal_new_buffer_ms": 0.17681234749034047,
+      "explicit_wait_ms": 5.8626250247471035,
+      "encoding_ms": 42.2993756365031,
+      "native_factory_ms": 38.09068753616884,
+      "pipeline_create_ms": 1.1939590331166983,
+      "native_factory_previous_gpu_overlap_ms": 30.932707944884896,
+      "encoding_residual_ms": 0.9324587881565094,
+      "trace_write_ms": 11.914874950889498,
+      "trace_write_total_ms": 314.3856280948967,
+      "trace_api_bracket_delta_us": 0.14581019058823586,
+      "sample_new_buffers_histogram": {
+        "4": 30
+      },
+      "unsampled_api_ms": 57.89645796176046,
+      "factory_pending_histogram": {
+        "0": 120,
+        "1": 168,
+        "2": 314,
+        "3": 443,
+        "4": 1355
+      }
+    },
+    {
+      "index": 1,
+      "cell": "R-normal",
+      "api_ms": 47.200520522892475,
+      "p95_ms": 70.3656249679625,
+      "throughput_fps": 19.766666666666666,
+      "frames": 594,
+      "sampled_frames": 0,
+      "new_buffers_histogram": {
+        "4": 594
+      },
+      "thermal_histogram": {
+        "1": 594
+      },
+      "device_peak_mib": 1183.71875,
+      "process_peak_mib": 1720.141700744629,
+      "environment_before": {
+        "free_disk_bytes": 3709419520,
+        "load_average": [
+          21.39453125,
+          10.1279296875,
+          7.46875
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 11953.81M  free = 1358.19M  (encrypted)",
+        "system_memory_free_percent": 44
+      },
+      "environment_after": {
+        "free_disk_bytes": 3709190144,
+        "load_average": [
+          12.68701171875,
+          9.30810546875,
+          7.2900390625
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 11953.81M  free = 1358.19M  (encrypted)",
+        "system_memory_free_percent": 44
+      },
+      "five_second_bins_ms": [
+        60.046854545362294,
+        42.61799994856119,
+        44.19333301484585,
+        49.00454147718847,
+        44.535229506436735,
+        49.73545850953087
+      ]
+    },
+    {
+      "index": 1,
+      "cell": "BestFit-trace",
+      "api_ms": 44.92412495892495,
+      "p95_ms": 91.12729202024639,
+      "throughput_fps": 19.133333333333333,
+      "frames": 575,
+      "sampled_frames": 30,
+      "new_buffers_histogram": {
+        "0": 575
+      },
+      "thermal_histogram": {
+        "1": 575
+      },
+      "device_peak_mib": 991.71875,
+      "process_peak_mib": 1337.5167236328125,
+      "environment_before": {
+        "free_disk_bytes": 3709177856,
+        "load_average": [
+          12.68701171875,
+          9.30810546875,
+          7.2900390625
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 11953.81M  free = 1358.19M  (encrypted)",
+        "system_memory_free_percent": 44
+      },
+      "environment_after": {
+        "free_disk_bytes": 3735416832,
+        "load_average": [
+          16.85009765625,
+          10.74658203125,
+          7.9130859375
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 11953.81M  free = 1358.19M  (encrypted)",
+        "system_memory_free_percent": 43
+      },
+      "five_second_bins_ms": [
+        39.45860400563106,
+        45.51262501627207,
+        43.88033295981586,
+        50.62264599837363,
+        52.52745846519247,
+        44.615999911911786
+      ],
+      "sample_api_ms": 47.6205000304617,
+      "main_thread_cpu_ms": 13.025499999999912,
+      "gpu_union_ms": 34.48947932338342,
+      "gpu_span_ms": 43.885583349037915,
+      "allocation_ms": 0.13991724699735641,
+      "metal_new_buffer_ms": 0.0,
+      "explicit_wait_ms": 4.770666710101068,
+      "encoding_ms": 33.159687591250986,
+      "native_factory_ms": 30.796166509389877,
+      "pipeline_create_ms": 1.0119379730895162,
+      "native_factory_previous_gpu_overlap_ms": 28.832750278525054,
+      "encoding_residual_ms": 0.8907514857128263,
+      "trace_write_ms": 11.747541546355933,
+      "trace_write_total_ms": 584.6525442320853,
+      "trace_api_bracket_delta_us": 0.16693957149982452,
+      "sample_new_buffers_histogram": {
+        "0": 30
+      },
+      "unsampled_api_ms": 44.82554201968014,
+      "factory_pending_histogram": {
+        "0": 121,
+        "1": 214,
+        "2": 372,
+        "3": 481,
+        "4": 1212
+      }
+    },
+    {
+      "index": 2,
+      "cell": "R-trace",
+      "api_ms": 55.61954202130437,
+      "p95_ms": 138.68220895528793,
+      "throughput_fps": 13.933333333333334,
+      "frames": 419,
+      "sampled_frames": 30,
+      "new_buffers_histogram": {
+        "4": 409,
+        "3": 7,
+        "2": 3
+      },
+      "thermal_histogram": {
+        "1": 419
+      },
+      "device_peak_mib": 1183.71875,
+      "process_peak_mib": 1722.2510986328125,
+      "environment_before": {
+        "free_disk_bytes": 3733663744,
+        "load_average": [
+          16.85009765625,
+          10.74658203125,
+          7.9130859375
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 11953.81M  free = 1358.19M  (encrypted)",
+        "system_memory_free_percent": 43
+      },
+      "environment_after": {
+        "free_disk_bytes": 3704975360,
+        "load_average": [
+          29.40234375,
+          14.150390625,
+          9.25439453125
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12144.38M  free = 1167.62M  (encrypted)",
+        "system_memory_free_percent": 37
+      },
+      "five_second_bins_ms": [
+        47.13829199317843,
+        50.042853981722146,
+        51.51570797897875,
+        78.58768751611933,
+        120.4829165362753,
+        78.06687499396503
+      ],
+      "sample_api_ms": 73.29552102601156,
+      "main_thread_cpu_ms": 14.421500000000087,
+      "gpu_union_ms": 40.989541565068066,
+      "gpu_span_ms": 64.65820834273472,
+      "allocation_ms": 0.41093805339187384,
+      "metal_new_buffer_ms": 0.1550000160932541,
+      "explicit_wait_ms": 6.79552077781409,
+      "encoding_ms": 49.65897958027199,
+      "native_factory_ms": 45.55152083048597,
+      "pipeline_create_ms": 1.3002504128962755,
+      "native_factory_previous_gpu_overlap_ms": 32.31679194141179,
+      "encoding_residual_ms": 1.1331852874718606,
+      "trace_write_ms": 13.083625002764165,
+      "trace_write_total_ms": 562.9667058819905,
+      "trace_api_bracket_delta_us": 0.20826701074838638,
+      "sample_new_buffers_histogram": {
+        "4": 28,
+        "2": 1,
+        "3": 1
+      },
+      "unsampled_api_ms": 54.90641691721976,
+      "factory_pending_histogram": {
+        "0": 120,
+        "1": 223,
+        "2": 353,
+        "3": 493,
+        "4": 1211
+      }
+    },
+    {
+      "index": 2,
+      "cell": "BestFit-trace",
+      "api_ms": 63.48270794842392,
+      "p95_ms": 95.9009169600904,
+      "throughput_fps": 14.333333333333334,
+      "frames": 431,
+      "sampled_frames": 30,
+      "new_buffers_histogram": {
+        "0": 431
+      },
+      "thermal_histogram": {
+        "1": 431
+      },
+      "device_peak_mib": 991.71875,
+      "process_peak_mib": 1338.844871520996,
+      "environment_before": {
+        "free_disk_bytes": 3704901632,
+        "load_average": [
+          29.40234375,
+          14.150390625,
+          9.25439453125
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12144.38M  free = 1167.62M  (encrypted)",
+        "system_memory_free_percent": 38
+      },
+      "environment_after": {
+        "free_disk_bytes": 3430100992,
+        "load_average": [
+          38.560546875,
+          18.08544921875,
+          10.90283203125
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12144.38M  free = 1167.62M  (encrypted)",
+        "system_memory_free_percent": 43
+      },
+      "five_second_bins_ms": [
+        63.76550009008497,
+        67.92020797729492,
+        63.31120803952217,
+        59.87591692246497,
+        58.27064596815035,
+        54.558917065151036
+      ],
+      "sample_api_ms": 69.3182079703547,
+      "main_thread_cpu_ms": 14.85049999999999,
+      "gpu_union_ms": 42.294520884752274,
+      "gpu_span_ms": 60.00629172194749,
+      "allocation_ms": 0.20841631339862943,
+      "metal_new_buffer_ms": 0.0,
+      "explicit_wait_ms": 5.904791643843055,
+      "encoding_ms": 45.172042096965015,
+      "native_factory_ms": 40.3483749832958,
+      "pipeline_create_ms": 1.3794164406135678,
+      "native_factory_previous_gpu_overlap_ms": 32.175541506148875,
+      "encoding_residual_ms": 1.148729061242193,
+      "trace_write_ms": 16.87624998157844,
+      "trace_write_total_ms": 580.3404962643981,
+      "trace_api_bracket_delta_us": 0.16659032553434372,
+      "sample_new_buffers_histogram": {
+        "0": 30
+      },
+      "unsampled_api_ms": 63.224042067304254,
+      "factory_pending_histogram": {
+        "0": 123,
+        "1": 221,
+        "2": 377,
+        "3": 560,
+        "4": 1119
+      }
+    },
+    {
+      "index": 2,
+      "cell": "BestFit-normal",
+      "api_ms": 45.454333536326885,
+      "p95_ms": 64.17604198213667,
+      "throughput_fps": 20.966666666666665,
+      "frames": 630,
+      "sampled_frames": 0,
+      "new_buffers_histogram": {
+        "0": 630
+      },
+      "thermal_histogram": {
+        "1": 630
+      },
+      "device_peak_mib": 991.71875,
+      "process_peak_mib": 1335.3604736328125,
+      "environment_before": {
+        "free_disk_bytes": 3430088704,
+        "load_average": [
+          38.560546875,
+          18.08544921875,
+          10.90283203125
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12144.38M  free = 1167.62M  (encrypted)",
+        "system_memory_free_percent": 43
+      },
+      "environment_after": {
+        "free_disk_bytes": 3688366080,
+        "load_average": [
+          23.63427734375,
+          16.80517578125,
+          10.76171875
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12144.38M  free = 1167.62M  (encrypted)",
+        "system_memory_free_percent": 43
+      },
+      "five_second_bins_ms": [
+        45.738750020973384,
+        45.716916443780065,
+        45.391646039206535,
+        44.44627097109333,
+        46.573458006605506,
+        45.44691706541926
+      ]
+    },
+    {
+      "index": 2,
+      "cell": "R-normal",
+      "api_ms": 46.07112496159971,
+      "p95_ms": 96.7903749551624,
+      "throughput_fps": 17.333333333333332,
+      "frames": 521,
+      "sampled_frames": 0,
+      "new_buffers_histogram": {
+        "4": 517,
+        "3": 4
+      },
+      "thermal_histogram": {
+        "1": 521
+      },
+      "device_peak_mib": 1183.71875,
+      "process_peak_mib": 1720.219825744629,
+      "environment_before": {
+        "free_disk_bytes": 3688361984,
+        "load_average": [
+          23.63427734375,
+          16.80517578125,
+          10.76171875
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12144.38M  free = 1167.62M  (encrypted)",
+        "system_memory_free_percent": 43
+      },
+      "environment_after": {
+        "free_disk_bytes": 3688886272,
+        "load_average": [
+          17.32275390625,
+          16.068359375,
+          10.76953125
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12144.38M  free = 1167.62M  (encrypted)",
+        "system_memory_free_percent": 40
+      },
+      "five_second_bins_ms": [
+        45.75295897666365,
+        48.26210445025936,
+        37.82910405425355,
+        43.68066706229001,
+        47.42914601229131,
+        53.65083389915526
+      ]
+    },
+    {
+      "index": 3,
+      "cell": "BestFit-trace",
+      "api_ms": 43.38975006248802,
+      "p95_ms": 54.41058299038559,
+      "throughput_fps": 22.0,
+      "frames": 661,
+      "sampled_frames": 30,
+      "new_buffers_histogram": {
+        "0": 661
+      },
+      "thermal_histogram": {
+        "1": 661
+      },
+      "device_peak_mib": 991.71875,
+      "process_peak_mib": 1337.9385986328125,
+      "environment_before": {
+        "free_disk_bytes": 3688873984,
+        "load_average": [
+          17.32275390625,
+          16.068359375,
+          10.76953125
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12144.38M  free = 1167.62M  (encrypted)",
+        "system_memory_free_percent": 40
+      },
+      "environment_after": {
+        "free_disk_bytes": 3578249216,
+        "load_average": [
+          11.49951171875,
+          14.7265625,
+          10.51953125
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12136.38M  free = 1175.62M  (encrypted)",
+        "system_memory_free_percent": 43
+      },
+      "five_second_bins_ms": [
+        45.53545801900327,
+        45.8292500115931,
+        43.377333029638976,
+        44.064020505174994,
+        42.34824993181974,
+        41.53104196302593
+      ],
+      "sample_api_ms": 43.72243752004579,
+      "main_thread_cpu_ms": 10.121500000000117,
+      "gpu_union_ms": 33.45560433808714,
+      "gpu_span_ms": 38.46706246258691,
+      "allocation_ms": 0.0915211858227849,
+      "metal_new_buffer_ms": 0.0,
+      "explicit_wait_ms": 4.14352078223601,
+      "encoding_ms": 30.511687451507896,
+      "native_factory_ms": 29.16156261926517,
+      "pipeline_create_ms": 0.4374165437184274,
+      "native_factory_previous_gpu_overlap_ms": 27.780708216596395,
+      "encoding_residual_ms": 0.419357733335346,
+      "trace_write_ms": 11.237729515414685,
+      "trace_write_total_ms": 321.34266977664083,
+      "trace_api_bracket_delta_us": 0.16647391021251678,
+      "sample_new_buffers_histogram": {
+        "0": 30
+      },
+      "unsampled_api_ms": 43.38975006248802,
+      "factory_pending_histogram": {
+        "0": 120,
+        "1": 171,
+        "2": 347,
+        "3": 439,
+        "4": 1323
+      }
+    },
+    {
+      "index": 3,
+      "cell": "R-normal",
+      "api_ms": 43.572874972596765,
+      "p95_ms": 101.64112504571676,
+      "throughput_fps": 19.4,
+      "frames": 583,
+      "sampled_frames": 0,
+      "new_buffers_histogram": {
+        "4": 581,
+        "3": 1,
+        "2": 1
+      },
+      "thermal_histogram": {
+        "1": 583
+      },
+      "device_peak_mib": 1183.71875,
+      "process_peak_mib": 1720.1260986328125,
+      "environment_before": {
+        "free_disk_bytes": 3578236928,
+        "load_average": [
+          11.49951171875,
+          14.7265625,
+          10.51953125
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12136.38M  free = 1175.62M  (encrypted)",
+        "system_memory_free_percent": 43
+      },
+      "environment_after": {
+        "free_disk_bytes": 3690078208,
+        "load_average": [
+          10.2626953125,
+          13.95703125,
+          10.42626953125
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12136.38M  free = 1175.62M  (encrypted)",
+        "system_memory_free_percent": 46
+      },
+      "five_second_bins_ms": [
+        35.59293696889654,
+        46.40318697784096,
+        45.19227100536227,
+        42.634874989744276,
+        44.729291927069426,
+        40.37416697246954
+      ]
+    },
+    {
+      "index": 3,
+      "cell": "R-trace",
+      "api_ms": 46.37989652110264,
+      "p95_ms": 89.06100003514439,
+      "throughput_fps": 18.7,
+      "frames": 562,
+      "sampled_frames": 30,
+      "new_buffers_histogram": {
+        "4": 560,
+        "3": 2
+      },
+      "thermal_histogram": {
+        "1": 562
+      },
+      "device_peak_mib": 1183.71875,
+      "process_peak_mib": 1722.126121520996,
+      "environment_before": {
+        "free_disk_bytes": 3690065920,
+        "load_average": [
+          10.2626953125,
+          13.95703125,
+          10.42626953125
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12136.38M  free = 1175.62M  (encrypted)",
+        "system_memory_free_percent": 46
+      },
+      "environment_after": {
+        "free_disk_bytes": 3666264064,
+        "load_average": [
+          16.0185546875,
+          14.8671875,
+          10.93701171875
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12576.50M  free = 735.50M  (encrypted)",
+        "system_memory_free_percent": 36
+      },
+      "five_second_bins_ms": [
+        43.44479204155505,
+        44.620165950618684,
+        42.64966701157391,
+        41.46304202731699,
+        52.88570804987103,
+        65.20745798479766
+      ],
+      "sample_api_ms": 50.61593750724569,
+      "main_thread_cpu_ms": 7.923500000000194,
+      "gpu_union_ms": 38.823187875095755,
+      "gpu_span_ms": 47.43372922530398,
+      "allocation_ms": 0.21995790302753448,
+      "metal_new_buffer_ms": 0.09366672020405531,
+      "explicit_wait_ms": 5.098812456708401,
+      "encoding_ms": 38.67139626527205,
+      "native_factory_ms": 36.954875860828906,
+      "pipeline_create_ms": 0.40695827919989824,
+      "native_factory_previous_gpu_overlap_ms": 31.591083330567926,
+      "encoding_residual_ms": 0.36385480780154467,
+      "trace_write_ms": 7.953104504849762,
+      "trace_write_total_ms": 288.7828750535846,
+      "trace_api_bracket_delta_us": 0.12491364032030106,
+      "sample_new_buffers_histogram": {
+        "4": 29,
+        "3": 1
+      },
+      "unsampled_api_ms": 46.27472901483998,
+      "factory_pending_histogram": {
+        "0": 120,
+        "1": 160,
+        "2": 316,
+        "3": 435,
+        "4": 1369
+      }
+    },
+    {
+      "index": 3,
+      "cell": "BestFit-normal",
+      "api_ms": 54.947542026638985,
+      "p95_ms": 85.65904200077057,
+      "throughput_fps": 16.933333333333334,
+      "frames": 509,
+      "sampled_frames": 0,
+      "new_buffers_histogram": {
+        "0": 509
+      },
+      "thermal_histogram": {
+        "1": 509
+      },
+      "device_peak_mib": 991.71875,
+      "process_peak_mib": 1335.4542694091797,
+      "environment_before": {
+        "free_disk_bytes": 3666219008,
+        "load_average": [
+          16.0185546875,
+          14.8671875,
+          10.93701171875
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12576.50M  free = 735.50M  (encrypted)",
+        "system_memory_free_percent": 37
+      },
+      "environment_after": {
+        "free_disk_bytes": 3684421632,
+        "load_average": [
+          11.81640625,
+          13.88916015625,
+          10.7548828125
+        ],
+        "swap_usage": "vm.swapusage: total = 13312.00M  used = 12576.50M  free = 735.50M  (encrypted)",
+        "system_memory_free_percent": 47
+      },
+      "five_second_bins_ms": [
+        55.902854015585035,
+        62.83220904879272,
+        52.127250004559755,
+        54.894083994440734,
+        51.80654104333371,
+        52.981541492044926
+      ]
+    }
+  ],
+  "limitations": [
+    "four repeats, one UHD fixed input, same Mac background session",
+    "traces sample one frame per second; hooks and trace I/O can alter scheduling",
+    "thermal/load observations do not establish GPU clock or other-process GPU use",
+    "CPU wall, waits and GPU intervals overlap; do not add them"
+  ],
+  "implementation_commit": "6e6c0ad",
+  "preflight": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-long-stage22-preflight-v2/report.json",
+  "excluded_attempts": [
+    {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-long-stage22-preflight/report.json",
+      "reason": "over-strict first cold preflight rejected a legitimate token0 queue-construction event; full 12-case preflight rerun with queue metadata preserved and capacity4 validated"
+    }
+  ],
+  "test_counts": {
+    "driver_and_orders": 3,
+    "metal_methods": 8,
+    "base_probe": 9,
+    "pool": 4,
+    "resources": 13
+  },
+  "measurement_frames": 9378,
+  "measurement_traces": 240,
+  "total_traces": 280,
+  "evidence_bytes": 112293263,
+  "chart": "/Users/kunhuang/.codex/visualizations/2026/10/30/01a18d11-7818-7982-b2f7-71166c1fc048/fotufilm-windowed-long-stage22/comparison.png"
+}

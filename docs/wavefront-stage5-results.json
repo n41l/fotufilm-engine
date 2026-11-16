@@ -1,0 +1,583 @@
+{
+  "scope": "reference stability diagnosis only; no candidate E performance scores",
+  "source_base": "96623ba0831a52dbddcda35727a206d4123a8b5f",
+  "complete": true,
+  "B_ref_frozen": false,
+  "performance_acceptance": false,
+  "offline_original_36": {
+    "analysis": {
+      "path": "candidate/build/wavefront-stability-analysis/awake-0c2977588b8c/analysis.json",
+      "sha256": "6cbc53dc854eab225ffc886c99e68eef9ecd44fd25f6c78eec15dc30b7cdf5ce"
+    },
+    "rounds": 36,
+    "max_outside_API_fraction": 0.0024985516288628107,
+    "constant_variants_and_dispatch_counts": true
+  },
+  "unmodified_worker_fixed_B1_before_storage_close": {
+    "report": {
+      "path": "candidate/build/wavefront-stability-fixed/c601ccab07cc/report.json",
+      "sha256": "0abc67315a3fed9fbf325636cb99a675ba26e759082841744f838fb90765bd6c"
+    },
+    "rounds": 6,
+    "fps": [
+      138.3,
+      137.3,
+      135.73333333333332,
+      132.3,
+      132.13333333333333,
+      127.66666666666667
+    ],
+    "assessment": {
+      "throughput_range_ratio": 0.08328981723237594,
+      "timing_review_required": true,
+      "memory_epsilon": {
+        "device_total_peak_bytes": {
+          "epsilon_bytes": 0,
+          "cap_bytes": 4194304,
+          "pairs": [
+            0,
+            0,
+            0
+          ],
+          "stable": true
+        },
+        "process_lifetime_peak_bytes": {
+          "epsilon_bytes": 131072,
+          "cap_bytes": 4194304,
+          "pairs": [
+            65560,
+            131072,
+            81968
+          ],
+          "stable": true
+        },
+        "retained_device_bytes": {
+          "epsilon_bytes": 0,
+          "cap_bytes": 4194304,
+          "pairs": [
+            0,
+            0,
+            0
+          ],
+          "stable": true
+        },
+        "retained_process_footprint_bytes": {
+          "epsilon_bytes": 114688,
+          "cap_bytes": 4194304,
+          "pairs": [
+            98328,
+            114688,
+            65584
+          ],
+          "stable": true
+        }
+      },
+      "memory_stable": true,
+      "thermal_review_required": false,
+      "stable_under_diagnostic_protocol": false,
+      "B_ref_frozen": false,
+      "performance_acceptance": false
+    },
+    "worker_sha256": "eff89993d9b138ea0197c5bb2c08c7d157d8facfea596a413805b9f4ddc3339b",
+    "round_artifacts": [
+      {
+        "round.json": {
+          "path": "candidate/build/wavefront-stability-fixed/c601ccab07cc/portra400-coffee-1920x1080/B1-0/round.json",
+          "sha256": "52dbd197826f458c683641c9d9ac9e7739e9bf392a2758371011b5868b065866"
+        },
+        "events.jsonl": {
+          "path": "candidate/build/wavefront-stability-fixed/c601ccab07cc/portra400-coffee-1920x1080/B1-0/events.jsonl",
+          "sha256": "096089b4814dd8a84082177568aec26995559cd2c209379c1f550d1504b29f3b"
+        },
+        "stderr.log": {
+          "path": "candidate/build/wavefront-stability-fixed/c601ccab07cc/portra400-coffee-1920x1080/B1-0/stderr.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      {
+        "round.json": {
+          "path": "candidate/build/wavefront-stability-fixed/c601ccab07cc/portra400-coffee-1920x1080/B1-1/round.json",
+          "sha256": "aa773bf7d4290fb8c1e702010390d45207aef9fcf5fc9aeb77cd3d9d8364c7d7"
+        },
+        "events.jsonl": {
+          "path": "candidate/build/wavefront-stability-fixed/c601ccab07cc/portra400-coffee-1920x1080/B1-1/events.jsonl",
+          "sha256": "bbc420be6a950197a589c8d70c8d5c3b47989251d4a91f3cc881f811f2e32327"
+        },
+        "stderr.log": {
+          "path": "candidate/build/wavefront-stability-fixed/c601ccab07cc/portra400-coffee-1920x1080/B1-1/stderr.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      {
+        "round.json": {
+          "path": "candidate/build/wavefront-stability-fixed/c601ccab07cc/portra400-coffee-1920x1080/B1-2/round.json",
+          "sha256": "912a8572b354149d1e04624f76ce1940cd35014c0c03818c7b04e6fd5d95d2b1"
+        },
+        "events.jsonl": {
+          "path": "candidate/build/wavefront-stability-fixed/c601ccab07cc/portra400-coffee-1920x1080/B1-2/events.jsonl",
+          "sha256": "33c58c1e7e4c125d78be1c6a1ff3433463e8ea58ea334c3524d9737434cc20df"
+        },
+        "stderr.log": {
+          "path": "candidate/build/wavefront-stability-fixed/c601ccab07cc/portra400-coffee-1920x1080/B1-2/stderr.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      {
+        "round.json": {
+          "path": "candidate/build/wavefront-stability-fixed/c601ccab07cc/portra400-coffee-1920x1080/B1-3/round.json",
+          "sha256": "6ee8763fe50a91cfbb3d947f7c2e0e12cbb12fea16be1b3a44e9c0657368f20a"
+        },
+        "events.jsonl": {
+          "path": "candidate/build/wavefront-stability-fixed/c601ccab07cc/portra400-coffee-1920x1080/B1-3/events.jsonl",
+          "sha256": "789a038fb6ef8f189da49347054f6cb2ad88a15c8a59a1677c6a490f3a758008"
+        },
+        "stderr.log": {
+          "path": "candidate/build/wavefront-stability-fixed/c601ccab07cc/portra400-coffee-1920x1080/B1-3/stderr.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      {
+        "round.json": {
+          "path": "candidate/build/wavefront-stability-fixed/c601ccab07cc/portra400-coffee-1920x1080/B1-4/round.json",
+          "sha256": "43ddbee08a39cdb8e420906a6fea8c00a556ad8ef4bbaadc8c1051340717b359"
+        },
+        "events.jsonl": {
+          "path": "candidate/build/wavefront-stability-fixed/c601ccab07cc/portra400-coffee-1920x1080/B1-4/events.jsonl",
+          "sha256": "f48c626a45a826f868889977a265b13ba70e136973f0472c0c68862a598192c3"
+        },
+        "stderr.log": {
+          "path": "candidate/build/wavefront-stability-fixed/c601ccab07cc/portra400-coffee-1920x1080/B1-4/stderr.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      {
+        "round.json": {
+          "path": "candidate/build/wavefront-stability-fixed/c601ccab07cc/portra400-coffee-1920x1080/B1-5/round.json",
+          "sha256": "8d3145cd5794b4fb2fd34ccd7ce04da6d3227073a155f20621fd1d92755ee5a9"
+        },
+        "events.jsonl": {
+          "path": "candidate/build/wavefront-stability-fixed/c601ccab07cc/portra400-coffee-1920x1080/B1-5/events.jsonl",
+          "sha256": "3371f056d3c0e6419ee453307d1227befcbab4fac8002f7f16e3bb8909dbd593"
+        },
+        "stderr.log": {
+          "path": "candidate/build/wavefront-stability-fixed/c601ccab07cc/portra400-coffee-1920x1080/B1-5/stderr.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    ]
+  },
+  "instrumented_R": {
+    "report": {
+      "path": "candidate/build/wavefront-stability-timing/9be63f30244b/report.json",
+      "sha256": "474782bf970dcf81b89ba7b2c9f5d041571682886ecf593ecd2eb957926ffa24"
+    },
+    "probe": {
+      "path": "candidate/build/wavefront-stability-timing/9be63f30244b/worker/probe.json",
+      "sha256": "7dc82f5a21e9ba04b6518815b12aade33d0e3390ace9e7619fde2a7f37c0da12"
+    },
+    "rounds": 6,
+    "coverage_complete": true,
+    "observed_total_requests": 24967,
+    "observed_measurement_requests": 21179,
+    "per_call_observed_command_buffers": 44,
+    "per_call_waits": 3,
+    "per_call_queues": 1,
+    "components": {
+      "api_wall_seconds": {
+        "round_mean_ms": [
+          7.660736718126466,
+          8.615324108914185,
+          7.481473473618652,
+          8.65402326005123,
+          9.593185774332461,
+          8.570413548484256
+        ],
+        "min_mean_ms": 7.481473473618652,
+        "max_mean_ms": 9.593185774332461,
+        "range_ratio": 0.2822588769659051
+      },
+      "main_thread_cpu_seconds": {
+        "round_mean_ms": [
+          1.6916441982848283,
+          1.7153366984219705,
+          1.6440681259503391,
+          1.7024916324261026,
+          1.7282350987055033,
+          1.6942825196759286
+        ],
+        "min_mean_ms": 1.6440681259503391,
+        "max_mean_ms": 1.7282350987055033,
+        "range_ratio": 0.05119433399787621
+      },
+      "process_cpu_seconds": {
+        "round_mean_ms": [
+          2.8835686070686144,
+          2.9418985973115057,
+          2.7882075519513494,
+          2.9212118817676527,
+          2.9908624595469226,
+          2.932348668981479
+        ],
+        "min_mean_ms": 2.7882075519513494,
+        "max_mean_ms": 2.9908624595469226,
+        "range_ratio": 0.07268286302924043
+      },
+      "wait_wall_seconds": {
+        "round_mean_ms": [
+          1.722122563344229,
+          2.00864790164779,
+          1.6841306073805418,
+          2.0137962248511037,
+          2.321213141647333,
+          1.9857509995980998
+        ],
+        "min_mean_ms": 1.6841306073805418,
+        "max_mean_ms": 2.321213141647333,
+        "range_ratio": 0.378285705084177
+      },
+      "gpu_sum_seconds": {
+        "round_mean_ms": [
+          7.479673632718415,
+          8.779119972129664,
+          7.263829033144806,
+          8.747766829460462,
+          10.157817160231469,
+          8.801845307836494
+        ],
+        "min_mean_ms": 7.263829033144806,
+        "max_mean_ms": 10.157817160231469,
+        "range_ratio": 0.39841082628478897
+      },
+      "gpu_union_seconds": {
+        "round_mean_ms": [
+          5.677110016594782,
+          6.615396002218403,
+          5.516546540815139,
+          6.594265779511818,
+          7.60969124317341,
+          6.60314247140074
+        ],
+        "min_mean_ms": 5.516546540815139,
+        "max_mean_ms": 7.60969124317341,
+        "range_ratio": 0.3794302625513575
+      },
+      "gpu_span_seconds": {
+        "round_mean_ms": [
+          7.0102445541260465,
+          7.972126302638917,
+          6.836088412550825,
+          7.987069882550472,
+          8.945333063741845,
+          7.930797019879619
+        ],
+        "min_mean_ms": 6.836088412550825,
+        "max_mean_ms": 8.945333063741845,
+        "range_ratio": 0.3085455488431834
+      }
+    },
+    "worker_sha256": "47c41cdf5f02b7ee2c113fdbc3fa5ba776c6add8c17579d173b1c7473ae55bc3",
+    "output_byte_identical_to_original_R": true,
+    "source_adapter_sha256": "baf2615536e9c889be98e5be0893441593d77d1f2f8c3580354cf2bd170d263f",
+    "round_artifacts": [
+      {
+        "round.json": {
+          "path": "candidate/build/wavefront-stability-timing/9be63f30244b/portra400-coffee-1920x1080/B1-0/round.json",
+          "sha256": "9a416315d30246ccfd0efec37be4cdb02632940f5731eb1bb0f0e717c17816e6"
+        },
+        "events.jsonl": {
+          "path": "candidate/build/wavefront-stability-timing/9be63f30244b/portra400-coffee-1920x1080/B1-0/events.jsonl",
+          "sha256": "c84ecfb6d5ca4c8778088ecf55359aa2b3ecdc7c6fb04216c593cc813ee1ce7b"
+        },
+        "stderr.log": {
+          "path": "candidate/build/wavefront-stability-timing/9be63f30244b/portra400-coffee-1920x1080/B1-0/stderr.log",
+          "sha256": "2b28a6860cc58e75dcff1aeb2e58d285509d8c1c9e05727852ba87bdb3a194a6"
+        },
+        "timing-summary.json": {
+          "path": "candidate/build/wavefront-stability-timing/9be63f30244b/portra400-coffee-1920x1080/B1-0/timing-summary.json",
+          "sha256": "2f70861cdba4217cf38592a7327c83e22e73687294a9540eb6a7c37c8b24af21"
+        }
+      },
+      {
+        "round.json": {
+          "path": "candidate/build/wavefront-stability-timing/9be63f30244b/portra400-coffee-1920x1080/B1-1/round.json",
+          "sha256": "f97eb30e5b735548dd2f4454ffb604b46a7e68b1bc5f87fb76989087761fafc4"
+        },
+        "events.jsonl": {
+          "path": "candidate/build/wavefront-stability-timing/9be63f30244b/portra400-coffee-1920x1080/B1-1/events.jsonl",
+          "sha256": "9a3cc3f1505ed1c1275b8bc5177e4a34f903848f223e5a6b94fda8cd4a1aa3d4"
+        },
+        "stderr.log": {
+          "path": "candidate/build/wavefront-stability-timing/9be63f30244b/portra400-coffee-1920x1080/B1-1/stderr.log",
+          "sha256": "456aafad7f735da06cb0f2947b69879eaf7170be9ffa23164920c02fd050b019"
+        },
+        "timing-summary.json": {
+          "path": "candidate/build/wavefront-stability-timing/9be63f30244b/portra400-coffee-1920x1080/B1-1/timing-summary.json",
+          "sha256": "44a392019a41e5e8f122fc458585d30feea23906fff4774a9019f0da341cf050"
+        }
+      },
+      {
+        "round.json": {
+          "path": "candidate/build/wavefront-stability-timing/9be63f30244b/portra400-coffee-1920x1080/B1-2/round.json",
+          "sha256": "0ee65649e05186b13d9ed8c562028ef0768c55c378ce59602e622bea15925945"
+        },
+        "events.jsonl": {
+          "path": "candidate/build/wavefront-stability-timing/9be63f30244b/portra400-coffee-1920x1080/B1-2/events.jsonl",
+          "sha256": "e1522ecb1060fa61f35a2eaee944d68d2851abb589f321a5e011553c8fdbdbc2"
+        },
+        "stderr.log": {
+          "path": "candidate/build/wavefront-stability-timing/9be63f30244b/portra400-coffee-1920x1080/B1-2/stderr.log",
+          "sha256": "d5859f469d40a53ec7f65bf0b01b20912299e96556abb00d207c3359d2166961"
+        },
+        "timing-summary.json": {
+          "path": "candidate/build/wavefront-stability-timing/9be63f30244b/portra400-coffee-1920x1080/B1-2/timing-summary.json",
+          "sha256": "16bb25e5680ea2bef99e825dfc60ce7bc16ad38d6a585c9250ffb19b9f5f6207"
+        }
+      },
+      {
+        "round.json": {
+          "path": "candidate/build/wavefront-stability-timing/9be63f30244b/portra400-coffee-1920x1080/B1-3/round.json",
+          "sha256": "71305d61e515ec9bbfa1219c75b7f6e2b782dd717e325286ec97e68cf928ba10"
+        },
+        "events.jsonl": {
+          "path": "candidate/build/wavefront-stability-timing/9be63f30244b/portra400-coffee-1920x1080/B1-3/events.jsonl",
+          "sha256": "ba5cfa5becbf8e6fdb5eff737bb3e89bfae59e8316021a715308b82b304fe5b5"
+        },
+        "stderr.log": {
+          "path": "candidate/build/wavefront-stability-timing/9be63f30244b/portra400-coffee-1920x1080/B1-3/stderr.log",
+          "sha256": "d39e8efefc08bb7cd065ea7324a5e5d1de94db2e96312ebbcf505073f0bd0b0f"
+        },
+        "timing-summary.json": {
+          "path": "candidate/build/wavefront-stability-timing/9be63f30244b/portra400-coffee-1920x1080/B1-3/timing-summary.json",
+          "sha256": "e4e5c5bc038fc3bcaa78b355cd29ee1ebe223cb7ee7aa9562ad5798e95f65c1d"
+        }
+      },
+      {
+        "round.json": {
+          "path": "candidate/build/wavefront-stability-timing/9be63f30244b/portra400-coffee-1920x1080/B1-4/round.json",
+          "sha256": "0244e993d66a827a8e4e095a7dcdca7a01bf50677b41ae43caa2e1350469a0dd"
+        },
+        "events.jsonl": {
+          "path": "candidate/build/wavefront-stability-timing/9be63f30244b/portra400-coffee-1920x1080/B1-4/events.jsonl",
+          "sha256": "79cfafe338bb167700e75439ab4ec167966d061b8b51d3f5b1c7e56d3f91d5bf"
+        },
+        "stderr.log": {
+          "path": "candidate/build/wavefront-stability-timing/9be63f30244b/portra400-coffee-1920x1080/B1-4/stderr.log",
+          "sha256": "d2114045825f9aee1e76ec81319aeddb53b6e601ca14f85505c879ee38ef0c88"
+        },
+        "timing-summary.json": {
+          "path": "candidate/build/wavefront-stability-timing/9be63f30244b/portra400-coffee-1920x1080/B1-4/timing-summary.json",
+          "sha256": "b461647ca4911937589e57890e7800f5c382b34088d56ca0d8f9f076db70b9f8"
+        }
+      },
+      {
+        "round.json": {
+          "path": "candidate/build/wavefront-stability-timing/9be63f30244b/portra400-coffee-1920x1080/B1-5/round.json",
+          "sha256": "d0e3e793814f2f89492e9c5fac50cfcbff710a97ca69b788f62c3b963b17f248"
+        },
+        "events.jsonl": {
+          "path": "candidate/build/wavefront-stability-timing/9be63f30244b/portra400-coffee-1920x1080/B1-5/events.jsonl",
+          "sha256": "6903fc4aa7616dddfb7985fa9f65ab255ce5bac98eaf8d2651be33bae4444bb5"
+        },
+        "stderr.log": {
+          "path": "candidate/build/wavefront-stability-timing/9be63f30244b/portra400-coffee-1920x1080/B1-5/stderr.log",
+          "sha256": "a4a71353cf6180043de4d7d8a8aa1b7630e54a8e535fabb7d9dd52edd892c75c"
+        },
+        "timing-summary.json": {
+          "path": "candidate/build/wavefront-stability-timing/9be63f30244b/portra400-coffee-1920x1080/B1-5/timing-summary.json",
+          "sha256": "1030214f75a016ae5c8167ecbd20b311863a7c92ce52c95b5cf6c3fe65306db5"
+        }
+      }
+    ]
+  },
+  "storage_close_control": {
+    "user_confirmed_page_closed": true,
+    "two_second_cpu_sample": {
+      "path": "candidate/build/wavefront-stability-fixed/storage-page-closed.json",
+      "sha256": "424e9f1f4198eb1c47218cfdd80c1283f0fd9f15b0eca1fda145a133ec5bf066"
+    },
+    "before_process_snapshot": {
+      "path": "candidate/build/wavefront-stability-fixed/c601ccab07cc/system-snapshot.json",
+      "sha256": "2614e80f6127476c495a6b37112847359c9a869316ca4311f66c047c57d24cb7"
+    },
+    "scope": "storage helper processes disappeared from persistent-process sampling; Spotlight remained active; this is not full system isolation",
+    "post_campaign_inventory": {
+      "path": "candidate/build/wavefront-stability-after-storage-close/4af6aba2acc4/system-after.json",
+      "sha256": "11235b314e7e2dcb69aa10f6d63e2b4e8a0292fb31048dcdda96bc87ee330778"
+    }
+  },
+  "unmodified_worker_fixed_B1_after_storage_close": {
+    "report": {
+      "path": "candidate/build/wavefront-stability-after-storage-close/4af6aba2acc4/report.json",
+      "sha256": "6c0b515bf9e0aaeb5f97e8f5ce71ea846d6853c4d7f7fc1bcbbfbf5743ee642c"
+    },
+    "rounds": 6,
+    "fps": [
+      129.93333333333334,
+      133.23333333333332,
+      134.6,
+      132.5,
+      129.56666666666666,
+      119.93333333333334
+    ],
+    "assessment": {
+      "throughput_range_ratio": 0.12229016120066705,
+      "timing_review_required": true,
+      "memory_epsilon": {
+        "device_total_peak_bytes": {
+          "epsilon_bytes": 0,
+          "cap_bytes": 4194304,
+          "pairs": [
+            0,
+            0,
+            0
+          ],
+          "stable": true
+        },
+        "process_lifetime_peak_bytes": {
+          "epsilon_bytes": 245736,
+          "cap_bytes": 4194304,
+          "pairs": [
+            147432,
+            81944,
+            245736
+          ],
+          "stable": true
+        },
+        "retained_device_bytes": {
+          "epsilon_bytes": 0,
+          "cap_bytes": 4194304,
+          "pairs": [
+            0,
+            0,
+            0
+          ],
+          "stable": true
+        },
+        "retained_process_footprint_bytes": {
+          "epsilon_bytes": 229352,
+          "cap_bytes": 4194304,
+          "pairs": [
+            131048,
+            81944,
+            229352
+          ],
+          "stable": true
+        }
+      },
+      "memory_stable": true,
+      "thermal_review_required": false,
+      "stable_under_diagnostic_protocol": false,
+      "B_ref_frozen": false,
+      "performance_acceptance": false
+    },
+    "worker_sha256": "eff89993d9b138ea0197c5bb2c08c7d157d8facfea596a413805b9f4ddc3339b",
+    "round_artifacts": [
+      {
+        "round.json": {
+          "path": "candidate/build/wavefront-stability-after-storage-close/4af6aba2acc4/portra400-coffee-1920x1080/B1-0/round.json",
+          "sha256": "c17413f6db46c672de4d2f32793c8443cdaa61d226a288593967b84eb9c11420"
+        },
+        "events.jsonl": {
+          "path": "candidate/build/wavefront-stability-after-storage-close/4af6aba2acc4/portra400-coffee-1920x1080/B1-0/events.jsonl",
+          "sha256": "2b424d42e25461ddfa1e17dfc74b3b786ce1e6f0737482ecdc50539ff6524d18"
+        },
+        "stderr.log": {
+          "path": "candidate/build/wavefront-stability-after-storage-close/4af6aba2acc4/portra400-coffee-1920x1080/B1-0/stderr.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      {
+        "round.json": {
+          "path": "candidate/build/wavefront-stability-after-storage-close/4af6aba2acc4/portra400-coffee-1920x1080/B1-1/round.json",
+          "sha256": "f9f45c2381a1716858f5ebfe4416f7baa92b8dbc338104726806c8f13acbd2b8"
+        },
+        "events.jsonl": {
+          "path": "candidate/build/wavefront-stability-after-storage-close/4af6aba2acc4/portra400-coffee-1920x1080/B1-1/events.jsonl",
+          "sha256": "dff1b84fb4c738d0333138b296dc39076f25e73669e1082ecbf2bd1afb910178"
+        },
+        "stderr.log": {
+          "path": "candidate/build/wavefront-stability-after-storage-close/4af6aba2acc4/portra400-coffee-1920x1080/B1-1/stderr.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      {
+        "round.json": {
+          "path": "candidate/build/wavefront-stability-after-storage-close/4af6aba2acc4/portra400-coffee-1920x1080/B1-2/round.json",
+          "sha256": "00a117948d3881249252934b0bf968e5ad2daa917ac291bfc03fe0c06312365c"
+        },
+        "events.jsonl": {
+          "path": "candidate/build/wavefront-stability-after-storage-close/4af6aba2acc4/portra400-coffee-1920x1080/B1-2/events.jsonl",
+          "sha256": "aece3604ee2052973cb7ab031e3a01df7f14965b902bee53f076e7168224f04c"
+        },
+        "stderr.log": {
+          "path": "candidate/build/wavefront-stability-after-storage-close/4af6aba2acc4/portra400-coffee-1920x1080/B1-2/stderr.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      {
+        "round.json": {
+          "path": "candidate/build/wavefront-stability-after-storage-close/4af6aba2acc4/portra400-coffee-1920x1080/B1-3/round.json",
+          "sha256": "b8e8eb10eb7e6fa4bb1beb5a2239542dda06a8b541ed87bdb040bdfa39470c0e"
+        },
+        "events.jsonl": {
+          "path": "candidate/build/wavefront-stability-after-storage-close/4af6aba2acc4/portra400-coffee-1920x1080/B1-3/events.jsonl",
+          "sha256": "7f41d60613e7aaa56b08c27632fe12a32a3278536c8dc7dfd854ead6670f3ddf"
+        },
+        "stderr.log": {
+          "path": "candidate/build/wavefront-stability-after-storage-close/4af6aba2acc4/portra400-coffee-1920x1080/B1-3/stderr.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      {
+        "round.json": {
+          "path": "candidate/build/wavefront-stability-after-storage-close/4af6aba2acc4/portra400-coffee-1920x1080/B1-4/round.json",
+          "sha256": "c5a07d7e7566968a5007e9d6d8466a1beed0bca9bd501bd2fac94fc706ffdc1a"
+        },
+        "events.jsonl": {
+          "path": "candidate/build/wavefront-stability-after-storage-close/4af6aba2acc4/portra400-coffee-1920x1080/B1-4/events.jsonl",
+          "sha256": "e61f398d890ad06bbda0ae5baacc9c63a157b7af10a3c4a73cd09a46a7cc625f"
+        },
+        "stderr.log": {
+          "path": "candidate/build/wavefront-stability-after-storage-close/4af6aba2acc4/portra400-coffee-1920x1080/B1-4/stderr.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      {
+        "round.json": {
+          "path": "candidate/build/wavefront-stability-after-storage-close/4af6aba2acc4/portra400-coffee-1920x1080/B1-5/round.json",
+          "sha256": "95e64e6cebba845240dd8c880eed7de494c352c57dacd2a586f29aff81645fbc"
+        },
+        "events.jsonl": {
+          "path": "candidate/build/wavefront-stability-after-storage-close/4af6aba2acc4/portra400-coffee-1920x1080/B1-5/events.jsonl",
+          "sha256": "5a98f4b446f4bceeabb9d7a5c0cd7add91281f755dc8bf5dc1301096791b41c1"
+        },
+        "stderr.log": {
+          "path": "candidate/build/wavefront-stability-after-storage-close/4af6aba2acc4/portra400-coffee-1920x1080/B1-5/stderr.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    ]
+  },
+  "tests": {
+    "synthetic_accounting_and_coverage": 20,
+    "probe_exact_output_match": true
+  },
+  "limitations": [
+    "The observed API envelope is wall time, not GPU utilization.",
+    "CPU, wait, GPU sum/union/span overlap and must not be added as disjoint costs.",
+    "Completion callbacks and raw timing logging perturb the diagnostic worker; its FPS and variation cannot replace unmodified-worker scores.",
+    "GPU command-buffer envelopes include scheduling/preemption effects; they do not identify GPU frequency, competing GPU clients or memory-bandwidth causes.",
+    "Process snapshots and pre-round load are contextual observations, not causal proof.",
+    "A single fixed-arm case, even when stable, cannot freeze the four-case formal B_ref."
+  ],
+  "hardware_counter_availability": {
+    "path": "candidate/build/wavefront-stability-timing/gpu-counter-availability.json",
+    "sha256": "398448e588c4ad4eb30127a2c6f57d8f2f27722b550ac5a6b2a8b91f46a2bf0b"
+  },
+  "GPU_frequency_power_observed": false,
+  "actual_E_performance_rounds": 0,
+  "upstream_PR_created": false,
+  "pushed": false,
+  "conclusion": "Fixed-input R remains unstable after closing the storage page. Instrumented timing points toward variability on the GPU execution timeline; the exact cause is unproven.",
+  "next_required": "Obtain a sufficiently quiet reference environment and/or authorized GPU frequency telemetry, then recheck the fixed R arm before collecting the full formal baseline."
+}

@@ -1,0 +1,1014 @@
+{
+  "scope": "Read existing generated Metal and frozen timing events; no build, GPU run or parameter change.",
+  "date": "2026-11-01",
+  "allocation_observer": "newBufferWithLength:options: calls returning a buffer; counts, not bytes or caller/pool attribution",
+  "allocations": {
+    "16": {
+      "case": "portra400-coffee-3840x2160",
+      "rounds": [
+        {
+          "round": 0,
+          "arm": "R-B1",
+          "measurement_calls": 853,
+          "histogram": {
+            "4": 853
+          },
+          "events_path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-mtf-stage16-timing/c2a45505230b/0-R-B1/events.jsonl",
+          "events_sha256": "62e9328db4e17395c9d7a90839d7d43f2f3202c5d85424b01bebcd331db148cb"
+        },
+        {
+          "round": 0,
+          "arm": "W0",
+          "measurement_calls": 598,
+          "histogram": {
+            "4": 596,
+            "3": 2
+          },
+          "events_path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-mtf-stage16-timing/c2a45505230b/0-W0/events.jsonl",
+          "events_sha256": "eb2bb9c337d270a4d14bbdeca71e581bc87ddd48144b0b786f0939f83afbb67d"
+        },
+        {
+          "round": 0,
+          "arm": "Fused",
+          "measurement_calls": 942,
+          "histogram": {
+            "1": 942
+          },
+          "events_path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-mtf-stage16-timing/c2a45505230b/0-Fused/events.jsonl",
+          "events_sha256": "627b6d76fcc50b73c20e5b0ab903e1d5b9623739f1d214d283741981ddd9b97f"
+        },
+        {
+          "round": 1,
+          "arm": "W0",
+          "measurement_calls": 796,
+          "histogram": {
+            "4": 796
+          },
+          "events_path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-mtf-stage16-timing/c2a45505230b/1-W0/events.jsonl",
+          "events_sha256": "2a40d76bc0f5b663a5f939125c33739db3ccd112f7cc62bbf261fb4d9c8244e9"
+        },
+        {
+          "round": 1,
+          "arm": "Fused",
+          "measurement_calls": 832,
+          "histogram": {
+            "1": 832
+          },
+          "events_path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-mtf-stage16-timing/c2a45505230b/1-Fused/events.jsonl",
+          "events_sha256": "70668d1f20a7e3b0d8e6370b4b3aa14933079fbfbc84f257c9d685dcbd6feb82"
+        },
+        {
+          "round": 1,
+          "arm": "R-B1",
+          "measurement_calls": 822,
+          "histogram": {
+            "4": 822
+          },
+          "events_path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-mtf-stage16-timing/c2a45505230b/1-R-B1/events.jsonl",
+          "events_sha256": "840da482c8b9c734c3fec9f1537c8d96b40227781e3095761fc79ea90d8fb243"
+        },
+        {
+          "round": 2,
+          "arm": "Fused",
+          "measurement_calls": 922,
+          "histogram": {
+            "1": 922
+          },
+          "events_path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-mtf-stage16-timing/c2a45505230b/2-Fused/events.jsonl",
+          "events_sha256": "fce905b37601c8effd69429ea98a4f1777ecbf466312264a41a70c4359e959bd"
+        },
+        {
+          "round": 2,
+          "arm": "R-B1",
+          "measurement_calls": 768,
+          "histogram": {
+            "4": 768
+          },
+          "events_path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-mtf-stage16-timing/c2a45505230b/2-R-B1/events.jsonl",
+          "events_sha256": "9dcb7a4345f0f85582f3f7184d97ec512bd961349dcfe8d8cb5e3a5f31259d4d"
+        },
+        {
+          "round": 2,
+          "arm": "W0",
+          "measurement_calls": 800,
+          "histogram": {
+            "4": 800
+          },
+          "events_path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-mtf-stage16-timing/c2a45505230b/2-W0/events.jsonl",
+          "events_sha256": "e03051cb1c1fdb93472b116e54fcd06061ccbc6346438266a6c757532af2dd3f"
+        }
+      ],
+      "aggregate_histograms": {
+        "R-B1": {
+          "4": 2443
+        },
+        "W0": {
+          "4": 2192,
+          "3": 2
+        },
+        "Fused": {
+          "1": 2696
+        }
+      },
+      "mean_new_buffers_per_measurement_call": {
+        "R-B1": 4.0,
+        "W0": 3.999088422971741,
+        "Fused": 1.0
+      }
+    },
+    "17": {
+      "case": "portra400-coffee-3840x2160",
+      "rounds": [
+        {
+          "round": 0,
+          "arm": "R-B1",
+          "measurement_calls": 672,
+          "histogram": {
+            "4": 672
+          },
+          "events_path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-coupler-stage17-timing/7b3a1e93cbdd/portra400-coffee-3840x2160-0-R-B1/events.jsonl",
+          "events_sha256": "f007eb5e213732171d34b5cc880f82bb53597c2a44c22179b59c3d4f999eb58a"
+        },
+        {
+          "round": 0,
+          "arm": "W0",
+          "measurement_calls": 549,
+          "histogram": {
+            "4": 545,
+            "3": 4
+          },
+          "events_path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-coupler-stage17-timing/7b3a1e93cbdd/portra400-coffee-3840x2160-0-W0/events.jsonl",
+          "events_sha256": "34a1525b4c7892d46239cc9da4774ded50e24f76e940c8d6aa993d930eeba135"
+        },
+        {
+          "round": 0,
+          "arm": "Fused",
+          "measurement_calls": 644,
+          "histogram": {
+            "4": 644
+          },
+          "events_path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-coupler-stage17-timing/7b3a1e93cbdd/portra400-coffee-3840x2160-0-Fused/events.jsonl",
+          "events_sha256": "768881873a64a0f740a3df4748f8792984a66c1226204229be18f2341ddc6262"
+        },
+        {
+          "round": 1,
+          "arm": "W0",
+          "measurement_calls": 673,
+          "histogram": {
+            "4": 673
+          },
+          "events_path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-coupler-stage17-timing/7b3a1e93cbdd/portra400-coffee-3840x2160-1-W0/events.jsonl",
+          "events_sha256": "9cd8a0e4d770f56ba164a6e5c05bf88439fdf9c27ab57eefa355fddb634b954a"
+        },
+        {
+          "round": 1,
+          "arm": "Fused",
+          "measurement_calls": 728,
+          "histogram": {
+            "4": 728
+          },
+          "events_path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-coupler-stage17-timing/7b3a1e93cbdd/portra400-coffee-3840x2160-1-Fused/events.jsonl",
+          "events_sha256": "031e9491370f4b59b58b96853497f783f035a2075c979864f0dc346e1a893821"
+        },
+        {
+          "round": 1,
+          "arm": "R-B1",
+          "measurement_calls": 666,
+          "histogram": {
+            "4": 666
+          },
+          "events_path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-coupler-stage17-timing/7b3a1e93cbdd/portra400-coffee-3840x2160-1-R-B1/events.jsonl",
+          "events_sha256": "4715b7e05acb0bba32375c47b4835ccf9087a4c486532474f75b94fed8c29eac"
+        },
+        {
+          "round": 2,
+          "arm": "Fused",
+          "measurement_calls": 665,
+          "histogram": {
+            "4": 665
+          },
+          "events_path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-coupler-stage17-timing/7b3a1e93cbdd/portra400-coffee-3840x2160-2-Fused/events.jsonl",
+          "events_sha256": "2dbca3184a3f8f8f249392a586aff2f563a7df3451d538ee1472cefc0d2be4bb"
+        },
+        {
+          "round": 2,
+          "arm": "R-B1",
+          "measurement_calls": 581,
+          "histogram": {
+            "4": 580,
+            "3": 1
+          },
+          "events_path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-coupler-stage17-timing/7b3a1e93cbdd/portra400-coffee-3840x2160-2-R-B1/events.jsonl",
+          "events_sha256": "df1c0ccb531b91749259f335f71e51d271a146ea783df77eb9d23c0b8779cbb1"
+        },
+        {
+          "round": 2,
+          "arm": "W0",
+          "measurement_calls": 663,
+          "histogram": {
+            "4": 661,
+            "3": 2
+          },
+          "events_path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-coupler-stage17-timing/7b3a1e93cbdd/portra400-coffee-3840x2160-2-W0/events.jsonl",
+          "events_sha256": "53f9874afaa2b80e10250cf58eddf76f4618a3d762e70e93ebcdf40ef3b21437"
+        }
+      ],
+      "aggregate_histograms": {
+        "R-B1": {
+          "4": 1918,
+          "3": 1
+        },
+        "W0": {
+          "4": 1879,
+          "3": 6
+        },
+        "Fused": {
+          "4": 2037
+        }
+      },
+      "mean_new_buffers_per_measurement_call": {
+        "R-B1": 3.9994788952579468,
+        "W0": 3.996816976127321,
+        "Fused": 4.0
+      }
+    }
+  },
+  "generated_sources": {
+    "MTF-W0": {
+      "path": "/private/tmp/metal4rPvUn.metal",
+      "sha256": "bec0fc791d95a230b663c8529b9e6b03361c63b6fcdc729083221996bb4c2269",
+      "kernel_count": 140
+    },
+    "MTF-Fused": {
+      "path": "/private/tmp/metalzKkL3a.metal",
+      "sha256": "75422308d9e762db3f5b89beb9ff3237e9ae0e07708663ae0ba0c2cd1d56be4f",
+      "kernel_count": 134
+    },
+    "Coupler-W0": {
+      "path": "/private/tmp/metalxuFEMg.metal",
+      "sha256": "bec0fc791d95a230b663c8529b9e6b03361c63b6fcdc729083221996bb4c2269",
+      "kernel_count": 140
+    },
+    "Coupler-Fused": {
+      "path": "/private/tmp/metalKkvRqD.metal",
+      "sha256": "06d4ab565aa244938233fb4e129a233f2f1785b5cf180efae45e4d4a95e939bb",
+      "kernel_count": 137
+    }
+  },
+  "kernel_summaries": {
+    "MTF-W0": {
+      "frame_mtf_mixed_": [
+        {
+          "name": "_kernel_frame_mtf_mixed_v40_s0_y_v24_block_id_y",
+          "line": 9041,
+          "for_statements": 0,
+          "pow_expressions": 0,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_mtf_mixed_v40_s0_y_v24_block_id_y_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_configuration_v40 const float *_frame_configuration_v40 [[ buffer(1) ]],",
+            "__address_space__frame_mtf_mixed_v40 float *_frame_mtf_mixed_v40 [[ buffer(2) ]],",
+            "__address_space__frame_mtf_secondary_v40 const float *_frame_mtf_secondary_v40 [[ buffer(3) ]],",
+            "__address_space__frame_mtf_v40 const float *_frame_mtf_v40 [[ buffer(4) ]],"
+          ]
+        },
+        {
+          "name": "_kernel_frame_mtf_mixed_v40_s0_y_v24_block_id_y__1",
+          "line": 40892,
+          "for_statements": 0,
+          "pow_expressions": 0,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_mtf_mixed_v40_s0_y_v24_block_id_y__1_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_configuration_v40 const float *_frame_configuration_v40 [[ buffer(1) ]],",
+            "__address_space__frame_mtf_mixed_v40 float *_frame_mtf_mixed_v40 [[ buffer(2) ]],",
+            "__address_space__frame_mtf_secondary_v40 const float *_frame_mtf_secondary_v40 [[ buffer(3) ]],",
+            "__address_space__frame_mtf_v40 const float *_frame_mtf_v40 [[ buffer(4) ]],"
+          ]
+        },
+        {
+          "name": "_kernel_frame_mtf_mixed_v40_s0_y_v24_block_id_y__2",
+          "line": 78575,
+          "for_statements": 0,
+          "pow_expressions": 0,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_mtf_mixed_v40_s0_y_v24_block_id_y__2_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_configuration_v40 const float *_frame_configuration_v40 [[ buffer(1) ]],",
+            "__address_space__frame_mtf_mixed_v40 float *_frame_mtf_mixed_v40 [[ buffer(2) ]],",
+            "__address_space__frame_mtf_secondary_v40 const float *_frame_mtf_secondary_v40 [[ buffer(3) ]],",
+            "__address_space__frame_mtf_v40 const float *_frame_mtf_v40 [[ buffer(4) ]],"
+          ]
+        }
+      ],
+      "frame_mtf_separated_": [
+        {
+          "name": "_kernel_frame_mtf_separated_v40_s0_y_v27_block_id_y__2",
+          "line": 9150,
+          "for_statements": 0,
+          "pow_expressions": 0,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_mtf_separated_v40_s0_y_v27_block_id_y__2_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_configuration_v40 const float *_frame_configuration_v40 [[ buffer(1) ]],",
+            "__address_space__frame_mtf_mixed_v40 const float *_frame_mtf_mixed_v40 [[ buffer(2) ]],",
+            "__address_space__frame_mtf_separated_v40 float *_frame_mtf_separated_v40 [[ buffer(3) ]],",
+            "__address_space__frame_mtf_v40 const float *_frame_mtf_v40 [[ buffer(4) ]],"
+          ]
+        },
+        {
+          "name": "_kernel_frame_mtf_separated_v40_s0_y_v27_block_id_y__3",
+          "line": 41001,
+          "for_statements": 0,
+          "pow_expressions": 0,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_mtf_separated_v40_s0_y_v27_block_id_y__3_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_configuration_v40 const float *_frame_configuration_v40 [[ buffer(1) ]],",
+            "__address_space__frame_mtf_mixed_v40 const float *_frame_mtf_mixed_v40 [[ buffer(2) ]],",
+            "__address_space__frame_mtf_separated_v40 float *_frame_mtf_separated_v40 [[ buffer(3) ]],",
+            "__address_space__frame_mtf_v40 const float *_frame_mtf_v40 [[ buffer(4) ]],"
+          ]
+        },
+        {
+          "name": "_kernel_frame_mtf_separated_v40_s0_y_v27_block_id_y__4",
+          "line": 78684,
+          "for_statements": 0,
+          "pow_expressions": 0,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_mtf_separated_v40_s0_y_v27_block_id_y__4_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_configuration_v40 const float *_frame_configuration_v40 [[ buffer(1) ]],",
+            "__address_space__frame_mtf_mixed_v40 const float *_frame_mtf_mixed_v40 [[ buffer(2) ]],",
+            "__address_space__frame_mtf_separated_v40 float *_frame_mtf_separated_v40 [[ buffer(3) ]],",
+            "__address_space__frame_mtf_v40 const float *_frame_mtf_v40 [[ buffer(4) ]],"
+          ]
+        }
+      ],
+      "frame_mtf_luma_selected_": [
+        {
+          "name": "_kernel_frame_mtf_luma_selected_v40_s0_y_v30_block_id_y__1",
+          "line": 9276,
+          "for_statements": 0,
+          "pow_expressions": 0,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_mtf_luma_selected_v40_s0_y_v30_block_id_y__1_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_mtf_luma_selected_v40 float *_frame_mtf_luma_selected_v40 [[ buffer(1) ]],",
+            "__address_space__frame_mtf_separated_v40 const float *_frame_mtf_separated_v40 [[ buffer(2) ]],"
+          ]
+        },
+        {
+          "name": "_kernel_frame_mtf_luma_selected_v40_s0_y_v30_block_id_y__2",
+          "line": 41127,
+          "for_statements": 0,
+          "pow_expressions": 0,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_mtf_luma_selected_v40_s0_y_v30_block_id_y__2_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_mtf_luma_selected_v40 float *_frame_mtf_luma_selected_v40 [[ buffer(1) ]],",
+            "__address_space__frame_mtf_separated_v40 const float *_frame_mtf_separated_v40 [[ buffer(2) ]],"
+          ]
+        },
+        {
+          "name": "_kernel_frame_mtf_luma_selected_v40_s0_y_v30_block_id_y__3",
+          "line": 78810,
+          "for_statements": 0,
+          "pow_expressions": 0,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_mtf_luma_selected_v40_s0_y_v30_block_id_y__3_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_mtf_luma_selected_v40 float *_frame_mtf_luma_selected_v40 [[ buffer(1) ]],",
+            "__address_space__frame_mtf_separated_v40 const float *_frame_mtf_separated_v40 [[ buffer(2) ]],"
+          ]
+        }
+      ],
+      "frame_released_": [
+        {
+          "name": "_kernel_frame_released_v40_s0_y_v93_block_id_y__5",
+          "line": 14887,
+          "for_statements": 0,
+          "pow_expressions": 6,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_released_v40_s0_y_v93_block_id_y__5_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_configuration_v40 const float *_frame_configuration_v40 [[ buffer(1) ]],",
+            "__address_space__frame_curve_table_v40 const float *_frame_curve_table_v40 [[ buffer(2) ]],",
+            "__address_space__frame_log_exposure_v40 const float *_frame_log_exposure_v40 [[ buffer(3) ]],",
+            "__address_space__frame_released_v40 float *_frame_released_v40 [[ buffer(4) ]],"
+          ]
+        },
+        {
+          "name": "_kernel_frame_released_v40_s0_y_v93_block_id_y__6",
+          "line": 49525,
+          "for_statements": 0,
+          "pow_expressions": 6,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_released_v40_s0_y_v93_block_id_y__6_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_configuration_v40 const float *_frame_configuration_v40 [[ buffer(1) ]],",
+            "__address_space__frame_curve_table_v40 const float *_frame_curve_table_v40 [[ buffer(2) ]],",
+            "__address_space__frame_log_exposure_v40 const float *_frame_log_exposure_v40 [[ buffer(3) ]],",
+            "__address_space__frame_released_v40 float *_frame_released_v40 [[ buffer(4) ]],"
+          ]
+        },
+        {
+          "name": "_kernel_frame_released_v40_s0_y_v93_block_id_y__7",
+          "line": 84421,
+          "for_statements": 0,
+          "pow_expressions": 6,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_released_v40_s0_y_v93_block_id_y__7_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_configuration_v40 const float *_frame_configuration_v40 [[ buffer(1) ]],",
+            "__address_space__frame_curve_table_v40 const float *_frame_curve_table_v40 [[ buffer(2) ]],",
+            "__address_space__frame_log_exposure_v40 const float *_frame_log_exposure_v40 [[ buffer(3) ]],",
+            "__address_space__frame_released_v40 float *_frame_released_v40 [[ buffer(4) ]],"
+          ]
+        }
+      ],
+      "frame_coupler_diffused_v40_down_": [
+        {
+          "name": "_kernel_frame_coupler_diffused_v40_down_s0_y_v101_block_id_y__3",
+          "line": 15184,
+          "for_statements": 6,
+          "pow_expressions": 0,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_coupler_diffused_v40_down_s0_y_v101_block_id_y__3_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_coupler_diffused_v40_down float *_frame_coupler_diffused_v40_down [[ buffer(1) ]],",
+            "__address_space__frame_released_v40 const float *_frame_released_v40 [[ buffer(2) ]],"
+          ]
+        },
+        {
+          "name": "_kernel_frame_coupler_diffused_v40_down_s0_y_v101_block_id_y__4",
+          "line": 49823,
+          "for_statements": 24,
+          "pow_expressions": 0,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_coupler_diffused_v40_down_s0_y_v101_block_id_y__4_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_coupler_diffused_v40_down float *_frame_coupler_diffused_v40_down [[ buffer(1) ]],",
+            "__address_space__frame_released_v40 const float *_frame_released_v40 [[ buffer(2) ]],"
+          ]
+        },
+        {
+          "name": "_kernel_frame_coupler_diffused_v40_down_s0_y_v101_block_id_y__5",
+          "line": 84718,
+          "for_statements": 6,
+          "pow_expressions": 0,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_coupler_diffused_v40_down_s0_y_v101_block_id_y__5_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_coupler_diffused_v40_down float *_frame_coupler_diffused_v40_down [[ buffer(1) ]],",
+            "__address_space__frame_released_v40 const float *_frame_released_v40 [[ buffer(2) ]],"
+          ]
+        }
+      ]
+    },
+    "MTF-Fused": {
+      "frame_mtf_mixed_": [],
+      "frame_mtf_separated_": [],
+      "frame_mtf_luma_selected_": [
+        {
+          "name": "_kernel_frame_mtf_luma_selected_v40_s0_y_v24_block_id_y__3",
+          "line": 9046,
+          "for_statements": 0,
+          "pow_expressions": 0,
+          "thread_local_mixed_three": true,
+          "device_buffer_signature": [
+            "const device _kernel_frame_mtf_luma_selected_v40_s0_y_v24_block_id_y__3_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_configuration_v40 const float *_frame_configuration_v40 [[ buffer(1) ]],",
+            "__address_space__frame_mtf_luma_selected_v40 float *_frame_mtf_luma_selected_v40 [[ buffer(2) ]],",
+            "__address_space__frame_mtf_secondary_v40 const float *_frame_mtf_secondary_v40 [[ buffer(3) ]],",
+            "__address_space__frame_mtf_v40 const float *_frame_mtf_v40 [[ buffer(4) ]],"
+          ]
+        },
+        {
+          "name": "_kernel_frame_mtf_luma_selected_v40_s0_y_v24_block_id_y__4",
+          "line": 40771,
+          "for_statements": 0,
+          "pow_expressions": 0,
+          "thread_local_mixed_three": true,
+          "device_buffer_signature": [
+            "const device _kernel_frame_mtf_luma_selected_v40_s0_y_v24_block_id_y__4_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_configuration_v40 const float *_frame_configuration_v40 [[ buffer(1) ]],",
+            "__address_space__frame_mtf_luma_selected_v40 float *_frame_mtf_luma_selected_v40 [[ buffer(2) ]],",
+            "__address_space__frame_mtf_secondary_v40 const float *_frame_mtf_secondary_v40 [[ buffer(3) ]],",
+            "__address_space__frame_mtf_v40 const float *_frame_mtf_v40 [[ buffer(4) ]],"
+          ]
+        },
+        {
+          "name": "_kernel_frame_mtf_luma_selected_v40_s0_y_v24_block_id_y__5",
+          "line": 78328,
+          "for_statements": 0,
+          "pow_expressions": 0,
+          "thread_local_mixed_three": true,
+          "device_buffer_signature": [
+            "const device _kernel_frame_mtf_luma_selected_v40_s0_y_v24_block_id_y__5_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_configuration_v40 const float *_frame_configuration_v40 [[ buffer(1) ]],",
+            "__address_space__frame_mtf_luma_selected_v40 float *_frame_mtf_luma_selected_v40 [[ buffer(2) ]],",
+            "__address_space__frame_mtf_secondary_v40 const float *_frame_mtf_secondary_v40 [[ buffer(3) ]],",
+            "__address_space__frame_mtf_v40 const float *_frame_mtf_v40 [[ buffer(4) ]],"
+          ]
+        }
+      ],
+      "frame_released_": [
+        {
+          "name": "_kernel_frame_released_v40_s0_y_v87_block_id_y__3",
+          "line": 14761,
+          "for_statements": 0,
+          "pow_expressions": 6,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_released_v40_s0_y_v87_block_id_y__3_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_configuration_v40 const float *_frame_configuration_v40 [[ buffer(1) ]],",
+            "__address_space__frame_curve_table_v40 const float *_frame_curve_table_v40 [[ buffer(2) ]],",
+            "__address_space__frame_log_exposure_v40 const float *_frame_log_exposure_v40 [[ buffer(3) ]],",
+            "__address_space__frame_released_v40 float *_frame_released_v40 [[ buffer(4) ]],"
+          ]
+        },
+        {
+          "name": "_kernel_frame_released_v40_s0_y_v87_block_id_y__4",
+          "line": 49273,
+          "for_statements": 0,
+          "pow_expressions": 6,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_released_v40_s0_y_v87_block_id_y__4_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_configuration_v40 const float *_frame_configuration_v40 [[ buffer(1) ]],",
+            "__address_space__frame_curve_table_v40 const float *_frame_curve_table_v40 [[ buffer(2) ]],",
+            "__address_space__frame_log_exposure_v40 const float *_frame_log_exposure_v40 [[ buffer(3) ]],",
+            "__address_space__frame_released_v40 float *_frame_released_v40 [[ buffer(4) ]],"
+          ]
+        },
+        {
+          "name": "_kernel_frame_released_v40_s0_y_v87_block_id_y__5",
+          "line": 84043,
+          "for_statements": 0,
+          "pow_expressions": 6,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_released_v40_s0_y_v87_block_id_y__5_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_configuration_v40 const float *_frame_configuration_v40 [[ buffer(1) ]],",
+            "__address_space__frame_curve_table_v40 const float *_frame_curve_table_v40 [[ buffer(2) ]],",
+            "__address_space__frame_log_exposure_v40 const float *_frame_log_exposure_v40 [[ buffer(3) ]],",
+            "__address_space__frame_released_v40 float *_frame_released_v40 [[ buffer(4) ]],"
+          ]
+        }
+      ],
+      "frame_coupler_diffused_v40_down_": [
+        {
+          "name": "_kernel_frame_coupler_diffused_v40_down_s0_y_v95_block_id_y",
+          "line": 15058,
+          "for_statements": 6,
+          "pow_expressions": 0,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_coupler_diffused_v40_down_s0_y_v95_block_id_y_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_coupler_diffused_v40_down float *_frame_coupler_diffused_v40_down [[ buffer(1) ]],",
+            "__address_space__frame_released_v40 const float *_frame_released_v40 [[ buffer(2) ]],"
+          ]
+        },
+        {
+          "name": "_kernel_frame_coupler_diffused_v40_down_s0_y_v95_block_id_y__1",
+          "line": 49571,
+          "for_statements": 24,
+          "pow_expressions": 0,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_coupler_diffused_v40_down_s0_y_v95_block_id_y__1_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_coupler_diffused_v40_down float *_frame_coupler_diffused_v40_down [[ buffer(1) ]],",
+            "__address_space__frame_released_v40 const float *_frame_released_v40 [[ buffer(2) ]],"
+          ]
+        },
+        {
+          "name": "_kernel_frame_coupler_diffused_v40_down_s0_y_v95_block_id_y__2",
+          "line": 84340,
+          "for_statements": 6,
+          "pow_expressions": 0,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_coupler_diffused_v40_down_s0_y_v95_block_id_y__2_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_coupler_diffused_v40_down float *_frame_coupler_diffused_v40_down [[ buffer(1) ]],",
+            "__address_space__frame_released_v40 const float *_frame_released_v40 [[ buffer(2) ]],"
+          ]
+        }
+      ]
+    },
+    "Coupler-W0": {
+      "frame_mtf_mixed_": [
+        {
+          "name": "_kernel_frame_mtf_mixed_v40_s0_y_v24_block_id_y",
+          "line": 9041,
+          "for_statements": 0,
+          "pow_expressions": 0,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_mtf_mixed_v40_s0_y_v24_block_id_y_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_configuration_v40 const float *_frame_configuration_v40 [[ buffer(1) ]],",
+            "__address_space__frame_mtf_mixed_v40 float *_frame_mtf_mixed_v40 [[ buffer(2) ]],",
+            "__address_space__frame_mtf_secondary_v40 const float *_frame_mtf_secondary_v40 [[ buffer(3) ]],",
+            "__address_space__frame_mtf_v40 const float *_frame_mtf_v40 [[ buffer(4) ]],"
+          ]
+        },
+        {
+          "name": "_kernel_frame_mtf_mixed_v40_s0_y_v24_block_id_y__1",
+          "line": 40892,
+          "for_statements": 0,
+          "pow_expressions": 0,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_mtf_mixed_v40_s0_y_v24_block_id_y__1_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_configuration_v40 const float *_frame_configuration_v40 [[ buffer(1) ]],",
+            "__address_space__frame_mtf_mixed_v40 float *_frame_mtf_mixed_v40 [[ buffer(2) ]],",
+            "__address_space__frame_mtf_secondary_v40 const float *_frame_mtf_secondary_v40 [[ buffer(3) ]],",
+            "__address_space__frame_mtf_v40 const float *_frame_mtf_v40 [[ buffer(4) ]],"
+          ]
+        },
+        {
+          "name": "_kernel_frame_mtf_mixed_v40_s0_y_v24_block_id_y__2",
+          "line": 78575,
+          "for_statements": 0,
+          "pow_expressions": 0,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_mtf_mixed_v40_s0_y_v24_block_id_y__2_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_configuration_v40 const float *_frame_configuration_v40 [[ buffer(1) ]],",
+            "__address_space__frame_mtf_mixed_v40 float *_frame_mtf_mixed_v40 [[ buffer(2) ]],",
+            "__address_space__frame_mtf_secondary_v40 const float *_frame_mtf_secondary_v40 [[ buffer(3) ]],",
+            "__address_space__frame_mtf_v40 const float *_frame_mtf_v40 [[ buffer(4) ]],"
+          ]
+        }
+      ],
+      "frame_mtf_separated_": [
+        {
+          "name": "_kernel_frame_mtf_separated_v40_s0_y_v27_block_id_y__2",
+          "line": 9150,
+          "for_statements": 0,
+          "pow_expressions": 0,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_mtf_separated_v40_s0_y_v27_block_id_y__2_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_configuration_v40 const float *_frame_configuration_v40 [[ buffer(1) ]],",
+            "__address_space__frame_mtf_mixed_v40 const float *_frame_mtf_mixed_v40 [[ buffer(2) ]],",
+            "__address_space__frame_mtf_separated_v40 float *_frame_mtf_separated_v40 [[ buffer(3) ]],",
+            "__address_space__frame_mtf_v40 const float *_frame_mtf_v40 [[ buffer(4) ]],"
+          ]
+        },
+        {
+          "name": "_kernel_frame_mtf_separated_v40_s0_y_v27_block_id_y__3",
+          "line": 41001,
+          "for_statements": 0,
+          "pow_expressions": 0,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_mtf_separated_v40_s0_y_v27_block_id_y__3_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_configuration_v40 const float *_frame_configuration_v40 [[ buffer(1) ]],",
+            "__address_space__frame_mtf_mixed_v40 const float *_frame_mtf_mixed_v40 [[ buffer(2) ]],",
+            "__address_space__frame_mtf_separated_v40 float *_frame_mtf_separated_v40 [[ buffer(3) ]],",
+            "__address_space__frame_mtf_v40 const float *_frame_mtf_v40 [[ buffer(4) ]],"
+          ]
+        },
+        {
+          "name": "_kernel_frame_mtf_separated_v40_s0_y_v27_block_id_y__4",
+          "line": 78684,
+          "for_statements": 0,
+          "pow_expressions": 0,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_mtf_separated_v40_s0_y_v27_block_id_y__4_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_configuration_v40 const float *_frame_configuration_v40 [[ buffer(1) ]],",
+            "__address_space__frame_mtf_mixed_v40 const float *_frame_mtf_mixed_v40 [[ buffer(2) ]],",
+            "__address_space__frame_mtf_separated_v40 float *_frame_mtf_separated_v40 [[ buffer(3) ]],",
+            "__address_space__frame_mtf_v40 const float *_frame_mtf_v40 [[ buffer(4) ]],"
+          ]
+        }
+      ],
+      "frame_mtf_luma_selected_": [
+        {
+          "name": "_kernel_frame_mtf_luma_selected_v40_s0_y_v30_block_id_y__1",
+          "line": 9276,
+          "for_statements": 0,
+          "pow_expressions": 0,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_mtf_luma_selected_v40_s0_y_v30_block_id_y__1_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_mtf_luma_selected_v40 float *_frame_mtf_luma_selected_v40 [[ buffer(1) ]],",
+            "__address_space__frame_mtf_separated_v40 const float *_frame_mtf_separated_v40 [[ buffer(2) ]],"
+          ]
+        },
+        {
+          "name": "_kernel_frame_mtf_luma_selected_v40_s0_y_v30_block_id_y__2",
+          "line": 41127,
+          "for_statements": 0,
+          "pow_expressions": 0,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_mtf_luma_selected_v40_s0_y_v30_block_id_y__2_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_mtf_luma_selected_v40 float *_frame_mtf_luma_selected_v40 [[ buffer(1) ]],",
+            "__address_space__frame_mtf_separated_v40 const float *_frame_mtf_separated_v40 [[ buffer(2) ]],"
+          ]
+        },
+        {
+          "name": "_kernel_frame_mtf_luma_selected_v40_s0_y_v30_block_id_y__3",
+          "line": 78810,
+          "for_statements": 0,
+          "pow_expressions": 0,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_mtf_luma_selected_v40_s0_y_v30_block_id_y__3_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_mtf_luma_selected_v40 float *_frame_mtf_luma_selected_v40 [[ buffer(1) ]],",
+            "__address_space__frame_mtf_separated_v40 const float *_frame_mtf_separated_v40 [[ buffer(2) ]],"
+          ]
+        }
+      ],
+      "frame_released_": [
+        {
+          "name": "_kernel_frame_released_v40_s0_y_v93_block_id_y__5",
+          "line": 14887,
+          "for_statements": 0,
+          "pow_expressions": 6,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_released_v40_s0_y_v93_block_id_y__5_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_configuration_v40 const float *_frame_configuration_v40 [[ buffer(1) ]],",
+            "__address_space__frame_curve_table_v40 const float *_frame_curve_table_v40 [[ buffer(2) ]],",
+            "__address_space__frame_log_exposure_v40 const float *_frame_log_exposure_v40 [[ buffer(3) ]],",
+            "__address_space__frame_released_v40 float *_frame_released_v40 [[ buffer(4) ]],"
+          ]
+        },
+        {
+          "name": "_kernel_frame_released_v40_s0_y_v93_block_id_y__6",
+          "line": 49525,
+          "for_statements": 0,
+          "pow_expressions": 6,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_released_v40_s0_y_v93_block_id_y__6_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_configuration_v40 const float *_frame_configuration_v40 [[ buffer(1) ]],",
+            "__address_space__frame_curve_table_v40 const float *_frame_curve_table_v40 [[ buffer(2) ]],",
+            "__address_space__frame_log_exposure_v40 const float *_frame_log_exposure_v40 [[ buffer(3) ]],",
+            "__address_space__frame_released_v40 float *_frame_released_v40 [[ buffer(4) ]],"
+          ]
+        },
+        {
+          "name": "_kernel_frame_released_v40_s0_y_v93_block_id_y__7",
+          "line": 84421,
+          "for_statements": 0,
+          "pow_expressions": 6,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_released_v40_s0_y_v93_block_id_y__7_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_configuration_v40 const float *_frame_configuration_v40 [[ buffer(1) ]],",
+            "__address_space__frame_curve_table_v40 const float *_frame_curve_table_v40 [[ buffer(2) ]],",
+            "__address_space__frame_log_exposure_v40 const float *_frame_log_exposure_v40 [[ buffer(3) ]],",
+            "__address_space__frame_released_v40 float *_frame_released_v40 [[ buffer(4) ]],"
+          ]
+        }
+      ],
+      "frame_coupler_diffused_v40_down_": [
+        {
+          "name": "_kernel_frame_coupler_diffused_v40_down_s0_y_v101_block_id_y__3",
+          "line": 15184,
+          "for_statements": 6,
+          "pow_expressions": 0,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_coupler_diffused_v40_down_s0_y_v101_block_id_y__3_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_coupler_diffused_v40_down float *_frame_coupler_diffused_v40_down [[ buffer(1) ]],",
+            "__address_space__frame_released_v40 const float *_frame_released_v40 [[ buffer(2) ]],"
+          ]
+        },
+        {
+          "name": "_kernel_frame_coupler_diffused_v40_down_s0_y_v101_block_id_y__4",
+          "line": 49823,
+          "for_statements": 24,
+          "pow_expressions": 0,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_coupler_diffused_v40_down_s0_y_v101_block_id_y__4_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_coupler_diffused_v40_down float *_frame_coupler_diffused_v40_down [[ buffer(1) ]],",
+            "__address_space__frame_released_v40 const float *_frame_released_v40 [[ buffer(2) ]],"
+          ]
+        },
+        {
+          "name": "_kernel_frame_coupler_diffused_v40_down_s0_y_v101_block_id_y__5",
+          "line": 84718,
+          "for_statements": 6,
+          "pow_expressions": 0,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_coupler_diffused_v40_down_s0_y_v101_block_id_y__5_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_coupler_diffused_v40_down float *_frame_coupler_diffused_v40_down [[ buffer(1) ]],",
+            "__address_space__frame_released_v40 const float *_frame_released_v40 [[ buffer(2) ]],"
+          ]
+        }
+      ]
+    },
+    "Coupler-Fused": {
+      "frame_mtf_mixed_": [
+        {
+          "name": "_kernel_frame_mtf_mixed_v40_s0_y_v24_block_id_y__1",
+          "line": 9044,
+          "for_statements": 0,
+          "pow_expressions": 0,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_mtf_mixed_v40_s0_y_v24_block_id_y__1_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_configuration_v40 const float *_frame_configuration_v40 [[ buffer(1) ]],",
+            "__address_space__frame_mtf_mixed_v40 float *_frame_mtf_mixed_v40 [[ buffer(2) ]],",
+            "__address_space__frame_mtf_secondary_v40 const float *_frame_mtf_secondary_v40 [[ buffer(3) ]],",
+            "__address_space__frame_mtf_v40 const float *_frame_mtf_v40 [[ buffer(4) ]],"
+          ]
+        },
+        {
+          "name": "_kernel_frame_mtf_mixed_v40_s0_y_v24_block_id_y__2",
+          "line": 40768,
+          "for_statements": 0,
+          "pow_expressions": 0,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_mtf_mixed_v40_s0_y_v24_block_id_y__2_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_configuration_v40 const float *_frame_configuration_v40 [[ buffer(1) ]],",
+            "__address_space__frame_mtf_mixed_v40 float *_frame_mtf_mixed_v40 [[ buffer(2) ]],",
+            "__address_space__frame_mtf_secondary_v40 const float *_frame_mtf_secondary_v40 [[ buffer(3) ]],",
+            "__address_space__frame_mtf_v40 const float *_frame_mtf_v40 [[ buffer(4) ]],"
+          ]
+        },
+        {
+          "name": "_kernel_frame_mtf_mixed_v40_s0_y_v24_block_id_y__3",
+          "line": 78992,
+          "for_statements": 0,
+          "pow_expressions": 0,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_mtf_mixed_v40_s0_y_v24_block_id_y__3_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_configuration_v40 const float *_frame_configuration_v40 [[ buffer(1) ]],",
+            "__address_space__frame_mtf_mixed_v40 float *_frame_mtf_mixed_v40 [[ buffer(2) ]],",
+            "__address_space__frame_mtf_secondary_v40 const float *_frame_mtf_secondary_v40 [[ buffer(3) ]],",
+            "__address_space__frame_mtf_v40 const float *_frame_mtf_v40 [[ buffer(4) ]],"
+          ]
+        }
+      ],
+      "frame_mtf_separated_": [
+        {
+          "name": "_kernel_frame_mtf_separated_v40_s0_y_v27_block_id_y__1",
+          "line": 9153,
+          "for_statements": 0,
+          "pow_expressions": 0,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_mtf_separated_v40_s0_y_v27_block_id_y__1_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_configuration_v40 const float *_frame_configuration_v40 [[ buffer(1) ]],",
+            "__address_space__frame_mtf_mixed_v40 const float *_frame_mtf_mixed_v40 [[ buffer(2) ]],",
+            "__address_space__frame_mtf_separated_v40 float *_frame_mtf_separated_v40 [[ buffer(3) ]],",
+            "__address_space__frame_mtf_v40 const float *_frame_mtf_v40 [[ buffer(4) ]],"
+          ]
+        },
+        {
+          "name": "_kernel_frame_mtf_separated_v40_s0_y_v27_block_id_y__2",
+          "line": 40877,
+          "for_statements": 0,
+          "pow_expressions": 0,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_mtf_separated_v40_s0_y_v27_block_id_y__2_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_configuration_v40 const float *_frame_configuration_v40 [[ buffer(1) ]],",
+            "__address_space__frame_mtf_mixed_v40 const float *_frame_mtf_mixed_v40 [[ buffer(2) ]],",
+            "__address_space__frame_mtf_separated_v40 float *_frame_mtf_separated_v40 [[ buffer(3) ]],",
+            "__address_space__frame_mtf_v40 const float *_frame_mtf_v40 [[ buffer(4) ]],"
+          ]
+        },
+        {
+          "name": "_kernel_frame_mtf_separated_v40_s0_y_v27_block_id_y__3",
+          "line": 79101,
+          "for_statements": 0,
+          "pow_expressions": 0,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_mtf_separated_v40_s0_y_v27_block_id_y__3_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_configuration_v40 const float *_frame_configuration_v40 [[ buffer(1) ]],",
+            "__address_space__frame_mtf_mixed_v40 const float *_frame_mtf_mixed_v40 [[ buffer(2) ]],",
+            "__address_space__frame_mtf_separated_v40 float *_frame_mtf_separated_v40 [[ buffer(3) ]],",
+            "__address_space__frame_mtf_v40 const float *_frame_mtf_v40 [[ buffer(4) ]],"
+          ]
+        }
+      ],
+      "frame_mtf_luma_selected_": [
+        {
+          "name": "_kernel_frame_mtf_luma_selected_v40_s0_y_v30_block_id_y__14",
+          "line": 9279,
+          "for_statements": 0,
+          "pow_expressions": 0,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_mtf_luma_selected_v40_s0_y_v30_block_id_y__14_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_mtf_luma_selected_v40 float *_frame_mtf_luma_selected_v40 [[ buffer(1) ]],",
+            "__address_space__frame_mtf_separated_v40 const float *_frame_mtf_separated_v40 [[ buffer(2) ]],"
+          ]
+        },
+        {
+          "name": "_kernel_frame_mtf_luma_selected_v40_s0_y_v30_block_id_y__15",
+          "line": 41003,
+          "for_statements": 0,
+          "pow_expressions": 0,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_mtf_luma_selected_v40_s0_y_v30_block_id_y__15_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_mtf_luma_selected_v40 float *_frame_mtf_luma_selected_v40 [[ buffer(1) ]],",
+            "__address_space__frame_mtf_separated_v40 const float *_frame_mtf_separated_v40 [[ buffer(2) ]],"
+          ]
+        },
+        {
+          "name": "_kernel_frame_mtf_luma_selected_v40_s0_y_v30_block_id_y__16",
+          "line": 79227,
+          "for_statements": 0,
+          "pow_expressions": 0,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_mtf_luma_selected_v40_s0_y_v30_block_id_y__16_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_mtf_luma_selected_v40 float *_frame_mtf_luma_selected_v40 [[ buffer(1) ]],",
+            "__address_space__frame_mtf_separated_v40 const float *_frame_mtf_separated_v40 [[ buffer(2) ]],"
+          ]
+        }
+      ],
+      "frame_released_": [],
+      "frame_coupler_diffused_v40_down_": [
+        {
+          "name": "_kernel_frame_coupler_diffused_v40_down_s0_y_v98_block_id_y__6",
+          "line": 14885,
+          "for_statements": 6,
+          "pow_expressions": 6,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_coupler_diffused_v40_down_s0_y_v98_block_id_y__6_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_log_exposure_v40 const float *_frame_log_exposure_v40 [[ buffer(1) ]],",
+            "__address_space__frame_curve_table_v40 const float *_frame_curve_table_v40 [[ buffer(2) ]],",
+            "__address_space__frame_coupler_diffused_v40_down float *_frame_coupler_diffused_v40_down [[ buffer(3) ]],",
+            "__address_space__frame_configuration_v40 const float *_frame_configuration_v40 [[ buffer(4) ]],"
+          ]
+        },
+        {
+          "name": "_kernel_frame_coupler_diffused_v40_down_s0_y_v98_block_id_y__7",
+          "line": 49397,
+          "for_statements": 24,
+          "pow_expressions": 30,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_coupler_diffused_v40_down_s0_y_v98_block_id_y__7_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_log_exposure_v40 const float *_frame_log_exposure_v40 [[ buffer(1) ]],",
+            "__address_space__frame_curve_table_v40 const float *_frame_curve_table_v40 [[ buffer(2) ]],",
+            "__address_space__frame_coupler_diffused_v40_down float *_frame_coupler_diffused_v40_down [[ buffer(3) ]],",
+            "__address_space__frame_configuration_v40 const float *_frame_configuration_v40 [[ buffer(4) ]],"
+          ]
+        },
+        {
+          "name": "_kernel_frame_coupler_diffused_v40_down_s0_y_v98_block_id_y__8",
+          "line": 84833,
+          "for_statements": 6,
+          "pow_expressions": 6,
+          "thread_local_mixed_three": false,
+          "device_buffer_signature": [
+            "const device _kernel_frame_coupler_diffused_v40_down_s0_y_v98_block_id_y__8_args *_scalar_args [[ buffer(0) ]],",
+            "__address_space__frame_log_exposure_v40 const float *_frame_log_exposure_v40 [[ buffer(1) ]],",
+            "__address_space__frame_curve_table_v40 const float *_frame_curve_table_v40 [[ buffer(2) ]],",
+            "__address_space__frame_coupler_diffused_v40_down float *_frame_coupler_diffused_v40_down [[ buffer(3) ]],",
+            "__address_space__frame_configuration_v40 const float *_frame_configuration_v40 [[ buffer(4) ]],"
+          ]
+        }
+      ]
+    }
+  },
+  "evidence": {
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-mtf-stage16-timing/c2a45505230b/report.json": "2d3021e8dee23854da92f1a9d85c54022e4efd4b9bbd2caf32103429f4376e52",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-coupler-stage17-timing/7b3a1e93cbdd/report.json": "e64b203b964e567c3599243123990090a2be4ce1f9e89f32277bb661153ddb89",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-fusion-comparison/MTF-W0-representative-kernels.txt": "878f39a6e3e9c2db6668271c9ed9ebc29a209d408a7d689239da2d1238cd2c16",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-fusion-comparison/MTF-Fused-representative-kernels.txt": "4937628cd48f90bd5b2796c123bae3c5ad14fc65732fae07cf46f90334b81e4b",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-fusion-comparison/Coupler-W0-representative-kernels.txt": "878f39a6e3e9c2db6668271c9ed9ebc29a209d408a7d689239da2d1238cd2c16",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-fusion-comparison/Coupler-Fused-representative-kernels.txt": "6af0d850ee4adc4308c4f467505db04124483880bbc7d122f554af2b961e7271",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/Sources/FotufilmHalide/Graph/Frame.h": "2cf7fa1a9abe74d69fbb40c021acb713ef49b7d1e16b0ae86add04f1d9a3cc47",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/Sources/FotufilmHalide/Stages/Exposure.h": "d5d159581af146429990ccfe226d1b2afdb1820d5b300c2bc67dc01e9c03a93a",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/Sources/FotufilmHalide/Stages/Couplers.h": "082057459848fce6ff6f58b57fc9095aaa00de05cf77ab5211b2fe7a4282b4c5",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/Sources/FotufilmHalide/Schedule/Gpu.h": "87f5da317706fd6a25dc50f1fd932e65da9a9be4c0539017dd3dfc0f2d2fc2e2",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/Sources/FotufilmHalide/FotufilmHalideIOS.cpp": "4422319d8c8047439232cbad047962067f5d5a3df24aafa944c9214bb5f0cd5e",
+    "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/tools/wavefront-benchmark.mm": "680c889bdf9217728f4458d04dbe8c2283e78b9a3ae607cfba1a130d2a599cc1"
+  },
+  "same_W0_generated_Metal_bytes": true,
+  "interpretation": {
+    "confirmed": [
+      "MTF removes two pointwise device fields and keeps all three mixed values thread-local; its combined MTF kernels have no for-loop or pow expression.",
+      "Coupler removes Released but retains the downsample grid; release/curve expressions move into dynamic box reductions, which remain in generated Metal even though the measured requests have stride1.",
+      "MTF UHD steady new-buffer calls fall from about4/frame to exactly1/frame in all three rounds; Coupler UHD stays at exactly4/frame in all Fused rounds.",
+      "The pool rounds sizes, uses exact bucket matching and caps idle retained bytes; eliminating a logical field does not guarantee fewer future allocations or a lower retained total."
+    ],
+    "supported_explanation": "MTF removes cheap pointwise boundaries without adding sampling loops, and reduces both large-field traffic and observed fresh-buffer churn. Coupler retains the generic reduction structure and observed churn. This explains why the first experiment has stronger evidence of practical gains, but does not quantify the contribution of each cost.",
+    "not_established": [
+      "No per-kernel GPU time, DRAM traffic, physical register allocation or spill counters were collected.",
+      "Source for/pow counts are static and include alternate branches/specializations; they are not per-pixel executed instruction counts. Gamma1 in the measured profiles may be optimized further by the Metal compiler.",
+      "The buffer observer records neither byte sizes nor allocation call ancestry, so exact pool misses/evictions and allocation-time contribution are not proven.",
+      "Two separate timing campaigns cannot be used as a direct performance comparison of their fused arms."
+    ],
+    "next_hypothesis": "For Coupler stride1, investigate a dedicated identity-grid path or specialization instead of carrying generic reduction loops. Preserve release-before-average for strides greater than1; not implemented or benchmarked here."
+  }
+}

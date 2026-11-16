@@ -17,6 +17,13 @@ constexpr int32_t kStillFastHalfTetra = 1 << 3;
 // Bit 4 is reserved for the removed extern-MTF implementation.
 constexpr int32_t kStillFastGrainTable = 1 << 5;
 
+// Private, explicit Metal whole-frame research switches. No environment/default activation.
+constexpr int32_t kGeneralRegisters = 1 << 0;
+constexpr int32_t kGeneralNormalized = 1 << 1;
+constexpr int32_t kGeneralCountedCells = 1 << 2;
+constexpr int32_t kGeneralRadiusOne = 1 << 3;
+constexpr int32_t kGeneralOptimizationBits = 15;
+
 /// Resolve once at the host boundary, then pass by value to each pipeline. Environment changes
 /// cannot alter a constructed graph's device, storage layout, or compilation identity.
 struct GpuConfiguration {
@@ -36,6 +43,12 @@ struct GpuConfiguration {
     bool profile = false;
     int32_t still_fast = 0;
     int32_t ablated = 0;
+    int32_t general_optimizations = 0;
+    // Private scheduling experiment; opt in explicitly, never through the environment.
+    bool windowed_mtf_fusion = false;
+    bool windowed_print_mtf_fusion = false;
+    bool windowed_coupler_fusion = false;
+    bool windowed_coupler_unit_stride = false;
 
     Halide::Target target() const {
         auto target = Halide::get_host_target();
@@ -61,7 +74,12 @@ struct GpuConfiguration {
             + std::to_string(half_blur) + std::to_string(half_lut)
             + std::to_string(half_tetra) + std::to_string(split_down)
             + std::to_string(profile) + ":" + std::to_string(still_fast)
-            + ":" + std::to_string(ablated);
+            + ":" + std::to_string(ablated)
+            + (general_optimizations ? ":general:" + std::to_string(general_optimizations) : "")
+            + (windowed_mtf_fusion ? ":windowed-mtf-fusion:1" : "")
+            + (windowed_print_mtf_fusion ? ":windowed-print-mtf-fusion:1" : "")
+            + (windowed_coupler_fusion ? ":windowed-coupler-fusion:1" : "")
+            + (windowed_coupler_unit_stride ? ":windowed-coupler-unit-stride:1" : "");
     }
 };
 
