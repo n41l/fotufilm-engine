@@ -33,7 +33,7 @@ def main():
   wanted={'frame_mtf_mixed','frame_mtf_separated'}
   if bool(wanted.intersection(names))==enabled or (not enabled and not wanted.issubset(names)):raise ValueError('target intermediate kernel families not removed/preserved')
   if 'frame_mtf_luma_selected' not in names:raise ValueError('shared final MTF store disappeared')
-  (out/'source-key.txt').write_text(key+'\n');(out/'identity.json').write_text(json.dumps({'kind':'windowed-mtf','source_key':key,'fusion':enabled,'windowed':True,'wavefront':False,'stage_count':1,'variant_index':indices[0],'generator_sha256':sha(generator),'archives':{x.name:sha(x) for x in out.glob('*.a')},'normalized_kernel_families':names,'static_symbol_scope':'possible compiled families, not executed dispatch count or per-kernel time'},indent=2)+'\n')
+  (out/'source-key.txt').write_text(key+'\n');(out/'identity.json').write_text(json.dumps({'kind':'windowed-mtf','source_key':key,'fusion':enabled,'print_mtf_fusion':False,'coupler_fusion':False,'windowed':True,'wavefront':False,'stage_count':1,'variant_index':indices[0],'generator_sha256':sha(generator),'archives':{x.name:sha(x) for x in out.glob('*.a')},'normalized_kernel_families':names,'static_symbol_scope':'possible compiled families, not executed dispatch count or per-kernel time'},indent=2)+'\n')
   if subprocess.check_output(['python3',str(c/'tools/aot-release.py'),'key','macos'],text=True).strip()!=key:raise ValueError('source changed during build')
   print('BUILT',arm,'index',indices[0],flush=True)
  print('BUILD',root,flush=True)

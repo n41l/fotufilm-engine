@@ -33,6 +33,7 @@ int main(int argc, char **argv) {
     bool three_stage = false, bundle = false;
     int general_optimizations=0;bool general_research=false;
     bool mtf_research=false, windowed_mtf_fusion=false;
+    bool print_mtf_research=false, windowed_print_mtf_fusion=false;
     bool coupler_research=false, windowed_coupler_fusion=false;
     bool coupler_unit_requested=false, coupler_unit_stride=false;
     // Build policy only; runtime requests use explicit per-call options.
@@ -63,6 +64,12 @@ int main(int argc, char **argv) {
                 std::cerr<<"windowed MTF fusion must be 0 or 1\n";return 2;
             }
             mtf_research=true;windowed_mtf_fusion=value=="1";
+        } else if (argument.rfind("--windowed-print-mtf-fusion=",0)==0) {
+            const auto value=argument.substr(std::string("--windowed-print-mtf-fusion=").size());
+            if (value!="0" && value!="1") {
+                std::cerr<<"windowed Print MTF fusion must be 0 or 1\n";return 2;
+            }
+            print_mtf_research=true;windowed_print_mtf_fusion=value=="1";
         } else if (argument.rfind("--general-optimizations=",0)==0) {
             const auto value=argument.substr(std::string("--general-optimizations=").size());
             char *end=nullptr;long bits=std::strtol(value.c_str(),&end,10);
@@ -107,11 +114,15 @@ int main(int argc, char **argv) {
         std::cerr<<"general research requires one explicit macOS general variant, without wavefront\n";return 2;
     }
     if (mtf_research && (platform!="--macos" || wavefront || trace_wavefront || three_stage
-        || bundle || general_research || coupler_research || count_only || work!=Work::OneVariant)) {
+        || bundle || general_research || coupler_research || print_mtf_research || count_only || work!=Work::OneVariant)) {
         std::cerr<<"windowed MTF research requires one exclusive macOS exact luma variant\n";return 2;
     }
+    if (print_mtf_research && (platform!="--macos" || wavefront || trace_wavefront || three_stage
+        || bundle || general_research || mtf_research || coupler_research || count_only || work!=Work::OneVariant)) {
+        std::cerr<<"windowed Print MTF research requires one exclusive macOS exact luma variant\n";return 2;
+    }
     if (coupler_research && (platform!="--macos" || wavefront || trace_wavefront || three_stage
-        || bundle || general_research || mtf_research || count_only || work!=Work::OneVariant)) {
+        || bundle || general_research || mtf_research || print_mtf_research || count_only || work!=Work::OneVariant)) {
         std::cerr<<"windowed Coupler research requires one exclusive macOS exact negative variant\n";return 2;
     }
     if (coupler_unit_requested && (!coupler_research || !windowed_coupler_fusion)) {
@@ -205,6 +216,7 @@ int main(int argc, char **argv) {
     GpuConfiguration defaults;
     defaults.general_optimizations=general_optimizations;
     defaults.windowed_mtf_fusion=windowed_mtf_fusion;
+    defaults.windowed_print_mtf_fusion=windowed_print_mtf_fusion;
     defaults.windowed_coupler_fusion=windowed_coupler_fusion;
     defaults.windowed_coupler_unit_stride=coupler_unit_stride;
     defaults.half_blur = !macos && !linux;

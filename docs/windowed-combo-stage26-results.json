@@ -1,0 +1,324 @@
+{
+  "complete": true,
+  "stage": 26,
+  "date": "2026-11-02",
+  "scope": "MTF pointwise fusion + BestFit pool policy combination: 4x4 Williams factorial on the active Portra UHD case; diagnostic, defaults off",
+  "reference_base": "96623ba0831a52dbddcda35727a206d4123a8b5f",
+  "source_key": "8c7c3a8b1d60d1cc17ae723cf8a0c0a7d4c4781bdaad8f7a3fafe6dea17a692b",
+  "performance_acceptance": false,
+  "B_ref_frozen": false,
+  "current_source_release_set": false,
+  "arms": {
+    "R-B1": "frozen original instrumented runner",
+    "MTF": "current-source fused negative_luma archive, original allocator",
+    "BF": "frozen R archives + best-fit pool suffix on the frozen shim",
+    "COMBO": "current-source fused archive + the same best-fit suffix on the current shim"
+  },
+  "active_case": "portra400-coffee-3840x2160",
+  "summary": {
+    "R-B1": {
+      "round_medians_ms": [
+        41.431917,
+        46.592667,
+        45.491709,
+        47.54025
+      ],
+      "median_of_round_medians_ms": 46.04218775057234,
+      "worst_round_p95_ms": 63.00833298882935,
+      "median_throughput_fps": 21.383333333333333,
+      "device_peaks_mib": [
+        1183.71875,
+        1183.71875,
+        1183.71875,
+        1183.71875
+      ],
+      "max_device_peak_mib": 1183.71875,
+      "max_process_peak_mib": 1672.5167694091797,
+      "retained_process_footprint_mib": [
+        1459.3448944091797,
+        1458.954246520996,
+        1458.938575744629,
+        1458.110450744629
+      ],
+      "max_thermal_state": 1,
+      "measurement_requests": 2637
+    },
+    "MTF": {
+      "round_medians_ms": [
+        36.188208,
+        37.954166,
+        46.346625,
+        65.280042
+      ],
+      "median_of_round_medians_ms": 42.15039550035726,
+      "worst_round_p95_ms": 120.89424999430776,
+      "median_throughput_fps": 22.766666666666666,
+      "device_peaks_mib": [
+        1071.71875,
+        1071.71875,
+        1071.71875,
+        1071.71875
+      ],
+      "max_device_peak_mib": 1071.71875,
+      "max_process_peak_mib": 1464.719871520996,
+      "retained_process_footprint_mib": [
+        1346.922996520996,
+        1346.9073486328125,
+        1347.501121520996,
+        1346.704200744629
+      ],
+      "max_thermal_state": 1,
+      "measurement_requests": 2616
+    },
+    "BF": {
+      "round_medians_ms": [
+        38.825376,
+        40.619375,
+        45.97875,
+        60.648084
+      ],
+      "median_of_round_medians_ms": 43.299062504956964,
+      "worst_round_p95_ms": 89.15066700137686,
+      "median_throughput_fps": 22.433333333333334,
+      "device_peaks_mib": [
+        991.71875,
+        943.71875,
+        991.71875,
+        991.71875
+      ],
+      "max_device_peak_mib": 991.71875,
+      "max_process_peak_mib": 1336.8292236328125,
+      "retained_process_footprint_mib": [
+        1266.172950744629,
+        1217.985496520996,
+        1267.6260986328125,
+        1266.9229736328125
+      ],
+      "max_thermal_state": 1,
+      "measurement_requests": 2570
+    },
+    "COMBO": {
+      "round_medians_ms": [
+        35.514063,
+        40.445063,
+        40.877,
+        39.440041
+      ],
+      "median_of_round_medians_ms": 39.94255175348371,
+      "worst_round_p95_ms": 56.37383399880491,
+      "median_throughput_fps": 24.116666666666667,
+      "device_peaks_mib": [
+        1030.90625,
+        1030.90625,
+        1030.90625,
+        1031.71875
+      ],
+      "max_device_peak_mib": 1031.71875,
+      "max_process_peak_mib": 1375.9385986328125,
+      "retained_process_footprint_mib": [
+        1259.001121520996,
+        1258.016746520996,
+        1258.8760986328125,
+        1258.4230194091797
+      ],
+      "max_thermal_state": 1,
+      "measurement_requests": 2971
+    }
+  },
+  "effect_vs": {
+    "R-B1": {
+      "observed_latency_reduction_percent": 13.247928248181045,
+      "device_peak_reduction_mib": 152.0
+    },
+    "MTF": {
+      "observed_latency_reduction_percent": 5.238014307255638,
+      "device_peak_reduction_mib": 40.0
+    },
+    "BF": {
+      "observed_latency_reduction_percent": 7.751924769939284,
+      "device_peak_reduction_mib": -40.0
+    }
+  },
+  "per_round_pairs": {
+    "0": {
+      "order": [
+        "R-B1",
+        "MTF",
+        "COMBO",
+        "BF"
+      ],
+      "combo_vs_r_b1_percent": -14.28332288912646,
+      "combo_vs_mtf_percent": -1.8628871940977942,
+      "combo_vs_bf_percent": -8.528733972417198
+    },
+    "1": {
+      "order": [
+        "MTF",
+        "BF",
+        "R-B1",
+        "COMBO"
+      ],
+      "combo_vs_r_b1_percent": -13.19435967114169,
+      "combo_vs_mtf_percent": 6.562906727515568,
+      "combo_vs_bf_percent": -0.42913634942951295
+    },
+    "2": {
+      "order": [
+        "BF",
+        "COMBO",
+        "MTF",
+        "R-B1"
+      ],
+      "combo_vs_r_b1_percent": -10.144066024292723,
+      "combo_vs_mtf_percent": -11.801560539142148,
+      "combo_vs_bf_percent": -11.095886688663922
+    },
+    "3": {
+      "order": [
+        "COMBO",
+        "R-B1",
+        "BF",
+        "MTF"
+      ],
+      "combo_vs_r_b1_percent": -17.038633580460164,
+      "combo_vs_mtf_percent": -39.58330940338397,
+      "combo_vs_bf_percent": -34.96902392504931
+    }
+  },
+  "dispatches": {
+    "R-B1": 77,
+    "W0": 77,
+    "MTF": 73,
+    "BF": 77,
+    "COMBO": 73,
+    "note": "verified per round against the proof; single-call new-buffer totals R53/W0 52/MTF 51/BF 45/COMBO 44"
+  },
+  "pixel_proof": {
+    "independent_comparisons": 25,
+    "all_bitwise_equal_R": true,
+    "worst_error": 0.0,
+    "arms": "R-B1/W0/MTF/BF/COMBO x 4 primary + odd two-window crop"
+  },
+  "jit_parity": {
+    "comparisons": 2,
+    "worst_linear_error": 1.9669532775878906e-06
+  },
+  "memory_findings": {
+    "r_mib": 1183.71875,
+    "mtf_mib": 1071.71875,
+    "bf_mib": 991.71875,
+    "combo_mib": 1031.71875,
+    "combo_vs_r": -152.0,
+    "combo_vs_mtf": -40.0,
+    "combo_vs_bf": 40.0,
+    "interpretation": "The savings overlap, they do not add: naive stacking would be -304 MiB; observed is -151.9. Removing the two MTF intermediates shrinks the set of large freed blocks the best-fit pool recycles, so BestFit contributes about -40 MiB on top of the fusion instead of -192; the fusion keeps its full -112. One BF round peaked at 943.72 MiB; peaks are otherwise deterministic per arm."
+  },
+  "protocol": {
+    "orders": [
+      [
+        "R-B1",
+        "MTF",
+        "COMBO",
+        "BF"
+      ],
+      [
+        "MTF",
+        "BF",
+        "R-B1",
+        "COMBO"
+      ],
+      [
+        "BF",
+        "COMBO",
+        "MTF",
+        "R-B1"
+      ],
+      [
+        "COMBO",
+        "R-B1",
+        "BF",
+        "MTF"
+      ]
+    ],
+    "rounds_per_arm": 4,
+    "design": "4x4 Williams square; every arm follows every other exactly once",
+    "warmup_seconds": 5,
+    "window_seconds": 30,
+    "tail_seconds": 2,
+    "idle_seconds": 5,
+    "inflight_frames": 1,
+    "pool_mib": 1024,
+    "minimum_free_bytes": 1073741824,
+    "evidence_budget_bytes": 268435456,
+    "image_dumps": false
+  },
+  "measurement_requests": 10794,
+  "environment": {
+    "load_average_1min_range": [
+      4.78662109375,
+      18.5634765625
+    ],
+    "system_memory_free_percent_range": [
+      31,
+      51
+    ],
+    "swap_used_mib_range": [
+      6106.62,
+      8052.75
+    ],
+    "max_thermal_state": 1,
+    "attribution_disclaimer": "Observations only; no root cause claimed."
+  },
+  "latency_findings": {
+    "combo_median_ms": 39.94255175348371,
+    "combo_fastest_in": "3 of 4 rounds; never slower than 40.9 ms while every other arm exceeded 45 ms at least once",
+    "combo_spread_ms": 5.363,
+    "mtf_spread_ms": 29.092,
+    "note": "Late-round drift (round 3: MTF 65.3, BF 60.6) repeats earlier campaigns; COMBO alone stayed flat, one campaign cannot prove stability."
+  },
+  "evidence": {
+    "build/windowed-combo-stage26-timing/c0a8a3a06fe5/report.json": "c008f957aa02f4b7d7e75c929e983644e3f1f7403a5d45e1056cf5354dee4746",
+    "build/windowed-combo-stage26-proof/report.json": "c43bd48b49a33f5b7be9c778a09f576f72ea5a08805ab7786c187d4abe6d30fe",
+    "build/windowed-combo-stage26-proof/jit-parity/report.json": "0b3e2824224c8289e4826960f76a74f836c2930ea0b29608188e94a7a220009a"
+  },
+  "workers": {
+    "R-B1": {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/reference/build/wavefront-benchmark-v2/instrumented/runner",
+      "sha256": "eff89993d9b138ea0197c5bb2c08c7d157d8facfea596a413805b9f4ddc3339b"
+    },
+    "W0": {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-combo-stage26-proof/W0/runner",
+      "sha256": "f7e759d63e71ab7b9388fc6ff4c30e9b638b4c08730f88fec69cf8fe006c6f3e"
+    },
+    "MTF": {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-combo-stage26-proof/MTF/runner",
+      "sha256": "d486b84219c7fdc54acf4d23f03cc187169b40d1a082b403449158b9e9372334"
+    },
+    "BF": {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-combo-stage26-proof/BF/runner",
+      "sha256": "6aad2e0860af462848c43d98993a3182d3ad3d739c6ebe9ef92c8a65dc90b40a"
+    },
+    "COMBO": {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-combo-stage26-proof/COMBO/runner",
+      "sha256": "2b9254b555437c3d1d498b10cda939f4340f83aceafab905484c1b0c572848dd"
+    }
+  },
+  "best_fit_suffix": {
+    "path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/tools/windowed-pool-best-fit.inc",
+    "sha256": "939220eb8156da5c042b1c4a9dfccc846a33ffb9f1936ce41b8c77103df65991"
+  },
+  "controllers": {
+    "run-windowed-combo-diagnostic.py": "e647d8660cf1e8b22ff5d8371d3f25ebf531149346cf9edb1391659b4de049d4",
+    "windowed_combo_helper.py": "8598cbe65bdce6581529a1983fc832211a05f20df7510b0f7e58f19d18e0598e",
+    "run-wavefront-baseline.py": "40ae1f157a57288b33aae1c3e7b80656df14d5652b336b59cf241b443bb7c1b8",
+    "wavefront_metrics.py": "5cc21b16c88df2043400c05105ab6c18f7fc70a3a3dcaea3f265fa6afa3edc75",
+    "wavefront-benchmark.mm": "680c889bdf9217728f4458d04dbe8c2283e78b9a3ae607cfba1a130d2a599cc1",
+    "windowed-pool-best-fit.inc": "939220eb8156da5c042b1c4a9dfccc846a33ffb9f1936ce41b8c77103df65991"
+  },
+  "limitations": [
+    "Four Williams-balanced repeats of one upscaled Coffee SDR case; no all-stock, holdout, retention or concurrency result.",
+    "Memory overlap is measured on this case alone; a size-mixing workload may reuse differently (stage19 mixed-history caution).",
+    "The BF/COMBO arms rebuild the allocator shim; latency attribution to pool policy vs archive is by arm design, not per-kernel profiling.",
+    "Defaults remain off; no production, Taggii/iOS, push or PR; stable B_ref and release gates still pending."
+  ]
+}

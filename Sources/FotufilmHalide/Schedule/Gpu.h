@@ -291,7 +291,8 @@ public:
                       Expr radius, Expr width, Expr height, bool half,
                       const std::string &name, int channels = 3,
                       bool store_result = true,
-                      Expr sigma3 = Expr(), Expr radius3 = Expr()) {
+                      Expr sigma3 = Expr(), Expr radius3 = Expr(),
+                      bool fuse_into_reader = false) {
         Var x("x"), y("y"), channel("channel"), k("k");
         const bool merged = sigma3.defined();
         const bool taps16 = half && f16_blur_compute();
@@ -355,10 +356,10 @@ public:
                                                   && y + vertical_taps.x < height,
                                               Halide::cast<float>(kernel(vertical_taps.x, channel)),
                                               0.0f);
-        if ((region_blur_ || general_optimization(kGeneralRadiusOne)) && gpu_device_api() == DeviceAPI::Metal && store_result && !half
+        if ((region_blur_ || general_optimization(kGeneralRadiusOne)) && gpu_device_api() == DeviceAPI::Metal && (store_result || fuse_into_reader) && !half
             && !merged) {
             return gpu_gaussian_three(bounded, kernel, vertical_data, vertical_weight, extent,
-                                      width, height, channels, name);
+                                      width, height, channels, name, store_result);
         }
         Func vertical(name);
         normalized_taps(vertical, x, y, channel, vertical_data, vertical_weight,
@@ -372,12 +373,15 @@ public:
     }
 
     /// The separable blur's second pass in a kernel that, at a one-pixel radius, runs the first
-    /// pass too: three taps of three taps, written out in the order and with the arithmetic of
-    /// the two passes' sums, read from the source instead of a frame-sized store of the first
+    /// pass too: three taps of three taps, written out in the order and with the arithmetic of the
+    /// two passes' sums, read from the source instead of a frame-sized store of the first
     /// pass. Every other radius reads the stored first pass, which then runs only for it.
+    /// With `store` false the second pass is not materialised either: the reader that consumes the
+    /// blur's result computes it in its own threads (see register_stage), keeping the same tap
+    /// order, the same data/weight accumulation and the same radius-one shortcut's select.
     Func gpu_gaussian_three(Func bounded, Func kernel, Expr vertical_data, Expr vertical_weight,
                             Expr extent, Expr width, Expr height, int channels,
-                            const std::string &name) {
+                            const std::string &name, bool store = true) {
         Var x("x"), y("y"), channel("channel");
         auto sum_taps = [](const std::vector<std::pair<Expr, Expr>> &taps) {
             Expr data = taps[0].first, weight = taps[0].second;
@@ -413,6 +417,19 @@ public:
             blurred(x,y,channel)=Halide::select(extent==1,sum_taps(taps),vertical);
             store_frame(blurred,false,channels);
             blurred.specialize(extent==1);
+            return blurred;
+        }
+        if (!store) {
+            // The reader computes the second pass in registers. The sums stay inline — a Tuple
+            // reduction stage cannot be placed in a kernel that never materialises this Func —
+            // so each accumulator keeps the stored version's tap order and the division keeps
+            // its max guard; without a realization there is no radius-one specialization to
+            // prune the untaken branch.
+            Func blurred(name);
+            Expr vertical = Halide::sum(vertical_data, name + "_vertical_sum")
+                / Halide::max(Halide::sum(vertical_weight, name + "_vertical_weight"), 1.0e-12f);
+            blurred(x, y, channel) = Halide::select(extent == 1, sum_taps(taps), vertical);
+            register_stage(blurred);
             return blurred;
         }
         Func sums(name + "_vertical_sums");

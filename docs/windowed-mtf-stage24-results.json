@@ -1,0 +1,223 @@
+{
+  "complete": true,
+  "stage": 24,
+  "repeat_of_stage": 16,
+  "date": "2026-11-01",
+  "scope": "independent re-run of the stage16 three-arm MTF fusion timing campaign with restored, SHA-verified binaries; diagnostic, defaults off",
+  "implementation_commit": "a45d89d",
+  "reference_base": "96623ba0831a52dbddcda35727a206d4123a8b5f",
+  "source_key": "4f9d84dc2c9aba095e55d1c1d36fdab8bfa2556b1d34be1f1c928cfaaa664325",
+  "performance_acceptance": false,
+  "B_ref_frozen": false,
+  "current_source_release_set": false,
+  "reused_stage16_binaries": {
+    "no_rebuild": true,
+    "w0_restored_from": "build/windowed-mtf-stage16-proof/W0/runner.gz",
+    "fused_restored_from": "build/windowed-mtf-stage16-proof/Fused/runner.gz",
+    "raw_sha256_verified": true,
+    "pixel_history_jit_proofs_reused": {
+      "proof_rows": 15,
+      "history_rows": 28,
+      "jit_rows": 2
+    },
+    "note": "Every round re-verified own-arm phase output SHA, actual variant, one AOT call and dispatch count against the stage16 proof."
+  },
+  "active_case": "portra400-coffee-3840x2160",
+  "summary": {
+    "R-B1": {
+      "round_medians_ms": [
+        48.2165,
+        51.132896,
+        55.363042
+      ],
+      "median_of_round_medians_ms": 51.13289598375559,
+      "worst_round_p95_ms": 101.43520799465477,
+      "median_throughput_fps": 18.633333333333333,
+      "device_peaks_mib": [
+        1183.71875,
+        1183.71875,
+        1183.71875
+      ],
+      "max_device_peak_mib": 1183.71875,
+      "max_process_peak_mib": 1720.5636444091797,
+      "retained_process_footprint_mib": [
+        1459.079246520996,
+        1459.001075744629,
+        1459.3761444091797
+      ],
+      "max_thermal_state": 1,
+      "measurement_requests": 1641
+    },
+    "W0": {
+      "round_medians_ms": [
+        40.370833,
+        46.615791,
+        64.615729
+      ],
+      "median_of_round_medians_ms": 46.61579092498869,
+      "worst_round_p95_ms": 110.48966599628329,
+      "median_throughput_fps": 20.8,
+      "device_peaks_mib": [
+        1183.71875,
+        1183.71875,
+        1183.71875
+      ],
+      "max_device_peak_mib": 1183.71875,
+      "max_process_peak_mib": 1720.2354736328125,
+      "retained_process_footprint_mib": [
+        1459.0479736328125,
+        1459.0635986328125,
+        1458.094871520996
+      ],
+      "max_thermal_state": 1,
+      "measurement_requests": 1746
+    },
+    "Fused": {
+      "round_medians_ms": [
+        41.40425,
+        43.713625,
+        50.059188
+      ],
+      "median_of_round_medians_ms": 43.71362493839115,
+      "worst_round_p95_ms": 69.53970901668072,
+      "median_throughput_fps": 22.533333333333335,
+      "device_peaks_mib": [
+        1071.71875,
+        1071.71875,
+        1071.71875
+      ],
+      "max_device_peak_mib": 1071.71875,
+      "max_process_peak_mib": 1465.501121520996,
+      "retained_process_footprint_mib": [
+        1347.751075744629,
+        1348.266746520996,
+        1346.907325744629
+      ],
+      "max_thermal_state": 1,
+      "measurement_requests": 1986
+    }
+  },
+  "effect_vs": {
+    "R-B1": {
+      "observed_latency_reduction_percent": 14.509780646340603,
+      "device_peak_reduction_mib": 112.0,
+      "device_peak_reduction_percent": 9.46170701444072
+    },
+    "W0": {
+      "observed_latency_reduction_percent": 6.225714353463461,
+      "device_peak_reduction_mib": 112.0,
+      "device_peak_reduction_percent": 9.46170701444072
+    }
+  },
+  "per_round_pairs": {
+    "0": {
+      "order": [
+        "R-B1",
+        "W0",
+        "Fused"
+      ],
+      "fused_vs_r_percent": -14.128462482700193,
+      "fused_vs_w0_percent": 2.559810814154675
+    },
+    "1": {
+      "order": [
+        "W0",
+        "Fused",
+        "R-B1"
+      ],
+      "fused_vs_r_percent": -14.509780646340603,
+      "fused_vs_w0_percent": -6.225714353463461
+    },
+    "2": {
+      "order": [
+        "Fused",
+        "R-B1",
+        "W0"
+      ],
+      "fused_vs_r_percent": -9.580135558761196,
+      "fused_vs_w0_percent": -22.527861395138686
+    }
+  },
+  "cross_campaign_note": "Absolute latencies are 25-40% above stage16 for every arm; campaign drift, not a regression of any arm. Only within-campaign comparisons are valid.",
+  "protocol": {
+    "orders": [
+      [
+        "R-B1",
+        "W0",
+        "Fused"
+      ],
+      [
+        "W0",
+        "Fused",
+        "R-B1"
+      ],
+      [
+        "Fused",
+        "R-B1",
+        "W0"
+      ]
+    ],
+    "rounds_per_arm": 3,
+    "warmup_seconds": 5,
+    "window_seconds": 30,
+    "tail_seconds": 2,
+    "idle_seconds": 5,
+    "inflight_frames": 1,
+    "pool_mib": 1024,
+    "minimum_free_bytes": 1073741824,
+    "evidence_budget_bytes": 268435456,
+    "image_dumps": false
+  },
+  "measurement_requests": 5373,
+  "environment": {
+    "load_average_1min_range": [
+      4.2236328125,
+      15.61376953125
+    ],
+    "system_memory_free_percent_range": [
+      36,
+      43
+    ],
+    "swap_used_mib_range": [
+      11144.25,
+      11340.06
+    ],
+    "swap_total_mib": 12288,
+    "max_thermal_state": 1,
+    "attribution_disclaimer": "Observations only; background load/swap do not establish a root cause."
+  },
+  "evidence": {
+    "build/windowed-mtf-stage16-repeat/f81614a5f6c1/report.json": "8689517963d2473f274841fe843d6d7444450512c76650eaf622dea9859c954a",
+    "build/windowed-mtf-stage16-proof/report.json": "3b28f825c9dda7ec3ffb48d8d9db7f2d8ccc9063ad17d8311a0c481f38f03f97",
+    "build/windowed-mtf-stage16-history/report.json": "5e4379ee8bf65580148ad78b8ae5396f11448306fac62a23aa0689050fafa2d9",
+    "build/windowed-mtf-stage16-proof/jit-parity/report.json": "d160888339d5f958373a1d4dcbac6d757b027ab3a975e68749419ae0b3240015"
+  },
+  "workers": {
+    "R-B1": {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/reference/build/wavefront-benchmark-v2/instrumented/runner",
+      "sha256": "eff89993d9b138ea0197c5bb2c08c7d157d8facfea596a413805b9f4ddc3339b"
+    },
+    "W0": {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-mtf-stage16-proof/W0/runner",
+      "sha256": "f7e759d63e71ab7b9388fc6ff4c30e9b638b4c08730f88fec69cf8fe006c6f3e"
+    },
+    "Fused": {
+      "path": "/Users/kunhuang/Documents/fotufilm-wavefront/candidate/build/windowed-mtf-stage16-proof/Fused/runner",
+      "sha256": "d486b84219c7fdc54acf4d23f03cc187169b40d1a082b403449158b9e9372334"
+    }
+  },
+  "controllers": {
+    "run-windowed-mtf-diagnostic.py": "05c17fee31fe3e9046f2fe3a892236e0463eb1b579e48ce1fcda181d9aecaebb",
+    "windowed_mtf_helper.py": "a006a1bd4330d1136de2c9d47936ebb6377de4d986b18684d29faa05368cdae6",
+    "run-wavefront-baseline.py": "40ae1f157a57288b33aae1c3e7b80656df14d5652b336b59cf241b443bb7c1b8",
+    "wavefront_metrics.py": "5cc21b16c88df2043400c05105ab6c18f7fc70a3a3dcaea3f265fa6afa3edc75",
+    "wavefront-benchmark.mm": "680c889bdf9217728f4458d04dbe8c2283e78b9a3ae607cfba1a130d2a599cc1"
+  },
+  "limitations": [
+    "Three balanced repeats of one upscaled Coffee SDR case; no all-stock, holdout, retention or concurrency result.",
+    "Second timing campaign of the same binaries; both campaigns must be reported separately and never spliced.",
+    "Fused is faster than R-B1 in all three rounds, but round 0 is slower than same-source W0 (+2.56%); the W0 margin is smaller than stage16 observed.",
+    "Heavy background load and near-full swap during the whole campaign; absolute levels are not comparable to stage16.",
+    "Not a release acceptance; defaults remain off; no Taggii/iOS integration, push or PR."
+  ]
+}

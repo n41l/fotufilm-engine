@@ -46,6 +46,7 @@ struct GpuConfiguration {
     int32_t general_optimizations = 0;
     // Private scheduling experiment; opt in explicitly, never through the environment.
     bool windowed_mtf_fusion = false;
+    bool windowed_print_mtf_fusion = false;
     bool windowed_coupler_fusion = false;
     bool windowed_coupler_unit_stride = false;
 
@@ -76,6 +77,7 @@ struct GpuConfiguration {
             + ":" + std::to_string(ablated)
             + (general_optimizations ? ":general:" + std::to_string(general_optimizations) : "")
             + (windowed_mtf_fusion ? ":windowed-mtf-fusion:1" : "")
+            + (windowed_print_mtf_fusion ? ":windowed-print-mtf-fusion:1" : "")
             + (windowed_coupler_fusion ? ":windowed-coupler-fusion:1" : "")
             + (windowed_coupler_unit_stride ? ":windowed-coupler-unit-stride:1" : "");
     }

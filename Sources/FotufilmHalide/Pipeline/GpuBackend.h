@@ -223,10 +223,15 @@ public:
     Func gaussian(Func source, Expr sigma0, Expr sigma1, Expr sigma2, Expr radius,
                   Expr width, Expr height, const std::string &name, int channels,
                   Expr luma_sigma, Expr luma_radius) override {
+        // The print MTF's vertical result is the one gaussian whose reader (the output kernel,
+        // through the unstored print chain) can take it into its own threads; every other blur
+        // keeps its stored second pass.
+        const bool fuse = fuse_windowed_print_mtf()
+            && name.find("print_mtf") != std::string::npos;
         Func blurred = schedule_.gpu_gaussian(source, sigma0, sigma1, sigma2, radius, width, height,
-                                    policy_.half_store, name, channels, true, luma_sigma,
-                                    luma_radius);
-        stored_.insert(blurred.name());
+                                    policy_.half_store, name, channels, !fuse, luma_sigma,
+                                    luma_radius, fuse);
+        if (!fuse) stored_.insert(blurred.name());
         return blurred;
     }
 
@@ -574,6 +579,16 @@ private:
     /// row-window host measures.
     bool fuse_windowed_mtf() const {
         return schedule_.configuration().windowed_mtf_fusion
+            && schedule_.gpu_device_api() == DeviceAPI::Metal
+            && schedule_.windowed() && policy_.windowed && policy_.realtime
+            && !policy_.half_store;
+    }
+
+    /// Whether the print MTF's vertical convolution is developed in the output kernel's
+    /// threads instead of a stored second-pass field: the row-window float realtime Metal
+    /// schedule alone, where the print chain it feeds is the blur's only reader.
+    bool fuse_windowed_print_mtf() const {
+        return schedule_.configuration().windowed_print_mtf_fusion
             && schedule_.gpu_device_api() == DeviceAPI::Metal
             && schedule_.windowed() && policy_.windowed && policy_.realtime
             && !policy_.half_store;
